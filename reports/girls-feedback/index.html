@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<title>Big Kids · Girls Guest Feedback</title>
+<link rel="icon" href="/D76-BB-KNIT/favicon.svg">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+:root{--tcom:#CC0000;--gf:#5e35b1;--tool:#0277bd;
+  --girl:#c2185b;--girl-tint:#fdf1f6;--girl-deep:#8e1246;
+  --ink:#1d1c22;--body:#4a4954;--sub:#6a6a72;--muted:#6e6d77;
+  --bg:#f3f2f6;--card:#fff;--bar:#1b1b22;--line:#e7e5ee;
+  --r-sm:8px;--r-md:10px;--r-lg:14px;--r-xl:16px;
+  --sh-1:0 1px 2px rgba(20,18,30,.06);--sh-2:0 8px 22px rgba(20,18,30,.11)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,"Segoe UI","Apple SD Gothic Neo","Noto Sans KR",sans-serif;
+  background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased}
+:focus-visible{outline:2px solid var(--tool);outline-offset:2px;border-radius:var(--r-sm)}
+.topbar{position:sticky;top:0;z-index:100;background:var(--bar);color:#fff;
+  font-size:13px;padding:11px 20px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.topbar a{color:#fff;text-decoration:none}
+.topbar .brand{font-weight:700}.topbar .sep{opacity:.3}.topbar .here{color:#f4a6c4}
+.fab{position:fixed;right:18px;bottom:18px;z-index:99;width:52px;height:52px;border-radius:50%;
+  background:var(--bar);color:#fff;display:flex;align-items:center;justify-content:center;
+  font-size:20px;text-decoration:none;box-shadow:var(--sh-2)}
+.wrap{max-width:1040px;margin:0 auto;padding:26px 20px 56px}
+.hero{background:var(--girl-tint);border-radius:var(--r-xl);padding:22px 24px;margin-bottom:20px}
+.hero .eyebrow{font-size:11px;letter-spacing:.16em;font-weight:700;color:var(--girl-deep)}
+.hero h1{font-size:26px;line-height:1.25;margin:6px 0}
+.hero .meta{font-size:13px;color:var(--sub);line-height:1.6}
+h2{font-size:16px;font-weight:700;margin:26px 2px 12px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:6px}
+.kpi{background:var(--card);border-radius:var(--r-lg);padding:15px 17px;box-shadow:var(--sh-1)}
+.kpi .v{font-size:24px;font-weight:700;font-variant-numeric:tabular-nums}
+.kpi .l{font-size:11.5px;color:var(--sub);margin-top:4px}
+.kpi.g .v{color:var(--girl-deep)}
+.box{background:var(--card);border-radius:var(--r-lg);padding:18px 20px;box-shadow:var(--sh-1);
+  font-size:13px;line-height:1.75;color:var(--body)}
+table{border-collapse:collapse;width:100%;font-size:12.5px}
+th,td{padding:7px 9px;border-bottom:1px solid var(--line);text-align:left}
+th{background:#faf9fc;font-size:11.5px;color:var(--sub);font-weight:700}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
+.bar{height:9px;border-radius:5px;background:var(--girl);display:inline-block;vertical-align:middle}
+.grid{display:grid;grid-template-columns:repeat(8,1fr);gap:8px}
+.sq{background:var(--card);border-radius:var(--r-md);padding:5px;box-shadow:var(--sh-1);position:relative}
+.sq img{width:100%;height:104px;object-fit:contain;background:#fff;border-radius:7px;display:block}
+.sq .d{font-size:9.5px;color:var(--muted);font-family:"SF Mono",Consolas,monospace;margin:4px 2px 0}
+.sq .p{font-size:11px;font-weight:700;margin:1px 2px 2px}
+.sq .t{position:absolute;left:8px;top:8px;font-size:8.5px;font-weight:700;color:#fff;
+  background:var(--girl);border-radius:5px;padding:1px 5px}
+.sq .t.b{background:#6a1b9a}
+.note{font-size:12px;color:var(--muted);margin-top:22px;line-height:1.7}
+@media(max-width:860px){ .grid{grid-template-columns:repeat(4,1fr)} }
+@media(max-width:640px){ .hero{padding:18px} .hero h1{font-size:22px} .grid{grid-template-columns:repeat(3,1fr)} }
+
+.round{display:flex;flex-direction:column;gap:12px;background:var(--card);border-radius:var(--r-lg);padding:20px 22px;margin-bottom:12px;color:var(--ink);text-decoration:none;box-shadow:var(--sh-1);transition:box-shadow .14s,transform .14s}.round:hover{box-shadow:var(--sh-2);transform:translateY(-2px);color:var(--ink)}.round .head{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.round .t{font-size:19px;font-weight:700}.round .latest{font-size:11px;font-weight:700;color:#fff;background:var(--girl);padding:4px 9px;border-radius:var(--r-sm)}.round .d{font-size:13px;color:var(--sub);line-height:1.6}.round .foot{display:flex;gap:20px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:12px}.round .foot b{font-size:19px;font-variant-numeric:tabular-nums;display:block}.round .foot span{font-size:11.5px;color:var(--sub);display:block}</style>
+</head>
+<body>
+<div class="topbar"><a class="brand" href="/D76-BB-KNIT/">📊 Big Kids Hub</a><span class="sep">|</span><a href="/D76-BB-KNIT/reports/biggirls/">👧 Big Girls</a><span class="sep">|</span><a class="here" href="./">💬 Girls Guest Feedback</a></div>
+<a class="fab" href="/D76-BB-KNIT/" title="Big Kids Hub">📊</a>
+<div class="wrap">
+<div class="hero"><div class="eyebrow">GIRLS GUEST FEEDBACK · 격주 트래킹</div><h1>💬 Girls 게스트 피드백</h1><div class="meta">salest.sae-a.com 게스트 리뷰 · Dept 32 · 205 · POS/NEG · 패턴 연계성 · 스타일별 코멘트</div></div>
+<h2>최신 회차</h2>
+<a class="round" href="Dept32_205_Feedback_Report_2026-04-01_to_2026-09-30.html"><div class="head"><div class="t">2026-09-30 · 기준선</div><span class="latest">LATEST</span></div><div class="d">첫 수집 — 최근 6개월치(4/1~9/30)를 한 번에 쌓았습니다. 다음 회차부터는 직전 수집 이후 작성분만 다룹니다.</div><div class="foot"><div><b>331</b><span>리뷰</span></div><div><b>65</b><span>스타일</span></div><div><b>255</b><span>POS</span></div><div><b>76</b><span>NEG</span></div></div></a>
+<div class="note">적재 기준은 Boys 와 같습니다 — NEG 전체 + POS 본문 30자 이상, 키 (스타일·작성일·본문 앞 60자)로 중복 제거.<br>프로모션 제공 리뷰가 섞여 있어 평균 별점을 그대로 만족도로 읽지 않습니다.</div>
+</div>
+</body>
+</html>
