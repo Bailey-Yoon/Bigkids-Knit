@@ -54,6 +54,16 @@ a.card:hover{box-shadow:var(--sh-2);transform:translateY(-2px)}
 .card .nums{display:flex;gap:20px;flex-wrap:wrap}
 .card .nums b{font-size:19px;font-variant-numeric:tabular-nums;display:block}
 .card .nums span{font-size:11.5px;color:var(--sub);display:block}
+a.dl{display:flex;align-items:center;gap:14px;background:var(--card);border-radius:var(--r-lg);
+  padding:18px 20px;margin-bottom:12px;box-shadow:var(--sh-1);text-decoration:none;color:var(--ink);
+  border-left:4px solid var(--girl);transition:box-shadow .14s,transform .14s}
+a.dl:hover{box-shadow:var(--sh-2);transform:translateY(-2px)}
+a.dl .ico{font-size:26px;line-height:1;flex:none}
+a.dl .t{font-size:16px;font-weight:700;line-height:1.3}
+a.dl .d{font-size:12.5px;color:var(--sub);line-height:1.6;margin-top:3px}
+a.dl .go{margin-left:auto;font-size:12px;font-weight:700;color:#fff;background:var(--girl);
+  padding:8px 14px;border-radius:var(--r-sm);white-space:nowrap;flex:none}
+@media(max-width:640px){ a.dl{flex-wrap:wrap} a.dl .go{margin-left:0;width:100%;text-align:center} }
 
 
 .note{font-size:12px;color:var(--muted);margin-top:22px;line-height:1.7}
@@ -116,6 +126,27 @@ a.card:hover{box-shadow:var(--sh-2);transform:translateY(-2px)}
     </div>
   </div>
 </a>
+
+<h2>내려받기</h2>
+
+<a class="dl" href="CJ_Girls_Catalog_2026-09-30.xlsx" download>
+  <span class="ico">&#128202;</span>
+  <div>
+    <div class="t">Girls 카탈로그 216건 &mdash; 엑셀</div>
+    <div class="d">
+      Description &middot; Photo &middot; Retail Price &middot; F. Contents &middot; Link &middot; 카테고리별 5개 시트<br>
+      2026-09-30 기준 &middot; 1.1 MB &middot; <b>매 회차 최신 한 개만 둡니다</b> (지난 회차는 남기지 않습니다)
+    </div>
+  </div>
+  <span class="go">&#11015; 내려받기</span>
+</a>
+
+<div class="note" style="margin-top:10px">
+  바이어 &laquo;C&amp;J New Arrivals update&raquo; 양식과 같은 구조입니다 &mdash; 제품이 열, 항목이 행.
+  <b>벤더(Sae-A / Other vendor) 행은 비어 있습니다</b> &mdash; 공개 카탈로그만으로는 판단할 수 없습니다.
+  Colorways &middot; Model Shot 도 같은 이유로 비어 있습니다.<br>
+  양식에 없는 <b>DPCI &middot; Dept 행</b>을 맨 아래에 덧붙였습니다 (분홍 음영) &mdash; 필요 없으면 행째 지우면 됩니다.
+</div>
 
 <div class="note">
   양쪽 모두 첫 회차(기준선)를 마쳤습니다 &mdash; 비교 지표는 다음 회차부터 나옵니다. 이후로는 Boys 와 같은 주기로 함께 갱신됩니다.
