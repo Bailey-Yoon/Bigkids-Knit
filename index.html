@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<title>D76 Research Dashboard</title>
+<title>Big Kids Dashboard</title>
 <link rel="icon" href="/D76-BB-KNIT/favicon.svg">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -13,6 +13,8 @@
   --man:#00695c;  --man-tint:#eef6f5;  --man-deep:#00544c;
   --tool:#0277bd; --tool-tint:#eef4fa; --tool-deep:#014b7e;
   --amber:#ef6c00;--amber-tint:#fff8ee;--amber-deep:#8a4b00;
+  --boy:#1565c0; --boy-tint:#eef4fa; --boy-deep:#0d47a1;
+  --girl:#c2185b;--girl-tint:#fdf1f6;--girl-deep:#8e1246;
   --pos:#00695c;  --neg:#CC0000;
   --ink:#1d1c22; --body:#4a4954; --sub:#6a6a72; --muted:#6e6d77;
   --bg:#f3f2f6;  --card:#fff;  --bar:#1b1b22; --line:#e7e5ee;
@@ -81,6 +83,18 @@ a.card .tag{margin-left:auto;font-size:11px;font-weight:700;color:#fff;backgroun
   padding:4px 9px;border-radius:var(--r-sm);white-space:nowrap;flex:none}
 a.card.tcom .tag{background:var(--tcom)} a.card.gf .tag{background:var(--gf)}
 a.card.man .tag{background:var(--man)}   a.card.tool .tag{background:var(--tool)}
+a.card.boy .tag{background:var(--boy)}   a.card.girl .tag{background:var(--girl)}
+/* 아직 수집 전인 묶음 — 링크가 아니라 안내 타일이다 (깨진 링크를 만들지 않는다) */
+.card.soon{display:flex;flex-direction:column;gap:10px;background:var(--card);
+  border-radius:var(--r-lg);padding:20px 22px;box-shadow:var(--sh-1);opacity:.96}
+.card.soon .tag{margin-left:auto;font-size:11px;font-weight:700;color:#fff;
+  background:var(--girl);padding:4px 9px;border-radius:var(--r-sm);white-space:nowrap}
+.card.soon .head{display:flex;align-items:flex-start;gap:12px}
+.card.soon .ico{font-size:27px;line-height:1;flex:none}
+.card.soon .t{font-size:19px;font-weight:700;letter-spacing:-.01em;line-height:1.3}
+.card.soon .d{font-size:13px;color:var(--sub);line-height:1.6;margin-top:3px}
+.card.soon .foot{border-top:1px solid var(--line);padding-top:12px;font-size:12px;
+  color:var(--muted);line-height:1.7}
 a.card .foot{display:flex;gap:20px;flex-wrap:wrap;border-top:1px solid var(--line);
   padding-top:12px;margin-top:auto}
 a.card .foot b{font-size:19px;font-variant-numeric:tabular-nums;display:block}
@@ -159,8 +173,8 @@ footer{max-width:1120px;margin:0 auto;padding:0 20px 50px;text-align:center;
 </head>
 <body>
 <div class="topbar">
-  <a class="brand" href="./">📊 D76 Research Dashboard</a>
-  <span class="live">Target Dept 76 · Cat &amp; Jack · 격주 갱신</span>
+  <a class="brand" href="./">📊 Big Kids Dashboard</a>
+  <span class="live">Target Big Kids · Cat &amp; Jack · 격주 갱신</span>
 </div>
 
 <div class="wrap">
@@ -168,8 +182,8 @@ footer{max-width:1120px;margin:0 auto;padding:0 20px 50px;text-align:center;
 <div class="hero home">
   <div>
     <div class="eyebrow">SAE-A TARGET11</div>
-    <h1>D76 Research Dashboard</h1>
-    <div class="meta">Target Dept 76 (Big Kids Boy) · Cat &amp; Jack 리서치 게시판</div>
+    <h1>Big Kids Dashboard</h1>
+    <div class="meta">Target Big Kids · Cat &amp; Jack 리서치 게시판 · Boys D76 / Girls D32 · D205</div>
   </div>
   <div class="fx">
     <div>
@@ -189,40 +203,41 @@ footer{max-width:1120px;margin:0 auto;padding:0 20px 50px;text-align:center;
     <div class="n">격주 트래킹</div>
     <div class="c">2주 단위 자동 수집</div>
     <div class="aside">
-      <div><span class="k">최신 회차</span><span class="v">2026-09-28</span></div>
-      <div><span class="k">최종 게시</span><span class="v">2026-09-28</span></div>
+      <div><span class="k">최신 회차</span><span class="v">2026-09-30</span></div>
+      <div><span class="k">최종 게시</span><span class="v">2026-09-30</span></div>
     </div>
   </div>
   <div class="cards two">
-    <a class="card tcom" href="reports/tcom/">
+    <a class="card boy" href="reports/bigboys/">
       <div class="head">
-        <span class="ico">🛒</span>
+        <span class="ico">👦</span>
         <div>
-          <div class="t">T.COM 카탈로그 트래킹</div>
-          <div class="d">Cat &amp; Jack 076 Boys — 신상 · DROPPED · 재등장 · 가격변동</div>
+          <div class="t">Big Boys</div>
+          <div class="d">Dept 76 · Cat &amp; Jack — T.COM 카탈로그 트래킹 + Guest Feedback</div>
         </div>
         <span class="tag">09-28</span>
       </div>
       <div class="foot">
         <div><b>107</b><span>카탈로그</span></div>
         <div><b>24</b><span>신상</span></div>
-        <div class="dn"><b>3</b><span>가격 인하</span></div>
-        <div><b>2</b><span>DROPPED</span></div>
+        <div><b>21</b><span>신규 리뷰</span></div>
+        <div class="dn"><b>1</b><span>NEG 불만</span></div>
       </div>
     </a>
-    <a class="card gf" href="reports/feedback/">
+    <a class="card girl" href="reports/biggirls/">
       <div class="head">
-        <span class="ico">💬</span>
+        <span class="ico">👧</span>
         <div>
-          <div class="t">Guest Feedback</div>
-          <div class="d">게스트 리뷰 수집 · POS/NEG 분석 · 패턴 연계성 · 스타일별 코멘트</div>
+          <div class="t">Big Girls</div>
+          <div class="d">Dept 32 &middot; Dept 205 &mdash; T.COM 기준선 완료, Guest Feedback 준비 중</div>
         </div>
-        <span class="tag">09-28</span>
+        <span class="tag">09-30</span>
       </div>
       <div class="foot">
-        <div><b>21</b><span>신규 리뷰</span></div>
-        <div><b>279</b><span>누적</span></div>
-        <div class="dn"><b>1</b><span>NEG 불만</span></div>
+        <div><b>216</b><span>기준선 카탈로그</span></div>
+        <div><b>138</b><span>Dept 032</span></div>
+        <div><b>78</b><span>Dept 205</span></div>
+        <div><b>&mdash;</b><span>리뷰 준비 중</span></div>
       </div>
     </a>
   </div>
