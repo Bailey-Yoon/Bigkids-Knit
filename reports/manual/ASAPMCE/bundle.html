@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <title>D76 · ASAP/MCE Process Manual</title>
-  <link rel="icon" href="/D76-BB-KNIT/favicon.svg">
+  <link rel="icon" href="/Bigkids-Knit/favicon.svg">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { background: #f3f2f6; display: flex; align-items: center; justify-content: center; min-height: 100vh; font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
@@ -398,7 +398,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 /* 번들러가 하이드레이션하면서 <head> 를 비우므로 제목/파비콘을 다시 세운다.
    레이아웃·로직에는 손대지 않고 head 만 감시하다가 10초 뒤 스스로 멈춘다. */
 (function () {
-  var T = 'D76 · ASAP/MCE Process Manual', ICON = '/D76-BB-KNIT/favicon.svg';
+  var T = 'D76 · ASAP/MCE Process Manual', ICON = '/Bigkids-Knit/favicon.svg';
   function keep() {
     if (document.title !== T) document.title = T;
     if (!document.querySelector('link[rel="icon"]')) {

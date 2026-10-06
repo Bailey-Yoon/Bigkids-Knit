@@ -38,7 +38,7 @@ OUT = os.path.join(ROOT, 'data', 'raw-material.json')
 
 VERCEL = 'https://newsletter-for-div-8.vercel.app'
 TIMEOUT = 25
-UA = 'Mozilla/5.0 (compatible; D76-BB-KNIT raw-material snapshot)'
+UA = 'Mozilla/5.0 (compatible; Bigkids-Knit raw-material snapshot)'
 
 CENT = '¢/lb'
 WEEKLY_NOTE = '주간 리포트'
