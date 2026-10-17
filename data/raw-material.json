@@ -1,79 +1,79 @@
 {
  "degraded": false,
  "marketDataDate": "2026-10-16",
- "snapshotDate": "2026-10-16",
+ "snapshotDate": "2026-10-17",
  "sources": [
   "vercel",
   "yahoo"
  ],
  "tiles": [
   {
-   "changePct": 0.2997782272358875,
+   "changePct": -0.0749407449704697,
    "comment": "",
    "key": "usCotton",
    "label": "U.S. Cotton",
    "note": "ICE Dec-26 선물",
-   "price": 80.3,
+   "price": 80.0,
    "source": "yahoo:CTZ26.NYB",
    "unit": "¢/lb"
   },
   {
-   "changePct": -0.38,
-   "comment": "중국 당국 비축면 경매와 수요둔화",
+   "changePct": 1.0,
+   "comment": "신장 지역의 수확량 감소 및 재배 면적 축소 우려",
    "key": "chinaCotton",
    "label": "China Cotton",
    "note": "주간 리포트",
-   "price": 117.84,
+   "price": 117.79,
    "source": "vercel:weekly",
    "unit": "¢/lb"
   },
   {
-   "changePct": -2.09,
-   "comment": "수출 수요 한파와 인도면화공사의 가격인하 정책",
+   "changePct": 3.98,
+   "comment": "강우량 부족으로 인한 신곡 수확지연 우려",
    "key": "indiaCotton",
    "label": "India Cotton",
    "note": "주간 리포트",
-   "price": 87.55,
+   "price": 95.86,
    "source": "vercel:weekly",
    "unit": "¢/lb"
   },
   {
-   "changePct": -0.37,
-   "comment": "방적업체의 보수적 원료구매",
+   "changePct": 4.14,
+   "comment": "유가 상승과 주원료 (PTA,MEG) 및 물류 비용 급등",
    "key": "psf",
    "label": "PSF",
    "note": "주간 리포트",
-   "price": 58.75,
+   "price": 61.37,
    "source": "vercel:weekly",
    "unit": "¢/lb"
   },
   {
-   "changePct": -1.74,
-   "comment": "국제유가 하락 및 의류 수요 부진",
+   "changePct": 0.52,
+   "comment": "실제수요 부진으로 인한 가격 상승 제한",
    "key": "dty",
    "label": "DTY",
    "note": "주간 리포트",
-   "price": 70.42,
+   "price": 70.67,
    "source": "vercel:weekly",
    "unit": "¢/lb"
   },
   {
-   "changePct": 0.8307957645746347,
+   "changePct": 1.0921698131721245,
    "comment": "",
    "key": "wti",
    "label": "WTI Crude",
    "note": "NYMEX",
-   "price": 95.88,
+   "price": 99.04,
    "source": "yahoo:CL=F",
    "unit": "USD/bbl"
   },
   {
-   "changePct": -0.6128583571149496,
+   "changePct": 3.559291820456255,
    "comment": "",
    "key": "brent",
    "label": "Brent Crude",
    "note": "Global benchmark",
-   "price": 105.41,
+   "price": 109.69,
    "source": "yahoo:BZ=F",
    "unit": "USD/bbl"
   }
