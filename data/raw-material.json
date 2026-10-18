@@ -1,7 +1,7 @@
 {
  "degraded": false,
  "marketDataDate": "2026-10-16",
- "snapshotDate": "2026-10-17",
+ "snapshotDate": "2026-10-18",
  "sources": [
   "vercel",
   "yahoo"
@@ -58,22 +58,22 @@
    "unit": "¢/lb"
   },
   {
-   "changePct": 1.0921698131721245,
+   "changePct": -2.356773075438094,
    "comment": "",
    "key": "wti",
    "label": "WTI Crude",
    "note": "NYMEX",
-   "price": 99.04,
+   "price": 99.02,
    "source": "yahoo:CL=F",
    "unit": "USD/bbl"
   },
   {
-   "changePct": 3.559291820456255,
+   "changePct": 3.719790312656799,
    "comment": "",
    "key": "brent",
    "label": "Brent Crude",
    "note": "Global benchmark",
-   "price": 109.69,
+   "price": 109.86,
    "source": "yahoo:BZ=F",
    "unit": "USD/bbl"
   }
