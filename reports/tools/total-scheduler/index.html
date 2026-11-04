@@ -70,6 +70,15 @@ a:hover{color:var(--tool-deep)}
 .btn.ghost{background:transparent;color:var(--body);border:1px solid var(--line)}
 .btn.ghost:hover{background:var(--bg);color:var(--ink)}
 .btn.sm{font-size:13px;padding:8px 14px;min-height:38px}
+/* ── 날짜 이동 묶음 ── */
+.navgrp{display:inline-flex;align-items:center;border:1px solid var(--line);
+  border-radius:var(--r-md);background:var(--card);overflow:hidden}
+.navgrp .btn{border-radius:0;background:transparent;color:var(--body);
+  padding:8px 12px;min-height:38px;font-size:13px;font-weight:700}
+.navgrp .btn:hover{background:var(--tool-tint);color:var(--tool-deep)}
+.navgrp .btn:disabled{background:transparent;color:var(--faint);cursor:not-allowed}
+.navgrp .nl{font-size:12.5px;font-weight:700;color:var(--sub);padding:0 6px;white-space:nowrap}
+.navmsg{font-size:12.5px;color:var(--amber-deep);align-self:center}
 .btn.danger{background:var(--tcom)} .btn.danger:hover{background:var(--tcom-deep)}
 
 /* ── KPI ── */
@@ -100,24 +109,36 @@ a:hover{color:var(--tool-deep)}
 
 /* ── 달력 ── */
 .cal{background:var(--card);border-radius:var(--r-xl);padding:16px 18px;margin-bottom:18px}
-.calgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
-.calhd{font-size:11px;font-weight:700;color:var(--sub);text-align:center;padding:5px 0}
+/* 간트형 달력 — 주마다 7열 격자 하나. 배경 칸은 전 행을 덮고,
+   연속된 날은 grid-column span 으로 한 막대가 된다 */
+.calhead{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:4px}
+.calhd{font-size:11px;font-weight:700;color:var(--sub);text-align:center;padding:4px 0}
 .calhd.sun{color:var(--tcom)} .calhd.sat{color:var(--tool-deep)}
-.cell{border:1px solid var(--line);border-radius:var(--r-sm);min-height:62px;padding:5px 6px;
-  display:flex;flex-direction:column;gap:3px;background:var(--card);cursor:pointer;text-align:left}
-.cell:hover{box-shadow:var(--sh-1);border-color:var(--tool)}
-.cell.out{background:var(--bg);opacity:.62;cursor:default}
-.cell.base{border:2px solid var(--tool);padding:4px 5px}
-.cell.past{background:#faf9fc}
-.cell .dn{font-size:11.5px;font-weight:700;color:var(--body);font-variant-numeric:tabular-nums}
-/* .past 셀(#faf9fc) 위에서도 4.5:1 을 넘겨야 해 deep 쪽을 쓴다 */
-.cell .dn.sun{color:var(--tcom)} .cell .dn.sat{color:var(--tool-deep)}
-.cell .dn .mo{font-size:10px;color:var(--muted);font-weight:400}
-.cell .dots{display:flex;flex-wrap:wrap;gap:2px}
-.cell .dots i{width:7px;height:7px;border-radius:50%;display:block}
-.cell .cnt{font-size:10.5px;color:var(--muted);margin-top:auto;font-variant-numeric:tabular-nums}
-.cell.has .cnt{color:var(--ink);font-weight:700}
-@media(max-width:640px){ .cell{min-height:52px;padding:4px} .cell .dn{font-size:10.5px} }
+.wk{display:grid;grid-template-columns:repeat(7,1fr);grid-auto-rows:minmax(17px,auto);
+  gap:3px;margin-bottom:3px}
+.daybg{border:1px solid var(--line);border-radius:var(--r-sm);background:var(--card);
+  min-height:62px;padding:0;cursor:pointer}
+.daybg:hover{border-color:var(--tool)}
+.daybg.out{background:var(--bg);opacity:.62;cursor:default}
+.daybg.past{background:#faf9fc}
+.daybg.base{border:2px solid var(--tool)}
+.dnum{font-size:11.5px;font-weight:700;color:var(--body);padding:4px 0 1px 7px;
+  z-index:1;pointer-events:none;font-variant-numeric:tabular-nums}
+/* .past 칸(#faf9fc) 위에서도 4.5:1 을 넘겨야 해 deep 쪽을 쓴다 */
+.dnum.sun{color:var(--tcom)} .dnum.sat{color:var(--tool-deep)} .dnum.out{opacity:.6}
+.dnum .mo{font-size:10px;color:var(--muted);font-weight:400}
+.bar{font-size:10.5px;font-weight:700;color:#fff;border-radius:3px;padding:2px 6px;margin:0 2px;
+  line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  z-index:2;pointer-events:none}
+.barmore{font-size:10px;font-weight:700;color:var(--muted);padding:1px 7px;
+  z-index:2;pointer-events:none;white-space:nowrap}
+.callgd{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px;font-size:11.5px;color:var(--sub)}
+.callgd span{display:inline-flex;align-items:center;gap:5px}
+.callgd i{width:16px;height:9px;border-radius:2px;display:block}
+@media(max-width:640px){
+  .daybg{min-height:52px} .dnum{font-size:10.5px;padding-left:4px}
+  .bar{font-size:9.5px;padding:2px 3px;margin:0 1px}
+}
 
 /* ── 일정 목록 ── */
 .day{background:var(--card);border-radius:var(--r-lg);margin-bottom:10px;overflow:hidden}
@@ -245,9 +266,23 @@ a:hover{color:var(--tool-deep)}
       </div>
       <div class="btns">
         <button class="btn ghost sm" id="bToday">오늘로</button>
-        <button class="btn ghost sm" id="bPrev">◀ 이전 범위</button>
-        <button class="btn ghost sm" id="bNext">다음 범위 ▶</button>
+        <span class="navgrp">
+          <button class="btn" id="bDayPrev" aria-label="하루 전으로">◀</button>
+          <span class="nl">하루</span>
+          <button class="btn" id="bDayNext" aria-label="하루 뒤로">▶</button>
+        </span>
+        <span class="navgrp">
+          <button class="btn" id="bEvPrev" aria-label="이슈 있는 이전 날로">◀</button>
+          <span class="nl">이슈 있는 날</span>
+          <button class="btn" id="bEvNext" aria-label="이슈 있는 다음 날로">▶</button>
+        </span>
+        <span class="navgrp">
+          <button class="btn" id="bPrev" aria-label="이전 범위로">◀</button>
+          <span class="nl" id="nlWin">범위</span>
+          <button class="btn" id="bNext" aria-label="다음 범위로">▶</button>
+        </span>
         <button class="btn ghost sm" id="bCsv">보는 구간 CSV</button>
+        <span class="navmsg" id="navMsg" role="status"></span>
       </div>
       <div class="chips" id="filters"></div>
     </div>
@@ -452,13 +487,31 @@ function CV(ws,r,c){
   return x.v;
 }
 function CT(ws,r,c){ var v=CV(ws,r,c); return v==null ? '' : String(v).trim(); }
+function hx2(n){ n=Math.max(0,Math.min(255,Math.round(n))); return (n<16?'0':'')+n.toString(16).toUpperCase(); }
 function CRGB(ws,r,c){
   var x=CA(ws,r,c);
   if(!x || !x.s || !x.s.fgColor) return null;
+  if(x.s.patternType==='none') return null;
   var g=x.s.fgColor;
-  if(g.rgb) return String(g.rgb).slice(-6).toUpperCase();      /* SheetJS 가 theme+tint 를 RGB 로 풀어 준다 */
+  if(g.rgb) return String(g.rgb).slice(-6).toUpperCase();   /* 연차표는 여기서 RGB 가 바로 나온다 */
+  /* BA grid 는 theme+tint 로만 온다. theme 0·1 은 흰 바탕이라 tint 로 회색이 나온다
+     (−0.50 → 808080 아웃 표시 · −0.15 → D9D9D9 연한 띠). openpyxl 과 값이 일치함을 확인했다 */
+  if(g.theme===0 || g.theme===1){
+    var t=g.tint||0, l=(t<0) ? (1+t) : (1-t)+t*1;
+    var v=hx2(Math.max(0,Math.min(1,l))*255);
+    return v+v+v;
+  }
   if(g.theme!=null) return 'T'+g.theme+'/'+Math.round((g.tint||0)*1000);
   return null;
+}
+/* 행 전체가 진한 회색이면 "진행하지 않는 스타일" 이다 (사용자 확인 2026-11-04).
+   연한 띠(D9D9D9)와 섞이지 않게 밝기 범위를 좁게 잡는다 */
+function isGreyOut(hex){
+  if(!hex || !/^[0-9A-F]{6}$/.test(hex)) return false;
+  var r=parseInt(hex.substr(0,2),16), g=parseInt(hex.substr(2,2),16), b=parseInt(hex.substr(4,2),16);
+  if(Math.max(r,g,b)-Math.min(r,g,b) > 16) return false;     /* 무채색이 아니면 아니다 */
+  var v=(r+g+b)/3;
+  return v>=0x40 && v<=0xA8;
 }
 function dims(ws){
   var r={rows:0, cols:0};
@@ -531,7 +584,7 @@ function leaveClassify(mark, rgb, leg){
   return {label:label, days:leaveDays(label), note:note};
 }
 var AD_LEAVE = {
-  id:'leave', name:'팀원 연차 계획표', color:'#00695c',
+  id:'leave', name:'연차계획', color:'#00695c',
   about:'월별 시트에 <b>직원 × 날짜 격자</b>로 된 연차표. <code>V</code>·<code>반차</code>·<code>오전</code>·<code>오후</code> 를 <b>셀 색까지 보고</b> 읽습니다.',
   detect:function(wb){
     var miss=[];
@@ -645,7 +698,7 @@ function tnaSheet(wb){
   return names.length? wb.Sheets[names[0]] : null;
 }
 var AD_TNA = {
-  id:'tna', name:'바이어 TNA 일정표', color:'#CC0000',
+  id:'tna', name:'Target Calendar', color:'#CC0000',
   about:'Target 캘린더. 1행의 <code>… - START</code> 열마다 <b>그룹 라벨 + Task</b> 를 묶어 이슈를 만듭니다 (예: <code>C327 JUN W5 - In-Store Date (ISD)</code>).',
   detect:function(wb){
     var miss=[], ws=tnaSheet(wb);
@@ -697,11 +750,26 @@ var AD_TNA = {
    ⚠ 이 양식은 **안정적인 키가 없다** — 같은 Cycle·Class·SC·Program·FAB·Set Date 가
    여러 줄이고(D76 52줄 중 중복 9), 회차마다 줄이 늘고 날짜가 갱신된다.
    그래서 키로 합치지 않고 **통째로 교체**한다 (replaceAll).            */
-function baHeadCols(ws){
-  /* ⚠ D76 시트가 16379열로 선언돼 있다. 1행에 글자가 있는 마지막 열까지만 본다 */
-  var D=dims(ws), lastc=0;
-  for(var c=1;c<=Math.min(D.cols,200);c++) if(CT(ws,1,c)) lastc=c;
-  return lastc;
+/* 머리글이 **1행이 아닐 수 있다** — 2026 파일은 1행, 2027 파일은 6행이다.
+   "Program Name" 이 있는 줄을 찾는다. 못 찾으면 그 시트는 안 읽는다(피벗 시트 등).
+   ⚠ 선언 범위가 터무니없다 (16,379열 · 1,048,464행). 반드시 좁혀서 본다 */
+function baHeader(ws){
+  var D=dims(ws), maxc=Math.min(D.cols,200), r, c;
+  for(r=1;r<=Math.min(D.rows,15);r++){
+    var pc=0, hasCycle=false, lastc=0;
+    for(c=1;c<=maxc;c++){
+      var h=CT(ws,r,c);
+      if(!h) continue;
+      lastc=c;
+      if(!pc && /^program name/i.test(h)) pc=c;
+      if(/^cycle$/i.test(h)) hasCycle=true;
+    }
+    /* ⚠ 피벗 시트에도 Program Name 이 있다 (30열). 실제 그리드는 **Cycle 로 시작하고
+       Program Name 이 앞쪽(4~5열)** 이다. 둘 다 맞을 때만 읽는다 — 느슨하게 잡으면
+       피벗의 숫자 열이 "날짜 열" 로 들어와 이슈가 뻥튀기된다 */
+    if(pc && pc<=10 && hasCycle) return {row:r, lastc:lastc};
+  }
+  return null;
 }
 function baLabel(h){
   var s=String(h).split('\n')[0].split('\r')[0];
@@ -710,48 +778,61 @@ function baLabel(h){
   return s || String(h).slice(0,24);
 }
 var AD_BAGRID = {
-  id:'ba', name:'시즌 캘린더 (BA Due Date Grid)', color:'#5e35b1', replaceAll:true,
+  id:'ba', name:'Due Date Grid', color:'#5e35b1', replaceAll:true,
   about:'부서 시트마다 <b>한 줄 = 한 프로그램</b>. 날짜 열(PCMS/BA · CMS · PO Due 등)마다 이슈를 만듭니다. 안정적인 키가 없는 양식이라 <b>올릴 때마다 전체를 교체</b>합니다.',
   detect:function(wb){
     var ok=false, seen=[];
     wb.SheetNames.forEach(function(n){
-      var ws=wb.Sheets[n], lastc=baHeadCols(ws), hasP=false, hasD=false;
-      for(var c=1;c<=lastc;c++){
-        var h=CT(ws,1,c);
-        if(/^program name/i.test(h)) hasP=true;
-        if(/due date/i.test(h)) hasD=true;
-      }
-      if(hasP&&hasD) ok=true; else if(lastc) seen.push(n);
+      var h=baHeader(wb.Sheets[n]);
+      if(!h){ seen.push(n); return; }
+      for(var c=1;c<=h.lastc;c++) if(/due date/i.test(CT(wb.Sheets[n],h.row,c))) ok=true;
     });
     if(ok) return [];
-    return ['어느 시트에도 1행에 "Program Name" 과 "… Due Date" 가 함께 있지 않습니다'+
+    return ['"Program Name" 과 "… Due Date" 가 함께 있는 머리글 줄을 어느 시트에서도 찾지 못했습니다'+
             (seen.length? ' (본 시트: '+seen.join(', ')+')':'')];
   },
   parse:function(wb, fname){
-    var rows=[], warns=[], notes=[], nowIso=isoToday();
+    var rows=[], warns=[], notes=[], skipped=[], nowIso=isoToday(), greyTot=0;
     wb.SheetNames.forEach(function(sname){
-      var ws=wb.Sheets[sname], lastc=baHeadCols(ws), D=dims(ws), c, r;
-      if(!lastc) return;
+      var ws=wb.Sheets[sname], H=baHeader(ws), D=dims(ws), c, r;
+      if(!H){ skipped.push(sname); return; }
+      var hrow=H.row, lastc=H.lastc;
       var head=[], iP=-1;
       for(c=1;c<=lastc;c++){
-        head.push(CT(ws,1,c));
+        head.push(CT(ws,hrow,c));
         if(/^program name/i.test(head[c-1])) iP=c;
       }
-      if(iP<0){ warns.push('시트 "'+sname+'" 에 Program Name 열이 없어 건너뛰었습니다'); return; }
-      /* 실제 데이터 끝 (선언 범위에 빈 줄이 수백 개 붙어 있다) */
-      var lastr=1;
-      for(r=2;r<=D.rows;r++){
-        for(c=1;c<=lastc;c++){ if(CT(ws,r,c)){ lastr=r; break; } }
+      if(iP<0){ skipped.push(sname); return; }
+      /* 실제 데이터 끝. 선언 범위가 100만 행이라 반드시 위에서 끊는다 */
+      var lastr=hrow, cap=Math.min(D.rows, hrow+3000), blank=0;
+      for(r=hrow+1;r<=cap;r++){
+        var any=false;
+        for(c=1;c<=lastc;c++){ if(CT(ws,r,c)){ any=true; break; } }
+        if(any){ lastr=r; blank=0; }
+        else if(++blank>60) break;        /* 빈 줄이 60개 이어지면 끝으로 본다 */
+      }
+      /* 행 전체가 진한 회색 = 진행하지 않는 스타일 → 통째로 뺀다 */
+      var grey={};
+      for(r=hrow+1;r<=lastr;r++){
+        var n=0, gy=0;
+        for(c=1;c<=lastc;c++){
+          var f=CRGB(ws,r,c);
+          if(!f) continue;
+          n++; if(isGreyOut(f)) gy++;
+        }
+        if(n>=Math.max(3, lastc*0.5) && gy>=n*0.8) grey[r]=1;
       }
       /* 날짜 열 — 값의 절반 이상이 날짜로 풀리는 열 */
       var dcols=[];
       for(c=1;c<=lastc;c++){
-        var n=0, ok=0;
-        for(r=2;r<=lastr;r++){
+        if(!head[c-1]) continue;               /* 이름 없는 열은 이슈로 만들지 않는다 */
+        var nv=0, ok=0;
+        for(r=hrow+1;r<=lastr;r++){
+          if(grey[r]) continue;
           var x=CV(ws,r,c); if(x==null) continue;
-          n++; if(parseD(x)) ok++;
+          nv++; if(parseD(x)) ok++;
         }
-        if(n && ok/n>=0.5) dcols.push({c:c, l:baLabel(head[c-1])});
+        if(nv && ok/nv>=0.5) dcols.push({c:c, l:baLabel(head[c-1])});
       }
       if(!dcols.length){ warns.push('시트 "'+sname+'" 에 날짜 열이 없습니다'); return; }
       /* 참고로 붙일 열 */
@@ -766,9 +847,11 @@ var AD_BAGRID = {
           }
         }
       });
-      var made=0;
-      for(r=2;r<=lastr;r++){
-        var ti=CT(ws,r,iP);
+      var made=0, gcount=0;
+      for(r=hrow+1;r<=lastr;r++){
+        if(grey[r]){ if(CT(ws,r,iP)) gcount++; continue; }   /* 진행 안 하는 스타일 */
+        /* 프로그램 이름 안에 줄바꿈이 있다 ("… (Paradise)\r\nKNIT") — 한 줄로 눌러 둔다 */
+        var ti=CT(ws,r,iP).replace(/\s*\r?\n\s*/g,' ').replace(/\s{2,}/g,' ');
         if(!ti) continue;
         var ds=[];
         dcols.forEach(function(d){
@@ -786,8 +869,12 @@ var AD_BAGRID = {
                     d:ds, info:inf, f:fname, u:nowIso });
         made++;
       }
-      notes.push(sname+' '+made+'줄/날짜열 '+dcols.length+'개('+dcols.map(function(d){return d.l;}).join(', ')+')');
+      greyTot+=gcount;
+      notes.push(sname+' '+made+'줄'+(gcount? '(회색 아웃 '+gcount+'줄 제외)':'')+
+                 '/날짜열 '+dcols.length+'개('+dcols.map(function(d){return d.l;}).join(', ')+')');
     });
+    if(greyTot) warns.push('행 전체가 진한 회색인 '+greyTot+'줄은 "진행하지 않는 스타일" 로 보고 뺐습니다');
+    if(skipped.length) notes.push('건너뛴 시트: '+skipped.join(', ')+' (Program Name 머리글 없음)');
     return { rows:rows, warns:warns, note:notes.join('  ·  ') };
   }
 };
@@ -838,6 +925,15 @@ function events(){
   EVC = out; return out;
 }
 function bust(){ EVC=null; }
+/* 어댑터로 들어온 타입의 이름은 **어댑터가 정본**이다. 옛 스냅샷(seed.json)이나
+   예전 업로드에 박힌 이름을 따라가지 않는다 — 이름을 바꾸면 저절로 따라온다 */
+function syncTypeNames(){
+  ST.types.forEach(function(t){
+    if(!t.adapter) return;
+    var a=adById(t.adapter);
+    if(a && t.name!==a.name) t.name=a.name;
+  });
+}
 
 /* ══════════════ 탭 ══════════════ */
 var TABS=[['t-view','p-view'],['t-up','p-up'],['t-mg','p-mg']];
@@ -921,46 +1017,118 @@ function render(){
 
   drawCal(W, evs);
   drawList(W, evs);
+  $('#nlWin').textContent = W.w===7? '1주' : W.w===14? '2주' : '1개월';
   $('#live').textContent = evs.length+'건 · '+md(W.from)+'~'+md(W.to);
 
   function kpi(l,v,c){ return '<div class="kpi '+c+'"><span class="l">'+l+'</span><span class="v">'+v+'</span></div>'; }
 }
 function md(iso){ var a=iso.split('-'); return (+a[1])+'/'+(+a[2]); }
 
+/* 연속된 날을 하나의 막대로 묶는다 — 같은 타입·제목·이슈이름이 이어지면 한 덩어리.
+   연차가 "김영훈 2/19~2/20" 처럼 쭉 이어져 보이게 하는 것이 요점이다 */
+function makeSpans(evs){
+  var by={}, out=[];
+  evs.forEach(function(e){
+    var k=e.t.id+'\u0001'+e.row.ti+'\u0001'+e.label;
+    (by[k]=by[k]||[]).push(e);
+  });
+  Object.keys(by).forEach(function(k){
+    var list=by[k].slice().sort(function(a,b){ return a.date<b.date?-1:1; });
+    var cur=null;
+    list.forEach(function(e){
+      if(cur && cur.to===e.date) return;                      /* 같은 날 중복 */
+      if(cur && dayDiff(cur.to, e.date)===1){ cur.to=e.date; cur.n++; return; }
+      cur={t:e.t, ti:e.row.ti, label:e.label, from:e.date, to:e.date, n:1};
+      out.push(cur);
+    });
+  });
+  return out;
+}
 function drawCal(W, evs){
-  var by={};
-  evs.forEach(function(e){ (by[e.date]=by[e.date]||[]).push(e); });
+  var box=$('#cal'); box.innerHTML='';
+  var today=isoToday();
   var s=dOf(W.from); s.setDate(s.getDate() - s.getDay());             /* 일요일 시작 */
   var e2=dOf(W.to);  e2.setDate(e2.getDate() + (6 - e2.getDay()));
-  var box=$('#cal'); box.innerHTML='';
-  var g=el('div','calgrid');
+
+  var hd=el('div','calhead');
   ['일','월','화','수','목','금','토'].forEach(function(w,i){
-    var h=el('div','calhd'+(i===0?' sun':i===6?' sat':'')); h.textContent=w; g.appendChild(h);
+    var h=el('div','calhd'+(i===0?' sun':i===6?' sat':'')); h.textContent=w; hd.appendChild(h);
   });
-  var today=isoToday(), cur=new Date(s), guard=0;
-  while(cur<=e2 && guard++<400){
-    var iso=isoOf(cur), out=(iso<W.from||iso>W.to), list=by[iso]||[];
-    var c=el('button','cell'+(out?' out':'')+(iso===W.base?' base':'')+
-            (list.length?' has':'')+(!out&&iso<today?' past':''));
-    c.type='button';
-    var dow=cur.getDay();
-    var dn=el('div','dn'+(dow===0?' sun':dow===6?' sat':''));
-    dn.innerHTML=(cur.getDate()===1 || iso===W.from ? '<span class="mo">'+(cur.getMonth()+1)+'월</span> ':'')+cur.getDate();
-    c.appendChild(dn);
-    if(list.length){
-      var seen={}, dots=el('div','dots');
-      list.forEach(function(x){ if(seen[x.t.id]) return; seen[x.t.id]=1;
-        var i2=el('i'); i2.style.background=x.t.color; i2.title=x.t.name; dots.appendChild(i2); });
-      c.appendChild(dots);
-      var cn=el('div','cnt'); cn.textContent=list.length+'건'; c.appendChild(cn);
-      c.setAttribute('aria-label', iso+' 이슈 '+list.length+'건');
+  box.appendChild(hd);
+
+  var spans=makeSpans(evs), MAXLANE=4, cur=new Date(s), guard=0;
+  while(cur<=e2 && guard++<60){
+    var wkFrom=isoOf(cur);
+    var we=new Date(cur); we.setDate(we.getDate()+6);
+    var wkTo=isoOf(we);
+    var wk=el('div','wk'), i;
+
+    for(i=0;i<7;i++){
+      var d=new Date(cur); d.setDate(d.getDate()+i);
+      var iso=isoOf(d), out=(iso<W.from||iso>W.to);
+      var bg=el('button','daybg'+(out?' out':'')+(iso===W.base?' base':'')+(!out&&iso<today?' past':''));
+      bg.type='button';
+      bg.style.gridColumn=(i+1); bg.style.gridRow='1 / -1';
+      bg.setAttribute('aria-label', iso+(out?' (범위 밖)':''));
+      if(out) bg.disabled=true;
+      else bg.addEventListener('click', (function(x){ return function(){
+        var n=document.getElementById('day-'+x);
+        if(n) n.scrollIntoView({behavior:'smooth', block:'center'});
+      }; })(iso));
+      wk.appendChild(bg);
+      var dn=el('div','dnum'+(d.getDay()===0?' sun':d.getDay()===6?' sat':'')+(out?' out':''));
+      dn.style.gridColumn=(i+1); dn.style.gridRow='1';
+      dn.innerHTML=(d.getDate()===1||iso===W.from ? '<span class="mo">'+(d.getMonth()+1)+'월</span> ':'')+d.getDate();
+      wk.appendChild(dn);
     }
-    if(!out) c.addEventListener('click', (function(x){ return function(){
-      var n=document.getElementById('day-'+x); if(n) n.scrollIntoView({behavior:'smooth',block:'center'}); }; })(iso));
-    g.appendChild(c);
-    cur.setDate(cur.getDate()+1);
+
+    var mine=spans.filter(function(sp){ return sp.to>=wkFrom && sp.from<=wkTo; });
+    mine.sort(function(a,b){
+      if(a.from!==b.from) return a.from<b.from?-1:1;
+      var la=dayDiff(a.from,a.to), lb=dayDiff(b.from,b.to);
+      if(la!==lb) return lb-la;                                /* 긴 막대를 위 레인에 */
+      return a.t.name<b.t.name?-1:1;
+    });
+    var lanes=[], over={};
+    mine.forEach(function(sp){
+      var c1=Math.max(1, dayDiff(wkFrom, sp.from)+1);
+      var c2=Math.min(7, dayDiff(wkFrom, sp.to)+1);
+      var li=0;
+      while(li<lanes.length && lanes[li]>=c1) li++;
+      if(li>=MAXLANE){                                         /* 레인이 찼다 — 세어서 +N 으로 */
+        for(var cc=c1; cc<=c2; cc++) over[cc]=(over[cc]||0)+1;
+        return;
+      }
+      lanes[li]=c2;
+      var b=el('div','bar');
+      b.style.gridColumn=c1+' / span '+(c2-c1+1);
+      b.style.gridRow=(li+2);
+      b.style.background=sp.t.color;
+      b.textContent=(sp.from<wkFrom?'◀ ':'')+sp.ti+(sp.to>wkTo?' ▶':'');
+      b.title=sp.t.name+' · '+sp.label+' · '+sp.ti+
+              ' ('+md(sp.from)+(sp.from!==sp.to?' ~ '+md(sp.to):'')+')';
+      wk.appendChild(b);
+    });
+    Object.keys(over).forEach(function(cc){
+      var m=el('div','barmore');
+      m.style.gridColumn=cc; m.style.gridRow=(MAXLANE+2);
+      m.textContent='+'+over[cc];
+      m.title='이 날 '+over[cc]+'건이 더 있습니다 — 아래 목록에서 보세요';
+      wk.appendChild(m);
+    });
+    box.appendChild(wk);
+    cur.setDate(cur.getDate()+7);
   }
-  box.appendChild(g);
+
+  /* 색이 무엇인지 글자로 함께 둔다 (색만으로 의미를 전달하지 않는다) */
+  var lg=el('div','callgd');
+  ST.types.forEach(function(t){
+    if(OFF[t.id]) return;
+    var sp=el('span');
+    sp.innerHTML='<i style="background:'+t.color+'"></i>'+esc(t.name);
+    lg.appendChild(sp);
+  });
+  if(lg.childNodes.length) box.appendChild(lg);
 }
 
 function drawList(W, evs){
@@ -1051,9 +1219,58 @@ function dl(text, name, mime){
 ['#d','#w','#q','#sh'].forEach(function(s){
   $(s).addEventListener(s==='#q'?'input':'change', render);
 });
-$('#bToday').addEventListener('click', function(){ $('#d').value=isoToday(); render(); });
-$('#bPrev').addEventListener('click', function(){ var W=winOf(); $('#d').value=shift(W.base,-W.w); render(); });
-$('#bNext').addEventListener('click', function(){ var W=winOf(); $('#d').value=shift(W.base, W.w); render(); });
+function goDate(iso, msg){
+  $('#d').value=iso;
+  $('#navMsg').textContent=msg||'';
+  render();
+}
+function say(m){
+  $('#navMsg').textContent=m;
+  setTimeout(function(){ if($('#navMsg').textContent===m) $('#navMsg').textContent=''; }, 3500);
+}
+/* 이슈가 있는 가장 가까운 날로 건너뛴다 (타입 필터·검색은 그대로 적용) */
+function jumpEvent(dir){
+  var base=$('#d').value||isoToday();
+  var q=($('#q').value||'').trim().toLowerCase(), showDone=$('#sh').value==='1';
+  var best=null;
+  events().forEach(function(e){
+    if(OFF[e.t.id]) return;
+    if(!showDone && ST.done[e.id]) return;
+    if(q){
+      var hay=(e.row.ti+' '+(e.row.k||'')+' '+e.label+' '+e.t.name+' '+
+        (e.row.info||[]).map(function(x){ return x.l+' '+x.v; }).join(' ')).toLowerCase();
+      if(hay.indexOf(q)<0) return;
+    }
+    if(dir>0 && e.date>base && (!best || e.date<best)) best=e.date;
+    if(dir<0 && e.date<base && (!best || e.date>best)) best=e.date;
+  });
+  if(best){
+    var dd=dOf(best);
+    goDate(best, (dd.getMonth()+1)+'/'+dd.getDate()+' ('+WD[dd.getDay()]+') 로 이동');
+    setTimeout(function(){
+      var n=document.getElementById('day-'+best);
+      if(n) n.scrollIntoView({behavior:'smooth', block:'center'});
+    }, 60);
+  }else{
+    say(dir>0 ? '뒤쪽에 이슈가 더 없습니다' : '앞쪽에 이슈가 더 없습니다');
+  }
+}
+$('#bToday').addEventListener('click', function(){ goDate(isoToday(),''); });
+$('#bDayPrev').addEventListener('click', function(){ goDate(shift($('#d').value||isoToday(), -1), ''); });
+$('#bDayNext').addEventListener('click', function(){ goDate(shift($('#d').value||isoToday(),  1), ''); });
+$('#bEvPrev').addEventListener('click', function(){ jumpEvent(-1); });
+$('#bEvNext').addEventListener('click', function(){ jumpEvent( 1); });
+$('#bPrev').addEventListener('click', function(){ var W=winOf(); goDate(shift(W.base,-W.w),''); });
+$('#bNext').addEventListener('click', function(){ var W=winOf(); goDate(shift(W.base, W.w),''); });
+/* ← → 로도 하루씩 (입력칸에 커서가 있을 때는 건드리지 않는다) */
+document.addEventListener('keydown', function(ev){
+  if(ev.ctrlKey||ev.metaKey||ev.altKey) return;
+  var t=ev.target, tag=(t&&t.tagName)||'';
+  if(tag==='INPUT'||tag==='SELECT'||tag==='TEXTAREA'||(t&&t.isContentEditable)) return;
+  if($('#p-view').hidden) return;
+  if(ev.key==='ArrowLeft'){ ev.preventDefault(); goDate(shift($('#d').value||isoToday(),-1),''); }
+  else if(ev.key==='ArrowRight'){ ev.preventDefault(); goDate(shift($('#d').value||isoToday(),1),''); }
+});
 
 /* ══════════════════════════════════════════════════════════════════
    업로드
@@ -1605,6 +1822,7 @@ function loadSeed(){
        if(!o || !Array.isArray(o.rows) || !o.rows.length) return;
        if(ST.rows.length) return;      /* 그 사이 직접 올렸으면 건드리지 않는다 */
        ST.types=o.types||[]; ST.rows=o.rows; ST.done=o.done||{};
+       syncTypeNames();          /* 옛 스냅샷에 박힌 타입 이름을 지금 이름으로 */
        bust();
        var at=String(o.at||'').slice(0,10);
        var box=$('#seedBox');
@@ -1619,6 +1837,7 @@ function loadSeed(){
 
 /* ══════════════ 시작 ══════════════ */
 load();
+syncTypeNames();
 $('#noStore').hidden = STORE_OK;
 $('#d').value = isoToday();
 /* ?demo=1 — 아무것도 없을 때만 예시를 채운다. 실제 데이터는 절대 건드리지 않는다 */
