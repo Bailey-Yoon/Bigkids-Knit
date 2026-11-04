@@ -219,7 +219,14 @@ a:hover{color:var(--tool-deep)}
 
 /* ── 일정 목록 ── */
 .day{background:var(--card);border-radius:var(--r-lg);margin-bottom:10px;overflow:hidden}
-.day > .dh{display:flex;align-items:center;gap:10px;padding:11px 18px;background:var(--bg);flex-wrap:wrap}
+.day > .dh{display:flex;align-items:center;gap:10px;padding:11px 18px;background:var(--bg);
+  flex-wrap:wrap;width:100%;border:0;cursor:pointer;text-align:left;font:inherit;min-height:44px}
+.day > .dh:hover{background:var(--tool-tint)}
+.day.open > .dh{background:var(--bg)}
+.day.open.isbase > .dh{background:var(--tool-tint)}
+.day > .dh .car{font-size:11px;color:var(--muted);width:11px;flex:none}
+.day > .dh .ddots{display:inline-flex;gap:3px}
+.day > .dh .ddots i{width:8px;height:8px;border-radius:50%;display:block}
 .day > .dh .dd{font-size:14.5px;font-weight:700;font-variant-numeric:tabular-nums}
 .day > .dh .rel{font-size:11.5px;font-weight:700;color:#fff;background:var(--muted);
   padding:3px 8px;border-radius:var(--r-sm)}
@@ -512,6 +519,7 @@ var OFF = {};            /* 꺼둔 타입 id */
 var CAL_ALL=false;       /* 달력을 전부 펼칠지 */
 var CAL_MONTH='';        /* 달력이 보고 있는 달 'YYYY-MM' (목록의 기준 날짜와 별개) */
 var CAL_SPAN=3;          /* 한 번에 보여줄 달 수 (1 또는 3) */
+var DAY_OPEN={};         /* 아래 목록에서 펼쳐 둔 날 — 달력이 주인공이라 기본은 접어 둔다 */
 var CAL_OPEN={};         /* 그 주만 펼친 것 (주 시작 날짜) */
 var UP  = null;          /* 업로드 진행 상태 */
 
@@ -1208,6 +1216,7 @@ function drawBrief(){
   box.querySelectorAll('[data-go]').forEach(function(b){
     b.addEventListener('click', function(){
       var iso=b.getAttribute('data-go');
+      DAY_OPEN={}; DAY_OPEN[iso]=1;
       goDate(iso,'');
       setTimeout(function(){
         var n=document.getElementById('day-'+iso);
@@ -1477,6 +1486,7 @@ function drawCal(W){
     renderMonth(box, addMonth(CAL_MONTH,i), spans, {
       label: CAL_SPAN>1, base:W.base, winFrom:W.from, winTo:W.to, cap:4, more:true,
       onDay: function(iso){
+        DAY_OPEN={}; DAY_OPEN[iso]=1;     /* 누른 날만 펼친다 */
         goDate(iso,'');
         setTimeout(function(){
           var n=document.getElementById('day-'+iso);
@@ -1505,19 +1515,35 @@ function drawList(W, evs){
   evs.forEach(function(e){ if(!by[e.date]){ by[e.date]=[]; order.push(e.date); } by[e.date].push(e); });
   var today=isoToday();
   order.forEach(function(iso){
-    var d=el('div','day'+(iso===W.base?' isbase':'')); d.id='day-'+iso;
+    var open=!!DAY_OPEN[iso];
+    var d=el('div','day'+(iso===W.base?' isbase':'')+(open?' open':'')); d.id='day-'+iso;
     var diff=dayDiff(W.base, iso), relTxt, relCls='';
     if(iso===today){ relTxt='오늘'; relCls='today'; }
     else if(diff===0){ relTxt='기준일'; relCls='today'; }
     else if(diff<0){ relTxt='D+'+(-diff); relCls = iso<today ? 'past' : ''; }
     else { relTxt='D-'+diff; }
     var dd=dOf(iso);
-    var h=el('div','dh');
-    h.innerHTML='<span class="dd">'+(dd.getMonth()+1)+'/'+dd.getDate()+' ('+WD[dd.getDay()]+')</span>'+
+    var types={};
+    by[iso].forEach(function(e){ types[e.t.id]={c:e.t.color, n:(types[e.t.id]?types[e.t.id].n:0)+1}; });
+    var dots=typesInOrder().filter(function(t){ return types[t.id]; })
+      .map(function(t){ return '<i style="background:'+t.color+'"></i>'; }).join('');
+    /* 머리를 누르면 그 날만 펼친다 — 달력을 한눈에 보는 게 요점이라 기본은 접어 둔다 */
+    var h=el('button','dh');
+    h.type='button';
+    h.setAttribute('aria-expanded', open?'true':'false');
+    h.innerHTML='<span class="car">'+(open?'▾':'▸')+'</span>'+
+                '<span class="dd">'+(dd.getMonth()+1)+'/'+dd.getDate()+' ('+WD[dd.getDay()]+')</span>'+
                 '<span class="rel '+relCls+'">'+relTxt+'</span>'+
+                '<span class="ddots">'+dots+'</span>'+
                 '<span class="n">'+by[iso].length+'건</span>';
+    h.addEventListener('click', (function(x){ return function(){
+      if(DAY_OPEN[x]) delete DAY_OPEN[x]; else DAY_OPEN[x]=1;
+      drawList(winOf(), visible());
+      var n=document.getElementById('day-'+x);
+      if(n) n.scrollIntoView({behavior:'smooth', block:'nearest'});
+    }; })(iso));
     d.appendChild(h);
-    by[iso].forEach(function(e){ d.appendChild(evNode(e)); });
+    if(open) by[iso].forEach(function(e){ d.appendChild(evNode(e)); });
     box.appendChild(d);
   });
 }
@@ -1605,7 +1631,10 @@ function dl(text, name, mime){
 
 ['#d','#w','#q','#sh'].forEach(function(sel){
   $(sel).addEventListener(sel==='#q'?'input':'change', function(){
-    if(sel==='#d'){ CAL_MONTH=($('#d').value||isoToday()).slice(0,7); CAL_OPEN={}; }
+    if(sel==='#d'){
+      var v=$('#d').value||isoToday();
+      CAL_MONTH=v.slice(0,7); CAL_OPEN={}; DAY_OPEN={}; DAY_OPEN[v]=1;
+    }
     render();
   });
 });
@@ -2460,6 +2489,7 @@ histLoad();
 syncTypeNames();
 $('#noStore').hidden = STORE_OK;
 $('#d').value = isoToday();
+DAY_OPEN[isoToday()]=1;    /* 처음엔 오늘 하루만 펼쳐 둔다 */
 /* ?demo=1 — 아무것도 없을 때만 예시를 채운다. 실제 데이터는 절대 건드리지 않는다 */
 if(/[?&]demo=1\b/.test(location.search) && !ST.rows.length) putDemo(false);
 drawFilters(); render(); drawUsage();
