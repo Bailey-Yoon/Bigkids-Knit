@@ -101,6 +101,14 @@ select.sctl{max-width:270px}
   padding:28px;text-align:center;color:var(--muted);font-size:13px;box-shadow:var(--sh-1)}
 @media (max-width:640px){.sgrid{gap:10px}.sctl{min-width:0;width:100%}
   .sfield{flex:1 1 140px}.rthumb{width:56px;height:56px}}
+
+.imp{display:flex;flex-wrap:wrap;gap:4px;align-items:center;max-width:190px}
+.imp-n{font-size:11.5px;font-weight:800;color:var(--ink);margin-right:3px;white-space:nowrap}
+.sw{width:26px;height:26px;border-radius:50%;object-fit:cover;background:#fff;
+  border:1px solid var(--line);display:block}
+.swc{font-size:10px;color:var(--sub);background:#f4f3f8;border:1px solid var(--line);
+  border-radius:9px;padding:2px 7px;white-space:nowrap}
+.imp-na{color:var(--muted);font-size:12px}
 </style>
 </head>
 <body>
@@ -151,7 +159,7 @@ select.sctl{max-width:270px}
 <div class="note">
   기간은 <b>그 아이템이 카탈로그에 처음 올라온 날</b> 기준입니다. 가격은 현재가이고,
   이탈한 품목은 <b>마지막으로 확인된 가격</b>입니다.
-  소재·핏·원단은 상품 페이지에서 받아 둔 값만 고를 수 있어, 옛 회차에 이탈해
+  <b>Impression</b> 은 그 품목의 컬러웨이 수이고 스와치는 상품 페이지의 컬러 견본입니다. 견본이 없는 컬러는 이름만 칩으로 표시합니다. <b>컬러 정보는 지금 살아 있는 품목에만 있습니다</b> — 이탈한 품목은 상품 페이지가 사라져 받을 수 없어 &mdash; 로 둡니다.<br>소재·핏·원단은 상품 페이지에서 받아 둔 값만 고를 수 있어, 옛 회차에 이탈해
   상품 페이지가 사라진 품목은 그 칸이 비어 있습니다.<br>
   데이터는 회차마다 자동으로 갱신됩니다. 회차별 변동은 <a href="./">회차 목록</a>에서 보세요.
 </div>
@@ -172,6 +180,22 @@ select.sctl{max-width:270px}
     var k=st==='NEW'?'b-new':(st==='ACTIVE'?'b-act':'b-drop');
     return '<span class="sbadge '+k+'">'+esc(st||'-')+'</span>';
   }
+  function imp(r){
+    if(r.ncolor==null) return '<span class="imp-na">\u2014</span>';
+    var cols=r.colors||[];
+    var h='<div class="imp"><span class="imp-n">'+r.ncolor+'\uC0C9</span>';
+    if(!cols.length){ h+='<span class="swc">\uB2E8\uC77C \uCEEC\uB7EC\uC6E8\uC774</span>'; }
+    cols.forEach(function(c){
+      if(c.u){
+        var q=c.c?('?cropN='+encodeURIComponent(c.c)+'&wid=52&hei=52&fmt=jpeg')
+                 :('?wid=52&hei=52&fmt=jpeg');
+        h+='<img class="sw" loading="lazy" alt="'+esc(c.n)+'" title="'+esc(c.n)+'" src="'+IMG+esc(c.u)+q+'">';
+      } else {
+        h+='<span class="swc" title="'+esc(c.n)+'">'+esc(c.n)+'</span>';
+      }
+    });
+    return h+'</div>';
+  }
   function row(r){
     var img=r.uuid?'<img class="rthumb" loading="lazy" alt="" src="'+IMG+esc(r.uuid)+'?wid=144&hei=144&qlt=80&fmt=jpeg">':'';
     var meta=[r.material,r.fit,r.fabric].filter(Boolean).map(esc).join('<br>');
@@ -180,6 +204,7 @@ select.sctl{max-width:270px}
       '<td>'+esc(r.dpci)+badge(r.status)+'<div class="rwhen">'+esc(r.first)+' 등장</div></td>'+
       '<td><div class="rname">'+nm+'</div>'+
         '<a class="rlink" target="_blank" rel="noopener" href="https://www.target.com/p/-/A-'+esc(r.aid)+'">A-'+esc(r.aid)+'</a></td>'+
+      '<td>'+imp(r)+'</td>'+
       '<td class="rmeta">'+(meta||'\u2014')+'</td>'+
       '<td class="rprice">'+(esc(r.price)||'\u2014')+'</td></tr>';
   }
@@ -204,7 +229,7 @@ select.sctl{max-width:270px}
       :'조건을 고르고 검색을 누르세요. 전체 <b>'+DATA.length+'건</b>이 들어 있습니다.';
     if(!out.length){el('q-res').innerHTML='<div class="sempty">조건에 맞는 아이템이 없습니다.</div>';return}
     var h='<table class="rtable"><thead><tr><th>Photo</th><th>DPCI</th><th>Program / URL</th>'+
-          '<th>소재 / 핏 / 원단</th><th>가격</th></tr></thead><tbody>';
+          '<th>Impression</th><th>소재 / 핏 / 원단</th><th>가격</th></tr></thead><tbody>';
     out.forEach(function(r){h+=row(r)});
     el('q-res').innerHTML=h+'</tbody></table>';
   }
