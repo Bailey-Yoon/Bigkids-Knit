@@ -79,6 +79,8 @@ a:hover{color:var(--tool-deep)}
 .navgrp .btn:disabled{background:transparent;color:var(--faint);cursor:not-allowed}
 .navgrp .nl{font-size:12.5px;font-weight:700;color:var(--sub);padding:0 6px;white-space:nowrap}
 .navmsg{font-size:12.5px;color:var(--amber-deep);align-self:center}
+.calall{display:inline-flex;align-items:center;gap:7px;font-size:13px;color:var(--body);cursor:pointer}
+.calall input{width:17px;height:17px;cursor:pointer;accent-color:#0277bd}
 .btn.danger{background:var(--tcom)} .btn.danger:hover{background:var(--tcom-deep)}
 
 /* ── KPI ── */
@@ -88,6 +90,30 @@ a:hover{color:var(--tool-deep)}
 .kpi .v{font-size:26px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.25;display:block}
 .kpi.r .v{color:var(--neg)} .kpi.o .v{color:var(--amber-deep)} .kpi.g .v{color:var(--pos)}
 @media(max-width:640px){ .kpis{grid-template-columns:1fr 1fr;gap:8px} .kpi .v{font-size:22px} }
+
+/* ── 오늘 기준 앞뒤 2주 요약 ── */
+#alertBox:not(:empty){background:var(--card);border-radius:var(--r-lg);
+  padding:14px 16px;margin-bottom:18px;box-shadow:var(--sh-1)}
+.briefhd{font-size:12.5px;color:var(--sub);margin-bottom:8px;display:flex;
+  gap:10px;align-items:baseline;flex-wrap:wrap}
+.briefhd b{color:var(--ink)}
+.bhint{margin-left:auto;font-size:11.5px;color:var(--muted)}
+.briefbody{max-height:224px;overflow-y:auto;display:flex;flex-direction:column;gap:1px}
+.briefrow{display:flex;gap:8px;align-items:flex-start;padding:3px 0;border-top:1px solid var(--line)}
+.briefrow:first-child{border-top:0}
+.bd{flex:none;width:52px;font-size:11px;font-weight:700;color:#fff;background:var(--muted);
+  border:0;border-radius:var(--r-sm);padding:2px 0;cursor:pointer;font-variant-numeric:tabular-nums}
+.bd:hover{background:var(--ink)}
+.bd.past{background:var(--amber)} .bd.now{background:var(--tool)}
+.bdt{flex:none;width:38px;font-size:11.5px;color:var(--muted);padding-top:2px;
+  font-variant-numeric:tabular-nums}
+.bi{flex:1;min-width:0;display:flex;flex-wrap:wrap;gap:4px}
+.bchip{font-size:11.5px;color:var(--body);background:var(--bg);border-radius:var(--r-sm);
+  padding:2px 7px;display:inline-flex;align-items:center;gap:5px;max-width:100%}
+.bchip i{width:7px;height:7px;border-radius:50%;flex:none}
+.bchip em{font-style:normal;color:var(--muted);font-size:11px}
+.bchip.ok{opacity:.5;text-decoration:line-through}
+@media(max-width:640px){ .bd{width:46px} .bdt{display:none} }
 
 .insight{background:var(--amber-tint);border-radius:var(--r-lg);padding:15px 17px;
   display:flex;flex-direction:column;gap:7px}
@@ -130,8 +156,10 @@ a:hover{color:var(--tool-deep)}
 .bar{font-size:10.5px;font-weight:700;color:#fff;border-radius:3px;padding:2px 6px;margin:0 2px;
   line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
   z-index:2;pointer-events:none}
-.barmore{font-size:10px;font-weight:700;color:var(--muted);padding:1px 7px;
-  z-index:2;pointer-events:none;white-space:nowrap}
+.barmore{font-size:10.5px;font-weight:700;color:var(--tool-deep);background:var(--tool-tint);
+  border:0;border-radius:3px;padding:3px 7px;margin:1px 2px 0;z-index:2;cursor:pointer;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:left}
+.barmore:hover{background:var(--tool);color:#fff}
 .callgd{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px;font-size:11.5px;color:var(--sub)}
 .callgd span{display:inline-flex;align-items:center;gap:5px}
 .callgd i{width:16px;height:9px;border-radius:2px;display:block}
@@ -282,6 +310,7 @@ a:hover{color:var(--tool-deep)}
           <button class="btn" id="bNext" aria-label="다음 범위로">▶</button>
         </span>
         <button class="btn ghost sm" id="bCsv">보는 구간 CSV</button>
+        <label class="calall"><input type="checkbox" id="calAll"> 달력 전부 펼치기</label>
         <span class="navmsg" id="navMsg" role="status"></span>
       </div>
       <div class="chips" id="filters"></div>
@@ -410,6 +439,8 @@ var KEYISH = /(style|스타일|^po\b|p\/?o\s*no|오더|order|품번|품목번호
 /* ══════════════ 상태 ══════════════ */
 var ST = { types:[], rows:[], done:{}, seedAt:'', own:false };
 var OFF = {};            /* 꺼둔 타입 id */
+var CAL_ALL=false;       /* 달력을 전부 펼칠지 */
+var CAL_OPEN={};         /* 그 주만 펼친 것 (주 시작 날짜) */
 var UP  = null;          /* 업로드 진행 상태 */
 
 /* ══════════════ 유틸 ══════════════ */
@@ -1035,17 +1066,7 @@ function render(){
     kpi('기준일 이후', fut, '') +
     kpi('오늘 지났고 미확인', late, late?'r':'');
 
-  /* 지남 경고 */
-  var ab=$('#alertBox'); ab.innerHTML='';
-  if(late){
-    var names = evs.filter(function(e){ return e.date<today && !ST.done[e.id]; })
-                   .slice(0,4).map(function(e){ return e.row.ti+' ('+e.label+' '+md(e.date)+')'; });
-    var d=el('div','insight');
-    d.innerHTML = '<b class="h">지난 날짜인데 확인 표시가 없는 이슈 '+late+'건</b>'+
-      '<div class="body">'+esc(names.join(' · '))+(late>4?' 외 '+(late-4)+'건':'')+
-      '<br>처리했으면 목록에서 체크해 두세요. 체크는 이 브라우저에만 남습니다.</div>';
-    ab.appendChild(d);
-  }
+  drawBrief();
 
   drawCal(W, evs);
   drawList(W, evs);
@@ -1055,6 +1076,58 @@ function render(){
   function kpi(l,v,c){ return '<div class="kpi '+c+'"><span class="l">'+l+'</span><span class="v">'+v+'</span></div>'; }
 }
 function md(iso){ var a=iso.split('-'); return (+a[1])+'/'+(+a[2]); }
+function dLabel(diff){ return diff===0? 'D-DAY' : (diff<0? 'D'+diff : 'D+'+diff); }
+
+/* 오늘 기준 앞뒤 2주 요약 — 기준 날짜를 어디로 옮겨 놓았든 **항상 오늘**을 본다.
+   (예전에는 "지난 날짜인데 확인 없는 이슈" 경고를 띄웠는데, 늘 떠 있어서 읽히지 않았다) */
+function drawBrief(){
+  var box=$('#alertBox'); box.innerHTML='';
+  var today=isoToday(), from=shift(today,-14), to=shift(today,14);
+  var q=($('#q').value||'').trim().toLowerCase(), showDone=$('#sh').value==='1';
+  /* Due Date Grid 만 — 연차·Target Calendar 까지 넣으면 너무 길어 읽히지 않는다
+     (사용자 지정 2026-11-04) */
+  var evs=events().filter(function(e){
+    if(e.t.adapter!=='ba') return false;
+    if(e.date<from || e.date>to) return false;
+    if(OFF[e.t.id]) return false;
+    if(!showDone && ST.done[e.id]) return false;
+    if(q){
+      var hay=(e.row.ti+' '+(e.row.k||'')+' '+e.label+' '+e.t.name+' '+
+        (e.row.info||[]).map(function(x){ return x.l+' '+x.v; }).join(' ')).toLowerCase();
+      if(hay.indexOf(q)<0) return false;
+    }
+    return true;
+  });
+  if(!evs.length) return;
+  var by={}, order=[];
+  evs.forEach(function(e){ if(!by[e.date]){ by[e.date]=[]; order.push(e.date); } by[e.date].push(e); });
+  order.sort();
+  var td=dOf(today);
+  var h='<div class="briefhd"><b>Due Date Grid</b> · 오늘 <b>'+md(today)+' ('+WD[td.getDay()]+')</b> 기준 앞뒤 2주 · '+evs.length+'건'+
+        '<span class="bhint">날짜를 누르면 그 날로 갑니다</span></div><div class="briefbody">';
+  order.forEach(function(iso){
+    var diff=dayDiff(today, iso);
+    h+='<div class="briefrow">'+
+       '<button class="bd'+(diff<0?' past':diff===0?' now':'')+'" data-go="'+iso+'">'+dLabel(diff)+'</button>'+
+       '<span class="bdt">'+md(iso)+'</span>'+
+       '<span class="bi">'+by[iso].map(function(e){
+          return '<span class="bchip'+(ST.done[e.id]?' ok':'')+'" title="'+esc(e.t.name+' · '+e.label)+'">'+
+                 '<i style="background:'+e.t.color+'"></i>'+esc(e.row.ti)+
+                 ' <em>'+esc(e.label)+'</em></span>';
+       }).join('')+'</span></div>';
+  });
+  box.innerHTML=h+'</div>';
+  box.querySelectorAll('[data-go]').forEach(function(b){
+    b.addEventListener('click', function(){
+      var iso=b.getAttribute('data-go');
+      goDate(iso,'');
+      setTimeout(function(){
+        var n=document.getElementById('day-'+iso);
+        if(n) n.scrollIntoView({behavior:'smooth', block:'center'});
+      }, 60);
+    });
+  });
+}
 
 /* 연속된 날을 하나의 막대로 묶는다 — 같은 타입·제목·이슈이름이 이어지면 한 덩어리.
    연차가 "김영훈 2/19~2/20" 처럼 쭉 이어져 보이게 하는 것이 요점이다 */
@@ -1088,11 +1161,13 @@ function drawCal(W, evs){
   });
   box.appendChild(hd);
 
-  var spans=makeSpans(evs), MAXLANE=4, cur=new Date(s), guard=0;
+  var spans=makeSpans(evs), cur=new Date(s), guard=0;
   while(cur<=e2 && guard++<60){
     var wkFrom=isoOf(cur);
     var we=new Date(cur); we.setDate(we.getDate()+6);
     var wkTo=isoOf(we);
+    /* 넘치면 숨기는 대신 그 주를 펼칠 수 있게 한다 (사용자 요청 2026-11-04) */
+    var MAXLANE=(CAL_ALL||CAL_OPEN[wkFrom])? 99 : 4;
     var wk=el('div','wk'), i;
 
     for(i=0;i<7;i++){
@@ -1141,13 +1216,27 @@ function drawCal(W, evs){
               ' ('+md(sp.from)+(sp.from!==sp.to?' ~ '+md(sp.to):'')+')';
       wk.appendChild(b);
     });
-    Object.keys(over).forEach(function(cc){
-      var m=el('div','barmore');
-      m.style.gridColumn=cc; m.style.gridRow=(MAXLANE+2);
-      m.textContent='+'+over[cc];
-      m.title='이 날 '+over[cc]+'건이 더 있습니다 — 아래 목록에서 보세요';
+    var overMax=0;
+    Object.keys(over).forEach(function(cc){ if(over[cc]>overMax) overMax=over[cc]; });
+    if(overMax){
+      var m=el('button','barmore');
+      m.type='button';
+      m.style.gridColumn='1 / span 7'; m.style.gridRow=(MAXLANE+2);
+      m.textContent='+ 이 주에 '+overMax+'건 더 — 눌러서 펼치기';
+      m.addEventListener('click', (function(x){ return function(ev){
+        ev.stopPropagation(); CAL_OPEN[x]=1; render();
+      }; })(wkFrom));
       wk.appendChild(m);
-    });
+    }else if(CAL_OPEN[wkFrom] && !CAL_ALL){
+      var m2=el('button','barmore');
+      m2.type='button';
+      m2.style.gridColumn='1 / span 7'; m2.style.gridRow=(lanes.length+2);
+      m2.textContent='− 접기';
+      m2.addEventListener('click', (function(x){ return function(ev){
+        ev.stopPropagation(); delete CAL_OPEN[x]; render();
+      }; })(wkFrom));
+      wk.appendChild(m2);
+    }
     box.appendChild(wk);
     cur.setDate(cur.getDate()+7);
   }
@@ -1287,6 +1376,9 @@ function jumpEvent(dir){
     say(dir>0 ? '뒤쪽에 이슈가 더 없습니다' : '앞쪽에 이슈가 더 없습니다');
   }
 }
+$('#calAll').addEventListener('change', function(){
+  CAL_ALL=$('#calAll').checked; CAL_OPEN={}; render();
+});
 $('#bToday').addEventListener('click', function(){ goDate(isoToday(),''); });
 $('#bDayPrev').addEventListener('click', function(){ goDate(shift($('#d').value||isoToday(), -1), ''); });
 $('#bDayNext').addEventListener('click', function(){ goDate(shift($('#d').value||isoToday(),  1), ''); });
