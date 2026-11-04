@@ -777,9 +777,26 @@ function baLabel(h){
   s=s.trim();
   return s || String(h).slice(0,24);
 }
+/* Due Date Grid 에서 **이슈로 만들지 않는 날짜 열** (사용자 지정 2026-11-04).
+   내부 진행용이라 일정판에 띄울 필요가 없다. 되살리려면 여기서 빼면 된다.
+   baLabel() 로 줄인 이름과 **소문자·공백 정리 후 정확히 같을 때만** 숨긴다 —
+   부분 일치로 하면 "Items sent to IDS" 가 "IDS" 규칙에 같이 걸려 버린다 */
+var BA_HIDE = [
+  'merchant assortment details complete apex',
+  'sourcing picks impressions apex',
+  'design sample ready date',
+  'items sent to ids',
+  'vendor launchpad / imn complete',
+  'ids'
+];
+function baHidden(label){
+  var k=String(label).toLowerCase().replace(/\s+/g,' ').trim();
+  for(var i=0;i<BA_HIDE.length;i++) if(k===BA_HIDE[i]) return true;
+  return false;
+}
 var AD_BAGRID = {
-  id:'ba', name:'Due Date Grid', color:'#5e35b1', replaceAll:true,
-  about:'부서 시트마다 <b>한 줄 = 한 프로그램</b>. 날짜 열(PCMS/BA · CMS · PO Due 등)마다 이슈를 만듭니다. 안정적인 키가 없는 양식이라 <b>올릴 때마다 전체를 교체</b>합니다.',
+  id:'ba', name:'Due Date Grid', color:'#5e35b1', scoped:true,
+  about:'부서 시트마다 <b>한 줄 = 한 프로그램</b>. 날짜 열(PCMS/BA · CMS · PO Due 등)마다 이슈를 만듭니다. 안정적인 키가 없는 양식이라 <b>그 파일이 담은 회차(C2·C3…)를 통째로 갈아 끼웁니다</b> — 다른 회차는 그대로 남습니다.',
   detect:function(wb){
     var ok=false, seen=[];
     wb.SheetNames.forEach(function(n){
@@ -793,14 +810,17 @@ var AD_BAGRID = {
   },
   parse:function(wb, fname){
     var rows=[], warns=[], notes=[], skipped=[], nowIso=isoToday(), greyTot=0;
+    /* 교체 단위 = 연도(파일명) + Cycle. C2'27 파일을 올려도 C3'27 은 그대로 남는다 */
+    var yr=(fname.match(/(20\d\d)/)||[])[1]||'';
     wb.SheetNames.forEach(function(sname){
       var ws=wb.Sheets[sname], H=baHeader(ws), D=dims(ws), c, r;
       if(!H){ skipped.push(sname); return; }
       var hrow=H.row, lastc=H.lastc;
-      var head=[], iP=-1;
+      var head=[], iP=-1, iC=-1;
       for(c=1;c<=lastc;c++){
         head.push(CT(ws,hrow,c));
         if(/^program name/i.test(head[c-1])) iP=c;
+        if(/^cycle$/i.test(head[c-1])) iC=c;
       }
       if(iP<0){ skipped.push(sname); return; }
       /* 실제 데이터 끝. 선언 범위가 100만 행이라 반드시 위에서 끊는다 */
@@ -823,9 +843,10 @@ var AD_BAGRID = {
         if(n>=Math.max(3, lastc*0.5) && gy>=n*0.8) grey[r]=1;
       }
       /* 날짜 열 — 값의 절반 이상이 날짜로 풀리는 열 */
-      var dcols=[];
+      var dcols=[], hid=[];
       for(c=1;c<=lastc;c++){
         if(!head[c-1]) continue;               /* 이름 없는 열은 이슈로 만들지 않는다 */
+        if(baHidden(baLabel(head[c-1]))){ hid.push(baLabel(head[c-1])); continue; }
         var nv=0, ok=0;
         for(r=hrow+1;r<=lastr;r++){
           if(grey[r]) continue;
@@ -865,13 +886,15 @@ var AD_BAGRID = {
           if(v && v!=='N/A') inf.push({l:ii.l, v:v.length>70? v.slice(0,70)+'…' : v});
         });
         inf.unshift({l:'시트', v:sname});
-        rows.push({ id:uid(), t:null, k:sname+'|'+r, ti:ti,
+        var cyc=(iC>0? CT(ws,r,iC) : '') || '(회차없음)';
+        rows.push({ id:uid(), t:null, k:sname+'|'+r+'|'+cyc, ti:ti, sc:yr+' '+cyc,
                     d:ds, info:inf, f:fname, u:nowIso });
         made++;
       }
       greyTot+=gcount;
       notes.push(sname+' '+made+'줄'+(gcount? '(회색 아웃 '+gcount+'줄 제외)':'')+
-                 '/날짜열 '+dcols.length+'개('+dcols.map(function(d){return d.l;}).join(', ')+')');
+                 '/날짜열 '+dcols.length+'개('+dcols.map(function(d){return d.l;}).join(', ')+')'+
+                 (hid.length? ' · 뺀 열 '+hid.length+'개('+hid.join(', ')+')' : ''));
     });
     if(greyTot) warns.push('행 전체가 진한 회색인 '+greyTot+'줄은 "진행하지 않는 스타일" 로 보고 뺐습니다');
     if(skipped.length) notes.push('건너뛴 시트: '+skipped.join(', ')+' (Program Name 머리글 없음)');
@@ -978,8 +1001,10 @@ function drawFilters(){
     var b = el('button','chip');
     b.type='button';
     b.setAttribute('aria-pressed', OFF[t.id]?'false':'true');
-    b.innerHTML = '<span class="dot" style="background:'+t.color+'"></span>'+esc(t.name)+
-                  ' <span style="color:#6e6d77;font-weight:400">'+n+'</span>';
+    /* 건수는 화면에 띄우지 않는다 (사용자 요청 2026-11-04) — 읽는 데 방해가 된다.
+       대신 마우스를 올리면 보이고, 스크린리더에도 읽힌다 */
+    b.title = t.name+' '+n+'건 · 눌러서 켜고 끄기';
+    b.innerHTML = '<span class="dot" style="background:'+t.color+'"></span>'+esc(t.name);
     b.addEventListener('click', function(){
       if(OFF[t.id]) delete OFF[t.id]; else OFF[t.id]=1;
       drawFilters(); render();
@@ -1378,19 +1403,24 @@ function showAdapter(ad, wb, f){
        (res.warns.length>12? '<br>… 외 '+(res.warns.length-12)+'건':'')+
        '<br><br>이 건들도 <b>함께 들어갑니다</b>. 버리지 않고 알려 드리는 것이니, 원본을 고칠 일이 있는지만 봐 주세요.</div></div>';
   }
-  if(ad.replaceAll){
-    var now=0, nowEv=0;
+  if(ad.scoped || ad.replaceAll){
+    var mineRows=[];
     ST.types.forEach(function(t){
       if(t.adapter!==ad.id) return;
-      ST.rows.forEach(function(r){ if(r.t===t.id){ now++; nowEv+=r.d.length; } });
+      ST.rows.forEach(function(r){ if(r.t===t.id) mineRows.push(r); });
     });
-    h+='<div class="warn" style="margin-top:12px"><b>이 종류는 올릴 때마다 전체를 교체합니다.</b><br>'+
+    var scIn={}; res.rows.forEach(function(r){ scIn[r.sc||'']=1; });
+    var scList=Object.keys(scIn).sort();
+    var hit=mineRows.filter(function(r){ return scIn[r.sc||'']; }).length;
+    var other={};
+    mineRows.forEach(function(r){ if(!scIn[r.sc||'']) other[r.sc||'(회차없음)']=(other[r.sc||'(회차없음)']||0)+1; });
+    var otherTxt=Object.keys(other).sort().map(function(k){ return k+' '+other[k]+'줄'; }).join(' · ');
+    h+='<div class="warn" style="margin-top:12px"><b>이 파일이 담은 회차를 통째로 갈아 끼웁니다.</b><br>'+
        '같은 프로그램이 날짜만 달리해 여러 줄 있는 양식이라 줄을 알아볼 키가 없습니다. '+
        '키로 합치면 서로 다른 줄이 뭉개지거나 회차마다 중복이 쌓입니다.<br><br>'+
-       '지금 들어 있는 <b>'+now+'줄('+nowEv+'이슈)</b>을 지우고 이 파일의 <b>'+res.rows.length+'줄('+ev+'이슈)</b>로 바꿉니다.'+
-       (now && res.rows.length < now*0.6
-         ? '<br><br><b>⚠ 줄 수가 크게 줄어듭니다.</b> 다른 시즌·다른 해 파일을 올리는 중이라면 기존 것이 사라집니다. 맞는 파일인지 확인해 주세요.'
-         : '')+
+       '이 파일의 회차: <b>'+esc(scList.join(' · ')||'(없음)')+'</b><br>'+
+       '그 회차의 기존 <b>'+hit+'줄</b>을 지우고 이 파일의 <b>'+res.rows.length+'줄('+ev+'이슈)</b>로 바꿉니다.'+
+       (otherTxt? '<br>건드리지 않는 다른 회차: '+esc(otherTxt) : '')+
        '</div>';
   }
   if(!res.rows.length){
@@ -1406,14 +1436,25 @@ function showAdapter(ad, wb, f){
 /* 키 기준 갈아 끼우기 — 직접 열 지정 경로와 같은 규칙.
    replaceAll 이면 그 타입의 기존 줄을 전부 버리고 새 파일로 바꾼다
    (BA grid 처럼 안정적인 키가 없고 매번 전체가 다시 오는 양식) */
-function commitRows(t, newRows, fname, replaceAll){
+function commitRows(t, newRows, fname, mode){
   var mine=ST.rows.filter(function(x){ return x.t===t.id; });
-  var stat={add:0, upd:0, keep:0, removed:0}, incoming={}, had={}, i;
+  var stat={add:0, upd:0, keep:0, removed:0, scopes:[]}, incoming={}, had={}, i;
   newRows.forEach(function(x){ x.t=t.id; });
-  if(replaceAll){
+  if(mode==='all'){
     stat.removed=mine.length;
     stat.add=newRows.length;
     ST.rows=ST.rows.filter(function(x){ return x.t!==t.id; }).concat(newRows);
+    return stat;
+  }
+  if(mode==='scope'){
+    /* 이 파일이 담은 회차만 갈아 끼운다. 다른 회차는 손대지 않는다 */
+    var sc={};
+    newRows.forEach(function(x){ sc[x.sc||'']=1; });
+    stat.scopes=Object.keys(sc).sort();
+    stat.removed=mine.filter(function(x){ return sc[x.sc||'']; }).length;
+    stat.add=newRows.length;
+    stat.keep=mine.length-stat.removed;
+    ST.rows=ST.rows.filter(function(x){ return x.t!==t.id || !sc[x.sc||'']; }).concat(newRows);
     return stat;
   }
   newRows.forEach(function(x){ incoming[x.k]=1; });
@@ -1611,13 +1652,17 @@ $('#bAdIngest').addEventListener('click', function(){
   t.name=ad.name;
   t.map={ title:'(어댑터)', key:'(어댑터)', dates:[], info:[] };
   t.sig='__adapter__'+ad.id;
-  var stat=commitRows(t, res.rows, UPA.file.name, ad.replaceAll);
+  var stat=commitRows(t, res.rows, UPA.file.name,
+                      ad.scoped? 'scope' : (ad.replaceAll? 'all' : 'key'));
   bust(); save();
   var ev=0; res.rows.forEach(function(r){ ev+=r.d.length; });
   $('#adResult').innerHTML =
     '<div class="insight"><b class="h">'+esc(t.name)+' — 들어갔습니다</b><div class="body">'+
     '읽은 줄 <b>'+res.rows.length+'</b>개 → 이슈 <b>'+ev+'</b>개 · '+
-    (ad.replaceAll
+    (ad.scoped
+      ? ('회차 <b>'+esc(stat.scopes.join(' · '))+'</b> 의 기존 <b>'+stat.removed+'</b>줄을 <b>'+stat.add+
+         '</b>줄로 교체 · 다른 회차 <b>'+stat.keep+'</b>줄은 그대로')
+      : ad.replaceAll
       ? ('기존 <b>'+stat.removed+'</b>줄을 지우고 <b>'+stat.add+'</b>줄로 전체 교체')
       : ('신규 <b>'+stat.add+'</b> · 갱신 <b>'+stat.upd+'</b> · 그대로 둔 기존 줄 <b>'+stat.keep+'</b>'))+
     (res.warns.length? '<br>확인할 것 <b>'+res.warns.length+'</b>건은 위에 적어 두었습니다.':'')+
