@@ -219,8 +219,11 @@ a:hover{color:var(--tool-deep)}
 
 /* ── 일정 목록 ── */
 .day{background:var(--card);border-radius:var(--r-lg);margin-bottom:10px;overflow:hidden}
+/* ⚠ button 은 브라우저 기본 글자색(buttontext)을 쓴다. font:inherit 은 색을 안 옮기므로
+   color 를 꼭 같이 줄 것 — 안 주면 날짜가 흐리게 나온다 (2026-11-04) */
 .day > .dh{display:flex;align-items:center;gap:10px;padding:11px 18px;background:var(--bg);
-  flex-wrap:wrap;width:100%;border:0;cursor:pointer;text-align:left;font:inherit;min-height:44px}
+  flex-wrap:wrap;width:100%;border:0;cursor:pointer;text-align:left;font:inherit;
+  color:var(--ink);min-height:44px}
 .day > .dh:hover{background:var(--tool-tint)}
 .day.open > .dh{background:var(--bg)}
 .day.open.isbase > .dh{background:var(--tool-tint)}
