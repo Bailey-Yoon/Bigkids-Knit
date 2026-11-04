@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>D76 · 카탈로그 검색</title>
+<link rel="icon" href="/Bigkids-Knit/favicon.svg">
+<style>
+/* 토큰 정본: _shared/d76_design.css */
+:root{--tcom:#CC0000;--tcom-tint:#fdf3f3;--tcom-deep:#8f0000;--tool:#0277bd;
+  --ink:#1d1c22;--body:#4a4954;--sub:#6a6a72;--muted:#6e6d77;
+  --bg:#f3f2f6;--card:#fff;--bar:#1b1b22;--line:#e7e5ee;
+  --r-sm:8px;--r-md:10px;--r-lg:14px;--r-xl:16px;
+  --sh-1:0 1px 2px rgba(20,18,30,.06);--sh-2:0 8px 22px rgba(20,18,30,.11)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,"Segoe UI","Apple SD Gothic Neo","Noto Sans KR",sans-serif;
+  background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased}
+:focus-visible{outline:2px solid var(--tool);outline-offset:2px;border-radius:var(--r-sm)}
+
+.topbar{position:sticky;top:0;z-index:100;background:var(--bar);color:#fff;
+  font-size:13px;padding:11px 20px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.topbar a{color:#fff;text-decoration:none}
+.topbar .brand{font-weight:700}
+.topbar .sep{opacity:.3}
+.topbar .here{color:#ffb3b3}
+@media(max-width:640px){ .topbar{font-size:12px;padding:10px 14px} }
+.fab{position:fixed;right:18px;bottom:18px;z-index:99;width:52px;height:52px;border-radius:50%;
+  background:var(--bar);color:#fff;display:flex;align-items:center;justify-content:center;
+  font-size:20px;text-decoration:none;box-shadow:var(--sh-2)}
+
+.wrap{max-width:900px;margin:0 auto;padding:26px 20px 56px}
+.hero{background:var(--tcom-tint);border-radius:var(--r-xl);padding:22px 24px;margin-bottom:20px}
+.hero .eyebrow{font-size:11px;letter-spacing:.16em;font-weight:700;color:var(--tcom-deep)}
+.hero h1{font-size:26px;line-height:1.25;letter-spacing:-.01em;margin:6px 0;color:var(--ink)}
+.hero .meta{font-size:13px;color:var(--sub);line-height:1.6}
+
+h2{font-size:16px;font-weight:700;color:var(--ink);margin:26px 2px 12px}
+
+/* 4a — 최신 한 장만 큰 타일, 지난 회차는 축약 타일 */
+.round{display:flex;flex-direction:column;gap:12px;background:var(--card);border-radius:var(--r-lg);
+  padding:20px 22px;margin-bottom:12px;color:var(--ink);text-decoration:none;
+  box-shadow:var(--sh-1);transition:box-shadow .14s,transform .14s}
+.round:hover{box-shadow:var(--sh-2);transform:translateY(-2px);color:var(--ink)}
+.round .head{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.round .t{font-size:19px;font-weight:700;letter-spacing:-.01em}
+.round .latest{font-size:11px;font-weight:700;color:#fff;background:var(--tcom);
+  padding:4px 9px;border-radius:var(--r-sm);white-space:nowrap}
+.round .d{font-size:13px;color:var(--sub);line-height:1.6}
+.round .foot{display:flex;gap:20px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:12px}
+.round .foot b{font-size:19px;font-variant-numeric:tabular-nums;display:block}
+.round .foot .dn b{color:var(--tcom)}
+.round .foot span{font-size:11.5px;color:var(--sub);display:block}
+.round.past{flex-direction:row;align-items:center;gap:14px;padding:16px 22px}
+.round.past .t{font-size:16px}
+.round .when{margin-left:auto;font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+
+.note{font-size:12px;color:var(--muted);margin-top:22px;line-height:1.7}
+@media(max-width:640px){
+  .hero{padding:18px 18px} .hero h1{font-size:22px}
+  .round{padding:18px} .round .foot{gap:14px}
+}
+
+/* ── 카탈로그 검색 ───────────────────────────────────────────── */
+.wrap.wide{max-width:1120px}
+.sbox{background:var(--card);border:1px solid var(--line);border-radius:var(--r-lg);
+  box-shadow:var(--sh-1);padding:16px 18px;margin-bottom:16px}
+.sgrid{display:flex;flex-wrap:wrap;gap:12px 18px;align-items:flex-end}
+.sfield{display:flex;flex-direction:column;gap:5px}
+.sfield>span{font-size:11.5px;font-weight:700;letter-spacing:.04em;color:var(--sub)}
+.sinline{display:flex;align-items:center;gap:6px}
+.sctl{font:inherit;font-size:13px;color:var(--ink);background:#fff;
+  border:1px solid var(--line);border-radius:var(--r-sm);padding:7px 9px;min-width:92px}
+.sctl:focus-visible{outline:2px solid var(--tcom);outline-offset:1px}
+select.sctl{max-width:270px}
+.snum{min-width:84px}
+.sdash{color:var(--muted);font-size:13px}
+.sbtn{font:inherit;font-size:13px;font-weight:700;color:#fff;background:var(--tcom);
+  border:1px solid var(--tcom);border-radius:var(--r-sm);padding:8px 16px;cursor:pointer}
+.sbtn.alt{color:var(--body);background:#fff;border-color:var(--line);font-weight:600}
+.sbtn:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.scount{font-size:12.5px;color:var(--muted);line-height:1.7;margin-top:10px}
+.scount b{color:var(--ink)}
+.rtable{border-collapse:collapse;width:100%;font-size:12.5px;background:var(--card);
+  border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--sh-1)}
+.rtable th{background:#faf9fc;font-size:11.5px;color:var(--sub);text-align:left;
+  padding:9px 10px;font-weight:700}
+.rtable td{padding:9px 10px;border-top:1px solid var(--line);vertical-align:middle;color:var(--body)}
+.rthumb{width:72px;height:72px;object-fit:contain;background:#fff;border-radius:var(--r-sm);display:block}
+.rname{color:var(--ink);font-weight:600;line-height:1.5}
+.rlink{color:#0563C1;text-decoration:none}
+.rlink:hover{text-decoration:underline}
+.rmeta{color:var(--muted);line-height:1.6}
+.rprice{font-weight:700;color:var(--ink);white-space:nowrap}
+.rwhen{color:var(--muted);font-size:11.5px;white-space:nowrap}
+.sbadge{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.04em;
+  border-radius:5px;padding:2px 6px;margin-left:6px;vertical-align:middle}
+.sbadge.b-new{background:var(--tcom-tint);color:var(--tcom-deep)}
+.sbadge.b-act{background:#eef6ee;color:#1f6b2e}
+.sbadge.b-drop{background:#f1f0f5;color:var(--sub)}
+.sempty{background:var(--card);border:1px solid var(--line);border-radius:var(--r-lg);
+  padding:28px;text-align:center;color:var(--muted);font-size:13px;box-shadow:var(--sh-1)}
+@media (max-width:640px){.sgrid{gap:10px}.sctl{min-width:0;width:100%}
+  .sfield{flex:1 1 140px}.rthumb{width:56px;height:56px}}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <a class="brand" href="/Bigkids-Knit/">📊 Big Kids Hub</a>
+  <span class="sep">|</span>
+  <a href="./">🛒 T.COM 트래킹</a>
+<span class="sep">|</span><a class="here" href="search.html">🔎 카탈로그 검색</a></div>
+<a class="fab" href="/Bigkids-Knit/" title="Big Kids Hub">📊</a>
+<div class="wrap wide">
+
+<div class="hero">
+  <div class="eyebrow">TCOM · 카탈로그 검색</div>
+  <h1>🔎 D76 카탈로그 검색</h1>
+  <div class="meta">Target.com Cat &amp; Jack · Boys 076 · 2026-04-23 이후 등장한 전 품목에서 찾습니다</div>
+</div>
+
+<div class="sbox">
+  <div class="sgrid">
+    <label class="sfield"><span>신규 등장 기간</span>
+      <span class="sinline">
+        <input class="sctl" type="date" id="q-d1" aria-label="시작일">
+        <span class="sdash">~</span>
+        <input class="sctl" type="date" id="q-d2" aria-label="종료일">
+      </span>
+    </label>
+    <label class="sfield"><span>가격 (USD)</span>
+      <span class="sinline">
+        <input class="sctl snum" type="number" id="q-p1" placeholder="최소" min="0" step="0.01">
+        <span class="sdash">~</span>
+        <input class="sctl snum" type="number" id="q-p2" placeholder="최대" min="0" step="0.01">
+      </span>
+    </label>
+    <label class="sfield"><span>소재</span><select class="sctl" id="q-mat"></select></label>
+    <label class="sfield"><span>핏</span><select class="sctl" id="q-fit"></select></label>
+    <label class="sfield"><span>원단</span><select class="sctl" id="q-fab"></select></label>
+    <label class="sfield"><span>상태</span><select class="sctl" id="q-st"></select></label>
+    <span class="sinline">
+      <button class="sbtn" type="button" id="q-go">검색</button>
+      <button class="sbtn alt" type="button" id="q-rs">초기화</button>
+    </span>
+  </div>
+  <div class="scount" id="q-cnt">카탈로그를 불러오는 중…</div>
+</div>
+
+<div id="q-res"></div>
+
+<div class="note">
+  기간은 <b>그 아이템이 카탈로그에 처음 올라온 날</b> 기준입니다. 가격은 현재가이고,
+  이탈한 품목은 <b>마지막으로 확인된 가격</b>입니다.
+  소재·핏·원단은 상품 페이지에서 받아 둔 값만 고를 수 있어, 옛 회차에 이탈해
+  상품 페이지가 사라진 품목은 그 칸이 비어 있습니다.<br>
+  데이터는 회차마다 자동으로 갱신됩니다. 회차별 변동은 <a href="./">회차 목록</a>에서 보세요.
+</div>
+
+</div>
+<script>
+(function(){
+  var DATA=[], el=function(id){return document.getElementById(id)};
+  var IMG='https://target.scene7.com/is/image/Target/GUEST_';
+  function esc(t){return String(t==null?'':t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+  function fill(sel,vals,label){
+    var h='<option value="">'+label+'</option>';
+    vals.forEach(function(v){h+='<option value="'+esc(v)+'">'+esc(v)+'</option>'});
+    sel.innerHTML=h;
+  }
+  function uniq(key){var m={};DATA.forEach(function(r){if(r[key])m[r[key]]=1});return Object.keys(m).sort()}
+  function badge(st){
+    var k=st==='NEW'?'b-new':(st==='ACTIVE'?'b-act':'b-drop');
+    return '<span class="sbadge '+k+'">'+esc(st||'-')+'</span>';
+  }
+  function row(r){
+    var img=r.uuid?'<img class="rthumb" loading="lazy" alt="" src="'+IMG+esc(r.uuid)+'?wid=144&hei=144&qlt=80&fmt=jpeg">':'';
+    var meta=[r.material,r.fit,r.fabric].filter(Boolean).map(esc).join('<br>');
+    var nm=r.name?esc(r.name):'<span class="rmeta">(상품명 미확보 · 상품 페이지 소멸)</span>';
+    return '<tr><td>'+img+'</td>'+
+      '<td>'+esc(r.dpci)+badge(r.status)+'<div class="rwhen">'+esc(r.first)+' 등장</div></td>'+
+      '<td><div class="rname">'+nm+'</div>'+
+        '<a class="rlink" target="_blank" rel="noopener" href="https://www.target.com/p/-/A-'+esc(r.aid)+'">A-'+esc(r.aid)+'</a></td>'+
+      '<td class="rmeta">'+(meta||'\u2014')+'</td>'+
+      '<td class="rprice">'+(esc(r.price)||'\u2014')+'</td></tr>';
+  }
+  function run(){
+    var d1=el('q-d1').value,d2=el('q-d2').value;
+    var p1=parseFloat(el('q-p1').value),p2=parseFloat(el('q-p2').value);
+    var mat=el('q-mat').value,fit=el('q-fit').value,fab=el('q-fab').value,st=el('q-st').value;
+    var out=DATA.filter(function(r){
+      if(d1&&(!r.first||r.first<d1))return false;
+      if(d2&&(!r.first||r.first>d2))return false;
+      if(!isNaN(p1)&&(r.lo==null||r.hi<p1))return false;
+      if(!isNaN(p2)&&(r.lo==null||r.lo>p2))return false;
+      if(mat&&r.material!==mat)return false;
+      if(fit&&r.fit!==fit)return false;
+      if(fab&&r.fabric!==fab)return false;
+      if(st&&r.status!==st)return false;
+      return true;
+    });
+    var used=(d1||d2||!isNaN(p1)||!isNaN(p2)||mat||fit||fab||st);
+    el('q-cnt').innerHTML=used
+      ?'<b>'+out.length+'건</b> 찾았습니다 (전체 '+DATA.length+'건 중).'
+      :'조건을 고르고 검색을 누르세요. 전체 <b>'+DATA.length+'건</b>이 들어 있습니다.';
+    if(!out.length){el('q-res').innerHTML='<div class="sempty">조건에 맞는 아이템이 없습니다.</div>';return}
+    var h='<table class="rtable"><thead><tr><th>Photo</th><th>DPCI</th><th>Program / URL</th>'+
+          '<th>소재 / 핏 / 원단</th><th>가격</th></tr></thead><tbody>';
+    out.forEach(function(r){h+=row(r)});
+    el('q-res').innerHTML=h+'</tbody></table>';
+  }
+  function reset(){
+    ['q-d1','q-d2','q-p1','q-p2'].forEach(function(i){el(i).value=''});
+    ['q-mat','q-fit','q-fab','q-st'].forEach(function(i){el(i).value=''});
+    el('q-res').innerHTML='';run();
+  }
+  fetch('catalog.json').then(function(r){if(!r.ok)throw new Error(r.status);return r.json()})
+  .then(function(j){
+    DATA=j.items||[];
+    fill(el('q-mat'),uniq('material'),'소재 전체');
+    fill(el('q-fit'),uniq('fit'),'핏 전체');
+    fill(el('q-fab'),uniq('fabric'),'원단 전체');
+    fill(el('q-st'),['NEW','ACTIVE','DROPPED'],'상태 전체');
+    if(j.range&&j.range[0]){
+      el('q-d1').min=j.range[0];el('q-d2').min=j.range[0];
+      el('q-d1').max=j.range[1];el('q-d2').max=j.range[1];
+    }
+    el('q-cnt').innerHTML='조건을 고르고 검색을 누르세요. 전체 <b>'+DATA.length+'건</b> · 등장일 '+
+      esc(j.range?j.range[0]:'')+' ~ '+esc(j.range?j.range[1]:'')+' 범위입니다.';
+    el('q-go').addEventListener('click',run);
+    el('q-rs').addEventListener('click',reset);
+    ['q-d1','q-d2','q-p1','q-p2'].forEach(function(i){
+      el(i).addEventListener('keydown',function(e){if(e.key==='Enter')run()});
+    });
+    ['q-mat','q-fit','q-fab','q-st'].forEach(function(i){
+      el(i).addEventListener('change',run);
+    });
+  }).catch(function(){
+    el('q-cnt').innerHTML='카탈로그를 불러오지 못했습니다. 페이지를 새로고침해 주세요.';
+  });
+})();
+</script>
+
+</body>
+</html>
