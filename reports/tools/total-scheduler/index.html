@@ -191,10 +191,12 @@ a:hover{color:var(--tool-deep)}
   color:var(--body);border-radius:var(--r-md);min-width:40px;min-height:38px;cursor:pointer}
 .calnav:hover{background:var(--tool-tint);color:var(--tool-deep);border-color:var(--tool)}
 .calnav.aside{margin-left:auto;min-width:0;padding:0 14px;font-size:13px}
-.calhead{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:4px}
+/* ⚠ repeat(7,1fr) 은 minmax(auto,1fr) 이라 내용이 크면 열이 넓어진다.
+   호버로 막대를 펼칠 때 달력 전체가 출렁였다 → minmax(0,1fr) 로 고정 (2026-11-04) */
+.calhead{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:3px;margin-bottom:4px}
 .calhd{font-size:11px;font-weight:700;color:var(--sub);text-align:center;padding:4px 0}
 .calhd.sun{color:var(--tcom)} .calhd.sat{color:var(--tool-deep)}
-.wk{display:grid;grid-template-columns:repeat(7,1fr);grid-auto-rows:minmax(17px,auto);
+.wk{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));grid-auto-rows:minmax(17px,auto);
   gap:3px;margin-bottom:3px}
 .daybg{border:1px solid var(--line);border-radius:var(--r-sm);background:var(--card);
   min-height:62px;padding:0;cursor:pointer}
@@ -211,7 +213,17 @@ a:hover{color:var(--tool-deep)}
 .dnum .mo{font-size:10px;color:var(--muted);font-weight:400}
 .bar{font-size:10.5px;font-weight:700;color:#fff;border-radius:3px;padding:2px 6px;margin:0 2px;
   line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-  z-index:2;pointer-events:none}
+  z-index:2;cursor:pointer;border:0;text-align:left;font-family:inherit}
+/* 칸이 좁아 글자가 잘리므로, 마우스를 올리면 그 자리에서 펼쳐 전부 보여준다.
+   ⚠ pointer-events:none 이면 호버가 안 잡힌다 — 대신 막대를 눌러도
+      그 아래 날짜가 열리도록 클릭을 손으로 넘겨 준다 (renderMonth 의 bar 클릭) */
+/* 한 줄 그대로 옆으로만 늘린다 — 줄바꿈을 허용하면 그 줄의 높이가 커져
+   아래 막대들이 밀린다. 가로로만 넘치면 아무것도 움직이지 않는다 */
+.bar:hover, .bar:focus-visible{
+  z-index:60; overflow:visible; text-overflow:clip; white-space:nowrap;
+  width:max-content; min-width:100%; max-width:none;
+  box-shadow:var(--sh-2); outline:2px solid rgba(255,255,255,.65); outline-offset:-2px}
+.bar.rev:hover, .bar.rev:focus-visible{ justify-self:end }
 .barmore{font-size:10.5px;font-weight:700;color:var(--tool-deep);background:var(--tool-tint);
   border:0;border-radius:3px;padding:3px 7px;margin:1px 2px 0;z-index:2;cursor:pointer;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:left}
@@ -1480,13 +1492,22 @@ function renderMonth(box, ym, spans, opt){
       }
       if(!lanes[li]) lanes[li]=[];
       lanes[li].push([c1,c2]);
-      var b=el('div','bar');
+      var b=el('button','bar'+(c2>=5?' rev':''));   /* 오른쪽 칸은 왼쪽으로 펼친다 */
+      b.type='button';
       b.style.gridColumn=c1+' / span '+(c2-c1+1);
       b.style.gridRow=(li+2);
       b.style.background=barColor(sp.t, sp.sc);
       b.textContent=(sp.from<wkFrom?'◀ ':'')+barText(sp)+(sp.to>wkTo?' ▶':'');
       b.title=sp.t.name+(sp.sc? ' · '+scopeLabel(sp.sc):'')+' · '+sp.label+' · '+sp.ti+
               ' ('+md(sp.from)+(sp.from!==sp.to?' ~ '+md(sp.to):'')+')';
+      /* 누른 자리의 날짜를 열어 준다 (막대가 여러 날에 걸쳐 있을 수 있다) */
+      b.addEventListener('click', (function(w0, a, z){ return function(ev){
+        ev.stopPropagation();
+        var r=this.getBoundingClientRect();
+        var k=r.width>0 ? Math.floor((ev.clientX-r.left)/r.width*(z-a+1)) : 0;
+        if(k<0) k=0; if(k>z-a) k=z-a;
+        opt.onDay(shift(w0, (a-1)+k));
+      }; })(wkFrom, c1, c2));
       wk.appendChild(b);
     });
     if(opt.more){
