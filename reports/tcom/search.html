@@ -109,6 +109,8 @@ select.sctl{max-width:270px}
 .swc{font-size:10px;color:var(--sub);background:#f4f3f8;border:1px solid var(--line);
   border-radius:9px;padding:2px 7px;white-space:nowrap}
 .imp-na{color:var(--muted);font-size:12px}
+
+.sw-rgb{border:1px solid rgba(20,18,30,.18)}
 </style>
 </head>
 <body>
@@ -159,7 +161,7 @@ select.sctl{max-width:270px}
 <div class="note">
   기간은 <b>그 아이템이 카탈로그에 처음 올라온 날</b> 기준입니다. 가격은 현재가이고,
   이탈한 품목은 <b>마지막으로 확인된 가격</b>입니다.
-  <b>Impression</b> 은 그 품목의 컬러웨이 수이고 스와치는 상품 페이지의 컬러 견본입니다. 견본이 없는 컬러는 이름만 칩으로 표시합니다. <b>컬러 정보는 지금 살아 있는 품목에만 있습니다</b> — 이탈한 품목은 상품 페이지가 사라져 받을 수 없어 &mdash; 로 둡니다.<br>소재·핏·원단은 상품 페이지에서 받아 둔 값만 고를 수 있어, 옛 회차에 이탈해
+  <b>Impression</b> 은 그 품목의 컬러웨이 수이고 스와치는 상품 페이지의 컬러 견본입니다. 견본은 제품 사진에서 잘라낸 것과 RGB 단색 두 가지가 섞여 있습니다. <b>컬러 정보는 지금 살아 있는 품목에만 있습니다</b> — 이탈한 품목은 상품 페이지가 사라져 받을 수 없어 &mdash; 로 둡니다.<br>소재·핏·원단은 상품 페이지에서 받아 둔 값만 고를 수 있어, 옛 회차에 이탈해
   상품 페이지가 사라진 품목은 그 칸이 비어 있습니다.<br>
   데이터는 회차마다 자동으로 갱신됩니다. 회차별 변동은 <a href="./">회차 목록</a>에서 보세요.
 </div>
@@ -190,6 +192,8 @@ select.sctl{max-width:270px}
         var q=c.c?('?cropN='+encodeURIComponent(c.c)+'&wid=52&hei=52&fmt=jpeg')
                  :('?wid=52&hei=52&fmt=jpeg');
         h+='<img class="sw" loading="lazy" alt="'+esc(c.n)+'" title="'+esc(c.n)+'" src="'+IMG+esc(c.u)+q+'">';
+      } else if(c.rgb){
+        h+='<span class="sw sw-rgb" title="'+esc(c.n)+'" style="background:rgb('+esc(c.rgb)+')"></span>';
       } else {
         h+='<span class="swc" title="'+esc(c.n)+'">'+esc(c.n)+'</span>';
       }
