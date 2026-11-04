@@ -45,10 +45,41 @@ a:hover{color:var(--tool-deep)}
 @media(max-width:640px){ .hero{padding:18px} .hero h1{font-size:21px} }
 
 /* ── 탭 ── */
-.tabs{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}
+.tabs{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap;align-items:center}
 .tab{font-size:14px;font-weight:700;padding:11px 20px;border-radius:var(--r-md);border:1px solid var(--line);
   background:var(--card);color:var(--body);cursor:pointer;min-height:44px}
 .tab[aria-selected="true"]{background:var(--bar);color:#fff;border-color:var(--bar)}
+/* 메인은 보는 것이지 올리는 것이 아니다 — 일정·연차를 크게, 나머지는 작게 */
+.tab.big{font-size:16.5px;padding:13px 28px;min-height:52px;letter-spacing:-.01em}
+.tab.sm{font-size:12.5px;padding:7px 13px;min-height:34px;color:var(--muted);font-weight:700}
+.tab.sm:hover{color:var(--ink)}
+.tab.sm[aria-selected="true"]{color:#fff}
+.tabgap{flex:1 1 20px}
+@media(max-width:640px){ .tab.big{font-size:15px;padding:11px 18px;min-height:46px} .tabgap{flex-basis:100%} }
+
+/* ── 연차 탭 ── */
+.lvday{background:var(--card);border-radius:var(--r-lg);padding:16px 18px;margin-bottom:18px}
+.lvday h3{font-size:15px;margin-bottom:4px}
+.lvcols{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:12px}
+@media(max-width:640px){ .lvcols{grid-template-columns:1fr} }
+.lvcol h4{font-size:12px;letter-spacing:.08em;color:var(--sub);margin-bottom:7px}
+.lvitem{display:flex;gap:8px;align-items:center;padding:6px 0;border-top:1px solid var(--line);font-size:13px}
+.lvitem:first-of-type{border-top:0}
+.lvitem .nm{font-weight:700}
+.lvitem .tag{font-size:11.5px;color:#fff;padding:2px 7px;border-radius:var(--r-sm);flex:none}
+.lvitem .sub{font-size:11.5px;color:var(--muted)}
+.lvnone{font-size:12.5px;color:var(--muted);padding:6px 0}
+.lvsum{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.lvsum .p{background:var(--bg);border-radius:var(--r-md);padding:10px 12px}
+.lvsum .p b{display:block;font-size:14px}
+.lvsum .p span{font-size:12px;color:var(--sub);font-variant-numeric:tabular-nums}
+
+/* ── 업로드 이력 ── */
+.hrow{display:flex;gap:10px;align-items:center;padding:9px 0;border-top:1px solid var(--line);flex-wrap:wrap}
+.hrow:first-child{border-top:0}
+.hrow .when{font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums;flex:none;width:112px}
+.hrow .what{font-size:13px;flex:1;min-width:150px}
+.hrow .cnt{font-size:12px;color:var(--sub);font-variant-numeric:tabular-nums}
 .page[hidden]{display:none}
 
 .panel{background:var(--card);border-radius:var(--r-xl);padding:20px 22px;margin-bottom:18px;
@@ -269,9 +300,11 @@ a:hover{color:var(--tool-deep)}
   <div class="warn" id="seedBox" hidden style="margin-bottom:18px"></div>
 
   <div class="tabs" role="tablist">
-    <button class="tab" role="tab" id="t-view" aria-selected="true" aria-controls="p-view">📅 일정</button>
-    <button class="tab" role="tab" id="t-up"   aria-selected="false" aria-controls="p-up">⬆ 업로드</button>
-    <button class="tab" role="tab" id="t-mg"   aria-selected="false" aria-controls="p-mg">🗂 타입 · 데이터</button>
+    <button class="tab big" role="tab" id="t-view"  aria-selected="true"  aria-controls="p-view">📅 일정</button>
+    <button class="tab big" role="tab" id="t-leave" aria-selected="false" aria-controls="p-leave">🏖 연차</button>
+    <span class="tabgap"></span>
+    <button class="tab sm"  role="tab" id="t-up"    aria-selected="false" aria-controls="p-up">⬆ 업로드</button>
+    <button class="tab sm"  role="tab" id="t-mg"    aria-selected="false" aria-controls="p-mg">🗂 타입 · 데이터</button>
   </div>
 
   <!-- ══════════════ 일정 ══════════════ -->
@@ -330,6 +363,20 @@ a:hover{color:var(--tool-deep)}
     <div id="alertBox"></div>
     <div class="cal" id="cal"></div>
     <div id="list"></div>
+  </section>
+
+  <!-- ══════════════ 연차 ══════════════ -->
+  <section class="page" id="p-leave" role="tabpanel" aria-labelledby="t-leave" hidden>
+    <div class="panel">
+      <h2>팀원 연차</h2>
+      <div class="hint">날짜를 누르면 <b>그날 연차</b>와 <b>그날 걸려 있는 다른 일정</b>을 함께 보여줍니다 — 휴가를 잡기 전에 그날 무엇이 있는지 보려는 것입니다.</div>
+      <div id="lvCal"></div>
+    </div>
+    <div id="lvDay"></div>
+    <div class="panel">
+      <h2 id="lvSumH">이 달 사용</h2>
+      <div id="lvSum"></div>
+    </div>
   </section>
 
   <!-- ══════════════ 업로드 ══════════════ -->
@@ -412,6 +459,12 @@ a:hover{color:var(--tool-deep)}
       <div class="hint">타입은 엑셀 양식 하나에 대응합니다. 열 지정(매핑)을 기억해 두므로 다음부터 같은 파일은 올리면 바로 들어갑니다.</div>
       <div id="typeList"></div>
     </div>
+    <div class="panel">
+      <h2>업로드 이력</h2>
+      <div class="hint">올릴 때마다 <b>올리기 직전 상태</b>를 남겨 둡니다. 고른 시점은 <b>화면에만</b> 올라오고, 「되돌리기 확정」을 눌러야 실제로 바뀝니다.</div>
+      <div id="histBox"></div>
+    </div>
+
     <div class="panel">
       <h2>데이터 보관</h2>
       <div class="hint">지금은 <b>이 브라우저에만</b> 저장됩니다 (다른 사람·다른 기기에는 안 보입니다). 아래에서 JSON 으로 받아 두면 브라우저 데이터를 지워도 되살릴 수 있습니다.</div>
@@ -1026,7 +1079,7 @@ function syncTypeNames(){
 }
 
 /* ══════════════ 탭 ══════════════ */
-var TABS=[['t-view','p-view'],['t-up','p-up'],['t-mg','p-mg']];
+var TABS=[['t-view','p-view'],['t-leave','p-leave'],['t-up','p-up'],['t-mg','p-mg']];
 TABS.forEach(function(p){
   $('#'+p[0]).addEventListener('click', function(){
     TABS.forEach(function(q){
@@ -1034,7 +1087,8 @@ TABS.forEach(function(p){
       $('#'+q[0]).setAttribute('aria-selected', on?'true':'false');
       $('#'+q[1]).hidden = !on;
     });
-    if(p[0]==='t-mg'){ drawTypes(); drawUsage(); }
+    if(p[0]==='t-mg'){ drawTypes(); drawUsage(); drawHist(); }
+    if(p[0]==='t-leave') drawLeave();
   });
 });
 
@@ -1105,6 +1159,7 @@ function render(){
   drawCal(W);
   drawList(W, evs);
   $('#nlWin').textContent = W.w===7? '1주' : W.w===14? '2주' : '1개월';
+  if(!$('#p-leave').hidden) drawLeave();     /* 달을 옮기면 연차 탭도 따라온다 */
   $('#live').textContent = evs.length+'건 · '+md(W.from)+'~'+md(W.to);
 
   function kpi(l,v,c){ return '<div class="kpi '+c+'"><span class="l">'+l+'</span><span class="v">'+v+'</span></div>'; }
@@ -1483,6 +1538,237 @@ document.addEventListener('keydown', function(ev){
 });
 
 /* ══════════════════════════════════════════════════════════════════
+   연차 탭 — 달력에서 날짜를 누르면 그날 연차 + 그날의 다른 일정
+   ══════════════════════════════════════════════════════════════════ */
+var LV_DAY='';
+function leaveType(){
+  for(var i=0;i<ST.types.length;i++) if(ST.types[i].adapter==='leave') return ST.types[i];
+  return null;
+}
+function monthBar(onPick){
+  var y=+CAL_MONTH.slice(0,4), mo=+CAL_MONTH.slice(5,7);
+  var hdr=el('div','calbar');
+  var prev=el('button','calnav'); prev.type='button'; prev.textContent='◀';
+  prev.setAttribute('aria-label','이전 달');
+  prev.addEventListener('click', function(){ shiftMonth(-1); });
+  var ttl=el('div','caltitle'); ttl.textContent=y+'년 '+mo+'월';
+  var next=el('button','calnav'); next.type='button'; next.textContent='▶';
+  next.setAttribute('aria-label','다음 달');
+  next.addEventListener('click', function(){ shiftMonth(1); });
+  var now=el('button','calnav aside'); now.type='button'; now.textContent='이번 달';
+  now.addEventListener('click', function(){ CAL_MONTH=isoToday().slice(0,7); CAL_OPEN={}; render(); });
+  hdr.appendChild(prev); hdr.appendChild(ttl); hdr.appendChild(next); hdr.appendChild(now);
+  return hdr;
+}
+function drawLeave(){
+  var box=$('#lvCal'); box.innerHTML='';
+  var lt=leaveType();
+  if(!lt){
+    box.innerHTML='<div class="lvnone">연차계획을 아직 올리지 않았습니다. <b>⬆ 업로드</b> 에서 올려 주세요.</div>';
+    $('#lvDay').innerHTML=''; $('#lvSum').innerHTML='';
+    return;
+  }
+  if(!CAL_MONTH) CAL_MONTH=isoToday().slice(0,7);
+  var y=+CAL_MONTH.slice(0,4), mo=+CAL_MONTH.slice(5,7);
+  var first=new Date(y, mo-1, 1), last=new Date(y, mo, 0);
+  var mFrom=isoOf(first), mTo=isoOf(last), today=isoToday();
+  box.appendChild(monthBar());
+
+  var hd=el('div','calhead');
+  ['일','월','화','수','목','금','토'].forEach(function(w,i){
+    var h=el('div','calhd'+(i===0?' sun':i===6?' sat':'')); h.textContent=w; hd.appendChild(h);
+  });
+  box.appendChild(hd);
+
+  /* 연차만 — 사람 수만큼이라 접지 않고 다 보여준다 */
+  var evs=events().filter(function(e){ return e.t.id===lt.id && passFilter(e); });
+  var spans=makeSpans(evs);
+  var s2=new Date(first); s2.setDate(1 - first.getDay());
+  var e2=new Date(last);  e2.setDate(last.getDate() + (6 - last.getDay()));
+  var cur=new Date(s2), guard=0;
+  while(cur<=e2 && guard++<10){
+    var wkFrom=isoOf(cur);
+    var we=new Date(cur); we.setDate(we.getDate()+6);
+    var wkTo=isoOf(we);
+    var wk=el('div','wk'), i;
+    for(i=0;i<7;i++){
+      var d=new Date(cur); d.setDate(d.getDate()+i);
+      var iso=isoOf(d), out=(iso<mFrom||iso>mTo);
+      var bg=el('button','daybg'+(out?' out':'')+(iso===LV_DAY?' base':'')+
+                (!out&&iso<today?' past':''));
+      bg.type='button';
+      bg.style.gridColumn=(i+1); bg.style.gridRow='1 / -1';
+      bg.setAttribute('aria-label', iso+' 고르기');
+      bg.addEventListener('click', (function(x){ return function(){
+        LV_DAY=x; drawLeave();
+        var n=document.getElementById('lvDay');
+        if(n) n.scrollIntoView({behavior:'smooth', block:'nearest'});
+      }; })(iso));
+      wk.appendChild(bg);
+      var dn=el('div','dnum'+(d.getDay()===0?' sun':d.getDay()===6?' sat':'')+(out?' out':''));
+      dn.style.gridColumn=(i+1); dn.style.gridRow='1';
+      dn.textContent=d.getDate();
+      wk.appendChild(dn);
+    }
+    var mine=spans.filter(function(sp){ return sp.to>=wkFrom && sp.from<=wkTo; });
+    mine.sort(function(a,b){
+      if(a.from!==b.from) return a.from<b.from?-1:1;
+      var la=dayDiff(a.from,a.to), lb=dayDiff(b.from,b.to);
+      if(la!==lb) return lb-la;
+      return a.ti<b.ti?-1:1;
+    });
+    var lanes=[];
+    mine.forEach(function(sp){
+      var c1=Math.max(1, dayDiff(wkFrom, sp.from)+1);
+      var c2=Math.min(7, dayDiff(wkFrom, sp.to)+1);
+      var li=0;
+      while(li<lanes.length && lanes[li]>=c1) li++;
+      lanes[li]=c2;
+      var b=el('div','bar');
+      b.style.gridColumn=c1+' / span '+(c2-c1+1);
+      b.style.gridRow=(li+2);
+      b.style.background=sp.t.color;
+      b.textContent=(sp.from<wkFrom?'◀ ':'')+sp.ti+' '+sp.label+(sp.to>wkTo?' ▶':'');
+      b.title=sp.ti+' · '+sp.label+' ('+md(sp.from)+(sp.from!==sp.to?' ~ '+md(sp.to):'')+')';
+      wk.appendChild(b);
+    });
+    box.appendChild(wk);
+    cur.setDate(cur.getDate()+7);
+  }
+  drawLeaveDay();
+  drawLeaveSum();
+}
+function drawLeaveDay(){
+  var box=$('#lvDay'), today=isoToday();
+  if(!LV_DAY){
+    box.innerHTML='<div class="lvday"><div class="lvnone">달력에서 날짜를 누르면 그날 연차와 그날 걸려 있는 다른 일정을 함께 보여줍니다.</div></div>';
+    return;
+  }
+  var d=dOf(LV_DAY);
+  var all=events().filter(function(e){ return e.date===LV_DAY; });
+  var lv=all.filter(function(e){ return e.t.adapter==='leave' && e.label!=='휴일·공지'; });
+  var no=all.filter(function(e){ return e.label==='휴일·공지'; });
+  var ot=all.filter(function(e){ return e.t.adapter!=='leave'; });
+  ot.sort(function(a,b){ return typeRank(a.t)-typeRank(b.t); });
+  function item(e, showType){
+    return '<div class="lvitem">'+
+      (showType? '<span class="tag" style="background:'+e.t.color+'">'+esc(e.t.name)+'</span>':'')+
+      '<span class="nm">'+esc(e.row.ti)+'</span>'+
+      '<span class="sub">'+esc(e.label)+'</span></div>';
+  }
+  var h='<div class="lvday">'+
+    '<h3>'+(d.getMonth()+1)+'/'+d.getDate()+' ('+WD[d.getDay()]+')'+(LV_DAY===today?' · 오늘':'')+'</h3>'+
+    '<div class="hint">'+dLabel(dayDiff(today, LV_DAY))+
+      (no.length? ' · '+no.map(function(e){ return esc(e.row.ti); }).join(' · ') : '')+'</div>'+
+    '<div class="lvcols">'+
+      '<div class="lvcol"><h4>이 날 연차 '+lv.length+'명</h4>'+
+        (lv.length? lv.map(function(e){ return item(e,false); }).join('') : '<div class="lvnone">없습니다</div>')+
+      '</div>'+
+      '<div class="lvcol"><h4>이 날 다른 일정 '+ot.length+'건</h4>'+
+        (ot.length? ot.map(function(e){ return item(e,true); }).join('') : '<div class="lvnone">없습니다</div>')+
+      '</div>'+
+    '</div></div>';
+  box.innerHTML=h;
+}
+function drawLeaveSum(){
+  var lt=leaveType(), box=$('#lvSum');
+  if(!lt){ box.innerHTML=''; return; }
+  var per={};
+  ST.rows.forEach(function(r){
+    if(r.t!==lt.id) return;
+    var days=0;
+    (r.info||[]).forEach(function(x){ if(x.l==='일수') days=parseFloat(x.v)||0; });
+    (r.d||[]).forEach(function(d){
+      if(d.v.slice(0,7)!==CAL_MONTH || d.l==='휴일·공지') return;
+      per[r.ti]=(per[r.ti]||0)+days;
+    });
+  });
+  var names=Object.keys(per).sort(function(a,b){ return per[b]-per[a]; });
+  $('#lvSumH').textContent=(+CAL_MONTH.slice(5,7))+'월 사용 일수';
+  box.innerHTML = names.length
+    ? '<div class="lvsum">'+names.map(function(n){
+        return '<div class="p"><b>'+esc(n)+'</b><span>'+(Math.round(per[n]*100)/100)+'일</span></div>'; }).join('')+'</div>'
+    : '<div class="lvnone">이 달에 등록된 연차가 없습니다.</div>';
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   업로드 이력 — 올리기 직전 상태를 남겨 두고 되돌릴 수 있게
+   🛑 고른 시점은 **화면에만** 올린다. 사람이 「되돌리기 확정」을 눌러야 저장된다
+      (fabric-request 에서 자동 반영으로 데이터가 거슬러 올라간 사고가 있었다)
+   ══════════════════════════════════════════════════════════════════ */
+var HKEY='d76_tsched_hist_v1', HIST=[], HIST_MAX=5, HPREV=null;
+function histLoad(){
+  if(!STORE_OK) return;
+  try{ HIST=JSON.parse(localStorage.getItem(HKEY)||'[]'); }catch(e){ HIST=[]; }
+  if(!Array.isArray(HIST)) HIST=[];
+}
+function histSave(){
+  if(!STORE_OK) return;
+  try{ localStorage.setItem(HKEY, JSON.stringify(HIST)); return; }catch(e){}
+  while(HIST.length>1){                     /* 용량이 모자라면 오래된 것부터 버린다 */
+    HIST.pop();
+    try{ localStorage.setItem(HKEY, JSON.stringify(HIST)); return; }catch(e2){}
+  }
+  try{ localStorage.removeItem(HKEY); HIST=[]; }catch(e3){}
+}
+function histPush(label){
+  if(!STORE_OK || !ST.rows.length) return;   /* 비어 있던 상태는 남길 것이 없다 */
+  HIST.unshift({ at:new Date().toISOString(), label:label,
+                 types:JSON.parse(JSON.stringify(ST.types)),
+                 rows:JSON.parse(JSON.stringify(ST.rows)) });
+  while(HIST.length>HIST_MAX) HIST.pop();
+  histSave();
+}
+function histWhen(iso){
+  var d=new Date(iso);
+  return (d.getMonth()+1)+'/'+d.getDate()+' '+p2(d.getHours())+':'+p2(d.getMinutes());
+}
+function drawHist(){
+  var box=$('#histBox');
+  if(!box) return;
+  if(HPREV){
+    box.innerHTML='<div class="warn"><b>되돌린 상태를 화면에서만 보고 있습니다 — 아직 저장되지 않았습니다.</b><br>'+
+      '맞으면 확정하고, 아니면 취소하세요.</div>'+
+      '<div class="btns" style="margin-top:12px">'+
+        '<button class="btn" id="hOk">되돌리기 확정</button>'+
+        '<button class="btn ghost" id="hNo">취소</button></div>';
+    $('#hOk').addEventListener('click', function(){
+      HPREV=null; ST.own=true; save();
+      drawFilters(); render(); drawTypes(); drawUsage(); drawHist();
+    });
+    $('#hNo').addEventListener('click', function(){
+      ST.types=HPREV.types; ST.rows=HPREV.rows; HPREV=null;
+      bust(); drawFilters(); render(); drawTypes(); drawUsage(); drawHist();
+    });
+    return;
+  }
+  if(!HIST.length){
+    box.innerHTML='<div class="lvnone">아직 이력이 없습니다. 엑셀을 올리면 올리기 직전 상태가 여기에 쌓입니다 (최대 '+HIST_MAX+'개).</div>';
+    return;
+  }
+  var h='';
+  HIST.forEach(function(x,i){
+    var ev=0; x.rows.forEach(function(r){ ev+=(r.d||[]).length; });
+    h+='<div class="hrow"><span class="when">'+histWhen(x.at)+'</span>'+
+       '<span class="what">'+esc(x.label)+'</span>'+
+       '<span class="cnt">'+x.rows.length+'줄 · '+ev+'이슈</span>'+
+       '<button class="btn ghost sm" data-h="'+i+'">이 시점 보기</button></div>';
+  });
+  box.innerHTML=h;
+  box.querySelectorAll('[data-h]').forEach(function(b){
+    b.addEventListener('click', function(){
+      var i=+b.getAttribute('data-h');
+      HPREV={ types:JSON.parse(JSON.stringify(ST.types)), rows:JSON.parse(JSON.stringify(ST.rows)) };
+      ST.types=JSON.parse(JSON.stringify(HIST[i].types));
+      ST.rows =JSON.parse(JSON.stringify(HIST[i].rows));
+      syncTypeNames(); bust();
+      drawFilters(); render(); drawTypes(); drawUsage(); drawHist();
+      $('#histBox').scrollIntoView({behavior:'smooth', block:'nearest'});
+    });
+  });
+}
+
+/* ══════════════════════════════════════════════════════════════════
    업로드
    ══════════════════════════════════════════════════════════════════ */
 PAL.forEach(function(p,i){
@@ -1838,6 +2124,7 @@ $('#bAdIngest').addEventListener('click', function(){
   t.name=ad.name;
   t.map={ title:'(어댑터)', key:'(어댑터)', dates:[], info:[] };
   t.sig='__adapter__'+ad.id;
+  histPush(ad.name+' ← '+UPA.file.name);      /* 올리기 **직전** 상태 */
   var stat=commitRows(t, res.rows, UPA.file.name,
                       ad.scoped? 'scope' : (ad.replaceAll? 'all' : 'key'));
   bust(); save();
@@ -1869,6 +2156,7 @@ $('#bIngest').addEventListener('click', function(){
   var keyC   = UP.cols.filter(function(c){ return c.role==='key';   })[0] || null;
   var infoC  = UP.cols.filter(function(c){ return c.role==='info';  });
 
+  histPush(name+' ← '+UP.file.name);          /* 올리기 **직전** 상태 */
   var t = UP.typeId ? typeById(UP.typeId) : null;
   if(!t){ t={ id:uid() }; ST.types.push(t); }
   t.name=name; t.color=$('#tcolor').value;
@@ -2104,6 +2392,7 @@ function loadSeed(){
 
 /* ══════════════ 시작 ══════════════ */
 load();
+histLoad();
 syncTypeNames();
 $('#noStore').hidden = STORE_OK;
 $('#d').value = isoToday();
