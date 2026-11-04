@@ -89,6 +89,13 @@ a:hover{color:var(--tool-deep)}
 .ig{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:13px}
 .ig > div{display:flex;flex-direction:column;gap:6px}
 .ig label{font-size:12.5px;font-weight:700;color:var(--body)}
+.ig label .opt{font-weight:400;color:var(--muted)}
+.manrow{display:flex;gap:10px;align-items:center;padding:9px 0;border-top:1px solid var(--line);flex-wrap:wrap}
+.manrow:first-child{border-top:0}
+.manrow .tag{font-size:11.5px;color:#fff;padding:2px 8px;border-radius:var(--r-sm);flex:none}
+.manrow .wh{font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums;flex:none;width:118px}
+.manrow .ti{font-size:13.5px;font-weight:700;flex:1;min-width:120px}
+.manrow .lb{font-size:12px;color:var(--sub)}
 .f{border:1px solid var(--line);border-radius:var(--r-md);padding:11px 13px;font:inherit;
   font-size:15px;min-height:44px;background:var(--card);color:var(--ink);font-variant-numeric:tabular-nums}
 .f:focus{outline:none;border:2px solid var(--tool);padding:10px 12px;box-shadow:0 0 0 4px rgba(2,119,189,.12)}
@@ -322,12 +329,14 @@ a:hover{color:var(--tool-deep)}
     <button class="tab big" role="tab" id="t-leave" aria-selected="false" aria-controls="p-leave">🏖 연차</button>
     <span class="tabgap"></span>
     <button class="tab sm"  role="tab" id="t-up"    aria-selected="false" aria-controls="p-up">⬆ 업로드</button>
+    <button class="tab sm"  role="tab" id="t-man"   aria-selected="false" aria-controls="p-man">✍ 수기 입력</button>
     <button class="tab sm"  role="tab" id="t-mg"    aria-selected="false" aria-controls="p-mg">🗂 타입 · 데이터</button>
   </div>
 
   <!-- ══════════════ 일정 ══════════════ -->
   <section class="page" id="p-view" role="tabpanel" aria-labelledby="t-view">
     <div class="panel">
+      <h2>보기 · 검색</h2>
       <div class="ig">
         <div>
           <label for="d">기준 날짜</label>
@@ -361,16 +370,10 @@ a:hover{color:var(--tool-deep)}
           <button class="btn" id="bDayNext" aria-label="하루 뒤로">▶</button>
         </span>
         <span class="navgrp">
-          <button class="btn" id="bEvPrev" aria-label="이슈 있는 이전 날로">◀</button>
-          <span class="nl">이슈 있는 날</span>
-          <button class="btn" id="bEvNext" aria-label="이슈 있는 다음 날로">▶</button>
-        </span>
-        <span class="navgrp">
           <button class="btn" id="bPrev" aria-label="이전 범위로">◀</button>
           <span class="nl" id="nlWin">범위</span>
           <button class="btn" id="bNext" aria-label="다음 범위로">▶</button>
         </span>
-        <button class="btn ghost sm" id="bCsv">보는 구간 CSV</button>
         <label class="calall"><input type="checkbox" id="calAll"> 달력 전부 펼치기</label>
         <span class="navmsg" id="navMsg" role="status"></span>
       </div>
@@ -469,6 +472,52 @@ a:hover{color:var(--tool-deep)}
     </div>
   </section>
 
+  <!-- ══════════════ 수기 입력 ══════════════ -->
+  <section class="page" id="p-man" role="tabpanel" aria-labelledby="t-man" hidden>
+    <div class="panel">
+      <h2>한 건 직접 넣기</h2>
+      <div class="hint">엑셀에 아직 없는 일정을 손으로 넣습니다. <b>지금 쓰는 양식 그대로</b> 들어가므로 달력·목록에 똑같이 나옵니다.</div>
+      <div class="ig">
+        <div>
+          <label for="mKind">어디에</label>
+          <select id="mKind" class="f"></select>
+        </div>
+        <div>
+          <label for="mFrom">날짜</label>
+          <input type="date" id="mFrom" class="f">
+        </div>
+        <div>
+          <label for="mTo">끝 날짜 <span class="opt">(여러 날이면)</span></label>
+          <input type="date" id="mTo" class="f">
+        </div>
+        <div>
+          <label for="mLabel">태그 (이슈 이름)</label>
+          <input type="text" id="mLabel" class="f" list="mLabelList" placeholder="예: 휴가 · CMS Due Date">
+          <datalist id="mLabelList"></datalist>
+        </div>
+      </div>
+      <div class="ig">
+        <div>
+          <label for="mTitle">제목 <span class="opt">(이름 · 프로그램명)</span></label>
+          <input type="text" id="mTitle" class="f" placeholder="예: 박수진 · Mesh Short">
+        </div>
+        <div>
+          <label for="mNote">메모 <span class="opt">(선택)</span></label>
+          <input type="text" id="mNote" class="f" placeholder="참고할 내용">
+        </div>
+      </div>
+      <div class="btns">
+        <button class="btn" id="mAdd">넣기</button>
+        <span class="navmsg" id="mMsg"></span>
+      </div>
+      <div class="hint" id="mHint"></div>
+    </div>
+    <div class="panel">
+      <h2>손으로 넣은 것</h2>
+      <div id="manList"></div>
+    </div>
+  </section>
+
   <!-- ══════════════ 타입 · 데이터 ══════════════ -->
   <section class="page" id="p-mg" role="tabpanel" aria-labelledby="t-mg" hidden>
     <div class="panel">
@@ -486,6 +535,7 @@ a:hover{color:var(--tool-deep)}
       <h2>데이터 보관</h2>
       <div class="hint">지금은 <b>이 브라우저에만</b> 저장됩니다 (다른 사람·다른 기기에는 안 보입니다). 아래에서 JSON 으로 받아 두면 브라우저 데이터를 지워도 되살릴 수 있습니다.</div>
       <div class="btns">
+        <button class="btn ghost" id="bCsv">일정 탭이 보는 구간 CSV</button>
         <button class="btn ghost" id="bExp">전체 내보내기 (JSON)</button>
         <button class="btn ghost" id="bImp">가져오기 (JSON)</button>
         <button class="btn ghost" id="bDemo">예시 데이터 넣기</button>
@@ -1098,7 +1148,7 @@ function syncTypeNames(){
 }
 
 /* ══════════════ 탭 ══════════════ */
-var TABS=[['t-view','p-view'],['t-leave','p-leave'],['t-up','p-up'],['t-mg','p-mg']];
+var TABS=[['t-view','p-view'],['t-leave','p-leave'],['t-up','p-up'],['t-man','p-man'],['t-mg','p-mg']];
 TABS.forEach(function(p){
   $('#'+p[0]).addEventListener('click', function(){
     TABS.forEach(function(q){
@@ -1108,6 +1158,7 @@ TABS.forEach(function(p){
     });
     if(p[0]==='t-mg'){ drawTypes(); drawUsage(); drawHist(); }
     if(p[0]==='t-leave') drawLeave();
+    if(p[0]==='t-man') drawMan();
   });
 });
 
@@ -1662,41 +1713,12 @@ function say(m){
   $('#navMsg').textContent=m;
   setTimeout(function(){ if($('#navMsg').textContent===m) $('#navMsg').textContent=''; }, 3500);
 }
-/* 이슈가 있는 가장 가까운 날로 건너뛴다 (타입 필터·검색은 그대로 적용) */
-function jumpEvent(dir){
-  var base=$('#d').value||isoToday();
-  var q=($('#q').value||'').trim().toLowerCase(), showDone=$('#sh').value==='1';
-  var best=null;
-  events().forEach(function(e){
-    if(OFF[e.t.id]) return;
-    if(!showDone && ST.done[e.id]) return;
-    if(q){
-      var hay=(e.row.ti+' '+(e.row.k||'')+' '+e.label+' '+e.t.name+' '+
-        (e.row.info||[]).map(function(x){ return x.l+' '+x.v; }).join(' ')).toLowerCase();
-      if(hay.indexOf(q)<0) return;
-    }
-    if(dir>0 && e.date>base && (!best || e.date<best)) best=e.date;
-    if(dir<0 && e.date<base && (!best || e.date>best)) best=e.date;
-  });
-  if(best){
-    var dd=dOf(best);
-    goDate(best, (dd.getMonth()+1)+'/'+dd.getDate()+' ('+WD[dd.getDay()]+') 로 이동');
-    setTimeout(function(){
-      var n=document.getElementById('day-'+best);
-      if(n) n.scrollIntoView({behavior:'smooth', block:'center'});
-    }, 60);
-  }else{
-    say(dir>0 ? '뒤쪽에 이슈가 더 없습니다' : '앞쪽에 이슈가 더 없습니다');
-  }
-}
 $('#calAll').addEventListener('change', function(){
   CAL_ALL=$('#calAll').checked; CAL_OPEN={}; render();
 });
 $('#bToday').addEventListener('click', function(){ goDate(isoToday(),''); });
 $('#bDayPrev').addEventListener('click', function(){ goDate(shift($('#d').value||isoToday(), -1), ''); });
 $('#bDayNext').addEventListener('click', function(){ goDate(shift($('#d').value||isoToday(),  1), ''); });
-$('#bEvPrev').addEventListener('click', function(){ jumpEvent(-1); });
-$('#bEvNext').addEventListener('click', function(){ jumpEvent( 1); });
 $('#bPrev').addEventListener('click', function(){ var W=winOf(); goDate(shift(W.base,-W.w),''); });
 $('#bNext').addEventListener('click', function(){ var W=winOf(); goDate(shift(W.base, W.w),''); });
 /* ← → 로도 하루씩 (입력칸에 커서가 있을 때는 건드리지 않는다) */
@@ -1796,6 +1818,125 @@ function drawLeaveSum(){
         return '<div class="p"><b>'+esc(n)+'</b><span>'+(Math.round(per[n]*100)/100)+'일</span></div>'; }).join('')+'</div>'
     : '<div class="lvnone">이 달에 등록된 연차가 없습니다.</div>';
 }
+
+/* ══════════════════════════════════════════════════════════════════
+   수기 입력 — 엑셀에 아직 없는 일정을 한 건씩 손으로
+   지금 쓰는 행 모양 그대로 넣으므로 달력·목록에 똑같이 나온다
+   ══════════════════════════════════════════════════════════════════ */
+var MAN_F='수기 입력';
+function manTypes(){
+  /* 넣을 수 있는 자리: 이미 있는 타입들 + 아무 데도 안 맞을 때 쓸 "기타 메모" */
+  return typesInOrder().concat([{id:'__memo__', name:'기타 메모', color:'#37474f', adapter:null}]);
+}
+function manFillKinds(){
+  var sel=$('#mKind'); if(!sel) return;
+  var keep=sel.value;
+  sel.innerHTML='';
+  manTypes().forEach(function(t){
+    var o=el('option'); o.value=t.id; o.textContent=t.name; sel.appendChild(o);
+  });
+  if(keep) sel.value=keep;
+  manLabels();
+}
+function manLabels(){
+  var id=$('#mKind').value, dl=$('#mLabelList');
+  if(!dl) return;
+  var seen={};
+  ST.rows.forEach(function(r){
+    if(r.t!==id) return;
+    (r.d||[]).forEach(function(d){ seen[d.l]=1; });
+  });
+  var list=Object.keys(seen).sort();
+  dl.innerHTML=list.map(function(x){ return '<option value="'+esc(x)+'"></option>'; }).join('');
+  var t=typeById(id);
+  $('#mHint').innerHTML = list.length
+    ? '이 자리에 쓰이는 태그: '+list.slice(0,12).map(function(x){ return '<code>'+esc(x)+'</code>'; }).join(' · ')
+    : '태그는 달력 막대에 "태그 : 제목" 으로 나옵니다.';
+  if(t && t.adapter==='leave'){
+    $('#mHint').innerHTML += '<br>연차는 <b>제목에 이름</b>, <b>태그에 유형</b>(휴가 · 반차(오후) …)을 넣습니다. '+
+      '나중에 같은 사람·같은 날짜가 엑셀로 올라오면 <b>엑셀 쪽이 이 줄을 덮습니다.</b>';
+  }
+}
+function manAdd(){
+  var id=$('#mKind').value, from=$('#mFrom').value, to=$('#mTo').value||from;
+  var label=String($('#mLabel').value||'').trim();
+  var ti=String($('#mTitle').value||'').trim();
+  var note=String($('#mNote').value||'').trim();
+  function bad(m){ $('#mMsg').textContent=m; setTimeout(function(){
+    if($('#mMsg').textContent===m) $('#mMsg').textContent=''; }, 4000); }
+  if(!from) return bad('날짜를 넣어 주세요');
+  if(!ti) return bad('제목을 넣어 주세요');
+  if(!label) return bad('태그를 넣어 주세요');
+  if(to<from) return bad('끝 날짜가 시작보다 앞섭니다');
+  if(dayDiff(from,to)>120) return bad('한 번에 120일까지만 넣습니다');
+
+  var t;
+  if(id==='__memo__'){
+    t=null;
+    for(var i=0;i<ST.types.length;i++) if(ST.types[i].name==='기타 메모') t=ST.types[i];
+    if(!t){ t={id:uid(), name:'기타 메모', color:'#37474f',
+               map:{title:'(수기)', key:'(수기)', dates:[], info:[]}, sig:'__memo__'};
+            ST.types.push(t); }
+  }else{
+    t=typeById(id);
+    if(!t) return bad('넣을 자리를 고르세요');
+  }
+
+  var n=0, d=from;
+  while(true){
+    /* 연차는 엑셀과 같은 키(이름|날짜)를 쓴다 — 나중에 엑셀이 올라오면 그쪽이 이긴다.
+       나머지는 "수기|…" 로 따로 둬서 업로드와 섞이지 않게 한다 */
+    var key=(t.adapter==='leave') ? (ti+'|'+d) : ('수기|'+ti+'|'+label+'|'+d);
+    var inf=[];
+    if(t.adapter==='leave'){
+      var days = /반반차/.test(label) ? '0.25' : (/반차/.test(label) ? '0.5' : '1');
+      inf.push({l:'일수', v:days});
+    }
+    if(note) inf.push({l:'메모', v:note});
+    inf.push({l:'입력', v:'손으로'});
+    ST.rows = ST.rows.filter(function(x){ return !(x.t===t.id && x.k===key); });
+    ST.rows.push({ id:uid(), t:t.id, k:key, ti:ti, sc:'',
+                   d:[{l:label, v:d}], info:inf, f:MAN_F, u:isoToday(), man:1 });
+    n++;
+    if(d===to) break;
+    d=shift(d,1);
+  }
+  ST.own=true;
+  bust(); save();
+  $('#mTitle').value=''; $('#mNote').value=''; $('#mTo').value='';
+  bad(n+'건 넣었습니다 — '+md(from)+(from!==to? ' ~ '+md(to):''));
+  drawFilters(); render(); drawMan(); drawUsage();
+}
+function drawMan(){
+  manFillKinds();
+  if(!$('#mFrom').value) $('#mFrom').value=$('#d').value||isoToday();
+  var box=$('#manList');
+  var rows=ST.rows.filter(function(r){ return r.man; });
+  if(!rows.length){
+    box.innerHTML='<div class="lvnone">아직 없습니다. 위에서 한 건 넣어 보세요.</div>';
+    return;
+  }
+  rows.sort(function(a,b){ return (a.d[0]||{}).v < (b.d[0]||{}).v ? -1 : 1; });
+  box.innerHTML = rows.map(function(r){
+    var t=typeById(r.t)||{name:'?',color:'#6e6d77'};
+    var d=r.d[0]||{l:'',v:''};
+    return '<div class="manrow">'+
+      '<span class="wh">'+esc(d.v)+'</span>'+
+      '<span class="tag" style="background:'+t.color+'">'+esc(t.name)+'</span>'+
+      '<span class="lb">'+esc(d.l)+'</span>'+
+      '<span class="ti">'+esc(r.ti)+'</span>'+
+      '<button class="btn ghost sm" data-del="'+esc(r.id)+'">지우기</button></div>';
+  }).join('');
+  box.querySelectorAll('[data-del]').forEach(function(b){
+    b.addEventListener('click', function(){
+      var id=b.getAttribute('data-del');
+      ST.rows=ST.rows.filter(function(x){ return x.id!==id; });
+      bust(); save(); drawFilters(); render(); drawMan(); drawUsage();
+    });
+  });
+}
+$('#mKind').addEventListener('change', manLabels);
+$('#mAdd').addEventListener('click', manAdd);
 
 /* ══════════════════════════════════════════════════════════════════
    업로드 이력 — 올리기 직전 상태를 남겨 두고 되돌릴 수 있게
