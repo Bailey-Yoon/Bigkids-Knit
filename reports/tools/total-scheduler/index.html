@@ -1012,7 +1012,9 @@ function evNode(e){
   r1.innerHTML = '<span class="badge" style="background:'+e.t.color+'">'+esc(e.t.name)+'</span>'+
                  '<span class="lab">'+esc(e.label)+'</span>'+
                  '<span class="ti">'+esc(e.row.ti)+'</span>'+
-                 (e.row.k ? '<span class="key">'+esc(e.row.k)+'</span>' : '');
+                 /* 어댑터 키는 '시트|행' · '그룹|과업' 처럼 배지·제목과 겹치는 내부 값이라 숨긴다.
+                    직접 열 지정으로 들어온 키(PO-26114 등)만 보여준다 */
+                 (e.row.k && e.row.k.indexOf('|')<0 ? '<span class="key">'+esc(e.row.k)+'</span>' : '');
   bd.appendChild(r1);
   if(e.row.info && e.row.info.length){
     var inf=el('div','info');
