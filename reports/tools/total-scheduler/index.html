@@ -809,7 +809,7 @@ var AD_BAGRID = {
             (seen.length? ' (본 시트: '+seen.join(', ')+')':'')];
   },
   parse:function(wb, fname){
-    var rows=[], warns=[], notes=[], skipped=[], nowIso=isoToday(), greyTot=0;
+    var rows=[], warns=[], notes=[], skipped=[], nowIso=isoToday(), greyTot=0, wovenTot=0;
     /* 교체 단위 = 연도(파일명) + Cycle. C2'27 파일을 올려도 C3'27 은 그대로 남는다 */
     var yr=(fname.match(/(20\d\d)/)||[])[1]||'';
     wb.SheetNames.forEach(function(sname){
@@ -868,12 +868,14 @@ var AD_BAGRID = {
           }
         }
       });
-      var made=0, gcount=0;
+      var made=0, gcount=0, wcount=0;
       for(r=hrow+1;r<=lastr;r++){
         if(grey[r]){ if(CT(ws,r,iP)) gcount++; continue; }   /* 진행 안 하는 스타일 */
         /* 프로그램 이름 안에 줄바꿈이 있다 ("… (Paradise)\r\nKNIT") — 한 줄로 눌러 둔다 */
         var ti=CT(ws,r,iP).replace(/\s*\r?\n\s*/g,' ').replace(/\s{2,}/g,' ');
         if(!ti) continue;
+        /* Program Name(D열)에 Woven 이 들어간 줄은 빼기로 했다 (사용자 지정 2026-11-04) */
+        if(/woven/i.test(ti)){ wcount++; continue; }
         var ds=[];
         dcols.forEach(function(d){
           var iso=parseD(CV(ws,r,d.c));
@@ -891,12 +893,16 @@ var AD_BAGRID = {
                     d:ds, info:inf, f:fname, u:nowIso });
         made++;
       }
-      greyTot+=gcount;
-      notes.push(sname+' '+made+'줄'+(gcount? '(회색 아웃 '+gcount+'줄 제외)':'')+
+      greyTot+=gcount; wovenTot+=wcount;
+      notes.push(sname+' '+made+'줄'+
+                 (gcount||wcount ? '(제외: '+
+                   [gcount? '회색 아웃 '+gcount+'줄':'', wcount? 'Woven '+wcount+'줄':'']
+                     .filter(function(x){return x;}).join(' · ')+')' : '')+
                  '/날짜열 '+dcols.length+'개('+dcols.map(function(d){return d.l;}).join(', ')+')'+
                  (hid.length? ' · 뺀 열 '+hid.length+'개('+hid.join(', ')+')' : ''));
     });
     if(greyTot) warns.push('행 전체가 진한 회색인 '+greyTot+'줄은 "진행하지 않는 스타일" 로 보고 뺐습니다');
+    if(wovenTot) warns.push('Program Name 에 Woven 이 들어간 '+wovenTot+'줄을 뺐습니다 (지정한 규칙)');
     if(skipped.length) notes.push('건너뛴 시트: '+skipped.join(', ')+' (Program Name 머리글 없음)');
     return { rows:rows, warns:warns, note:notes.join('  ·  ') };
   }
