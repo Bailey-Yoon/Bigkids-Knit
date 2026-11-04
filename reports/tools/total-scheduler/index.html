@@ -359,7 +359,6 @@ a:hover{color:var(--tool-deep)}
       <div class="chips" id="filters"></div>
     </div>
 
-    <div class="kpis" id="kpis" style="margin-bottom:18px"></div>
     <div id="alertBox"></div>
     <div class="cal" id="cal"></div>
     <div id="list"></div>
@@ -1139,30 +1138,15 @@ function drawFilters(){
   });
 }
 function render(){
-  var W=winOf(), evs=visible(), today=isoToday();
-
-  /* KPI */
-  var past=0, on=0, fut=0, late=0;
-  evs.forEach(function(e){
-    if(e.date<W.base) past++; else if(e.date===W.base) on++; else fut++;
-    if(e.date<today && !ST.done[e.id]) late++;
-  });
-  $('#kpis').innerHTML =
-    kpi('이 구간 전체', evs.length, '') +
-    kpi('기준일 이전', past, '') +
-    kpi('기준일', on, 'g') +
-    kpi('기준일 이후', fut, '') +
-    kpi('오늘 지났고 미확인', late, late?'r':'');
-
+  /* 숫자 타일(이 구간 전체 / 기준일 이전 …)은 뺐다 — 자리만 차지하고 읽히지 않았다
+     (사용자 지정 2026-11-04). 건수는 상단바 오른쪽에 작게만 남긴다 */
+  var W=winOf(), evs=visible();
   drawBrief();
-
   drawCal(W);
   drawList(W, evs);
   $('#nlWin').textContent = W.w===7? '1주' : W.w===14? '2주' : '1개월';
   if(!$('#p-leave').hidden) drawLeave();     /* 달을 옮기면 연차 탭도 따라온다 */
   $('#live').textContent = evs.length+'건 · '+md(W.from)+'~'+md(W.to);
-
-  function kpi(l,v,c){ return '<div class="kpi '+c+'"><span class="l">'+l+'</span><span class="v">'+v+'</span></div>'; }
 }
 function md(iso){ var a=iso.split('-'); return (+a[1])+'/'+(+a[2]); }
 /* ⚠ D-7 은 "7일 남음", D+7 은 "7일 지남" 이다. 예전에 반대로 적고 있었다 (2026-11-04).
