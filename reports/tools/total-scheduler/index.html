@@ -106,7 +106,7 @@ a:hover{color:var(--tool-deep)}
 .bf-d{flex:none;width:52px;font-size:11px;font-weight:700;color:#fff;background:var(--muted);
   border:0;border-radius:var(--r-sm);padding:2px 0;cursor:pointer;font-variant-numeric:tabular-nums}
 .bf-d:hover{background:var(--ink)}
-.bf-d.past{background:var(--amber)} .bf-d.now{background:var(--tool)}
+.bf-d.soon{background:var(--amber)} .bf-d.now{background:var(--tcom)}
 .bf-dt{flex:none;width:38px;font-size:11.5px;color:var(--muted);padding-top:2px;
   font-variant-numeric:tabular-nums}
 .bf-i{flex:1;min-width:0;display:flex;flex-wrap:wrap;gap:4px}
@@ -1110,13 +1110,19 @@ function render(){
   function kpi(l,v,c){ return '<div class="kpi '+c+'"><span class="l">'+l+'</span><span class="v">'+v+'</span></div>'; }
 }
 function md(iso){ var a=iso.split('-'); return (+a[1])+'/'+(+a[2]); }
-function dLabel(diff){ return diff===0? 'D-DAY' : (diff<0? 'D'+diff : 'D+'+diff); }
+/* ⚠ D-7 은 "7일 남음", D+7 은 "7일 지남" 이다. 예전에 반대로 적고 있었다 (2026-11-04).
+   diff = 기준일로부터 그 날까지의 일수 (앞날이면 양수) */
+function dLabel(diff){
+  if(diff===0) return 'D-DAY';
+  return diff>0 ? 'D-'+diff : 'D+'+(-diff);
+}
 
 /* 오늘 기준 앞뒤 2주 요약 — 기준 날짜를 어디로 옮겨 놓았든 **항상 오늘**을 본다.
    (예전에는 "지난 날짜인데 확인 없는 이슈" 경고를 띄웠는데, 늘 떠 있어서 읽히지 않았다) */
 function drawBrief(){
   var box=$('#alertBox'); box.innerHTML='';
-  var today=isoToday(), from=shift(today,-14), to=shift(today,14);
+  /* 다가오는 것만 본다 — 지난 건 이미 끝난 일이라 자리만 차지한다 (사용자 지정) */
+  var today=isoToday(), from=today, to=shift(today,14);
   var q=($('#q').value||'').trim().toLowerCase(), showDone=$('#sh').value==='1';
   /* Due Date Grid 만 — 연차·Target Calendar 까지 넣으면 너무 길어 읽히지 않는다
      (사용자 지정 2026-11-04) */
@@ -1137,12 +1143,12 @@ function drawBrief(){
   evs.forEach(function(e){ if(!by[e.date]){ by[e.date]=[]; order.push(e.date); } by[e.date].push(e); });
   order.sort();
   var td=dOf(today);
-  var h='<div class="briefhd"><b>Due Date Grid</b> · 오늘 <b>'+md(today)+' ('+WD[td.getDay()]+')</b> 기준 앞뒤 2주 · '+evs.length+'건'+
-        '<span class="bhint">날짜를 누르면 그 날로 갑니다</span></div><div class="briefbody">';
+  var h='<div class="briefhd"><b>Due Date Grid</b> · 오늘 <b>'+md(today)+' ('+WD[td.getDay()]+')</b> 부터 2주 · '+evs.length+'건'+
+        '<span class="bhint">급한 것부터 · 날짜를 누르면 그 날로 갑니다</span></div><div class="briefbody">';
   order.forEach(function(iso){
     var diff=dayDiff(today, iso);
     h+='<div class="briefrow">'+
-       '<button class="bf-d'+(diff<0?' past':diff===0?' now':'')+'" data-go="'+iso+'">'+dLabel(diff)+'</button>'+
+       '<button class="bf-d'+(diff===0?' now':diff<=3?' soon':'')+'" data-go="'+iso+'">'+dLabel(diff)+'</button>'+
        '<span class="bf-dt">'+md(iso)+'</span>'+
        '<span class="bf-i">'+by[iso].map(function(e){
           return '<span class="bf-chip'+(ST.done[e.id]?' ok':'')+'" title="'+esc(e.t.name+' · '+e.label)+'">'+
@@ -1254,41 +1260,39 @@ function drawCal(W){
     }
 
     var mine=spans.filter(function(sp){ return sp.to>=wkFrom && sp.from<=wkTo; });
-    /* 타입 우선순위대로 레인을 나눠 쓴다 — 연차 · Due Date Grid · Target Calendar 순 */
-    var groups={};
-    mine.forEach(function(sp){ var r=typeRank(sp.t); (groups[r]=groups[r]||[]).push(sp); });
-    var used=0, over={};
-    Object.keys(groups).map(Number).sort(function(a,b){ return a-b; }).forEach(function(rk){
-      var list=groups[rk];
-      list.sort(function(a,b){
-        if(a.from!==b.from) return a.from<b.from?-1:1;
-        var la=dayDiff(a.from,a.to), lb=dayDiff(b.from,b.to);
-        if(la!==lb) return lb-la;                       /* 긴 막대를 위 레인에 */
-        return a.ti<b.ti?-1:1;
-      });
-      var sub=[];
-      list.forEach(function(sp){
-        var c1=Math.max(1, dayDiff(wkFrom, sp.from)+1);
-        var c2=Math.min(7, dayDiff(wkFrom, sp.to)+1);
-        var li=0;
-        while(li<sub.length && sub[li]>=c1) li++;
-        var lane=used+li;
-        if(lane>=MAXLANE){
-          for(var cc=c1; cc<=c2; cc++) over[cc]=(over[cc]||0)+1;
-          return;
-        }
-        sub[li]=c2;
-        var b=el('div','bar');
-        b.style.gridColumn=c1+' / span '+(c2-c1+1);
-        b.style.gridRow=(lane+2);
-        b.style.background=sp.t.color;
-        b.textContent=(sp.from<wkFrom?'◀ ':'')+sp.ti+(sp.to>wkTo?' ▶':'');
-        b.title=sp.t.name+' · '+sp.label+' · '+sp.ti+
-                ' ('+md(sp.from)+(sp.from!==sp.to?' ~ '+md(sp.to):'')+')';
-        wk.appendChild(b);
-      });
-      used += sub.length;
+    /* 타입 순서(연차 · Due Date Grid · Target Calendar)대로 먼저 자리를 잡되,
+       **레인은 하나의 풀로 쓰고 빈 자리를 채운다.**
+       예전처럼 타입마다 레인 구간을 따로 떼어 주면, 그 구간이 다 안 차는 주에
+       빈 줄이 그대로 남아 달력이 쓸데없이 길어졌다 (2026-11-04) */
+    mine.sort(function(a,b){
+      var d=typeRank(a.t)-typeRank(b.t);
+      if(d) return d;
+      if(a.from!==b.from) return a.from<b.from?-1:1;
+      var la=dayDiff(a.from,a.to), lb=dayDiff(b.from,b.to);
+      if(la!==lb) return lb-la;                         /* 긴 막대를 위 레인에 */
+      return a.ti<b.ti?-1:1;
     });
+    var lanes=[], over={};
+    mine.forEach(function(sp){
+      var c1=Math.max(1, dayDiff(wkFrom, sp.from)+1);
+      var c2=Math.min(7, dayDiff(wkFrom, sp.to)+1);
+      var li=0;
+      while(li<lanes.length && lanes[li]>=c1) li++;     /* 비어 있는 첫 레인 */
+      if(li>=MAXLANE){
+        for(var cc=c1; cc<=c2; cc++) over[cc]=(over[cc]||0)+1;
+        return;
+      }
+      lanes[li]=c2;
+      var b=el('div','bar');
+      b.style.gridColumn=c1+' / span '+(c2-c1+1);
+      b.style.gridRow=(li+2);
+      b.style.background=sp.t.color;
+      b.textContent=(sp.from<wkFrom?'◀ ':'')+sp.ti+(sp.to>wkTo?' ▶':'');
+      b.title=sp.t.name+' · '+sp.label+' · '+sp.ti+
+              ' ('+md(sp.from)+(sp.from!==sp.to?' ~ '+md(sp.to):'')+')';
+      wk.appendChild(b);
+    });
+    var used=lanes.length;
 
     var overMax=0;
     Object.keys(over).forEach(function(cc){ if(over[cc]>overMax) overMax=over[cc]; });
@@ -1350,8 +1354,8 @@ function drawList(W, evs){
     var diff=dayDiff(W.base, iso), relTxt, relCls='';
     if(iso===today){ relTxt='오늘'; relCls='today'; }
     else if(diff===0){ relTxt='기준일'; relCls='today'; }
-    else if(diff<0){ relTxt='D'+diff; relCls = iso<today ? 'past' : ''; }
-    else { relTxt='D+'+diff; }
+    else if(diff<0){ relTxt='D+'+(-diff); relCls = iso<today ? 'past' : ''; }
+    else { relTxt='D-'+diff; }
     var dd=dOf(iso);
     var h=el('div','dh');
     h.innerHTML='<span class="dd">'+(dd.getMonth()+1)+'/'+dd.getDate()+' ('+WD[dd.getDay()]+')</span>'+
