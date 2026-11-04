@@ -1408,17 +1408,27 @@ function renderMonth(box, ym, spans, opt){
       if(la!==lb) return lb-la;
       return a.ti<b.ti?-1:1;
     });
+    /* ⚠ 레인은 **겹치는 칸이 있을 때만** 막힌다. 예전엔 레인마다 '마지막으로 쓴 열'
+       하나만 들고 `lanes[li] >= c1` 로 봤는데, 타입 순서대로 넣다 보니 뒤 타입의
+       막대가 **다른 열인데도** 앞 타입이 쓴 레인을 못 쓰고 아래로 밀렸다.
+       그래서 8일 칸은 비었는데 빨간 막대가 7번째 줄에 가 있었다 (2026-11-04).
+       레인마다 쓴 구간을 모두 들고 겹침만 본다 → 빈 줄 없이 위로 붙는다 */
     var lanes=[], over={};
+    function laneFree(lane, c1, c2){
+      for(var k=0;k<lane.length;k++){ if(!(c2 < lane[k][0] || c1 > lane[k][1])) return false; }
+      return true;
+    }
     mine.forEach(function(sp){
       var c1=Math.max(1, dayDiff(wkFrom, sp.from)+1);
       var c2=Math.min(7, dayDiff(wkFrom, sp.to)+1);
       var li=0;
-      while(li<lanes.length && lanes[li]>=c1) li++;
+      while(li<lanes.length && !laneFree(lanes[li], c1, c2)) li++;
       if(li>=MAXLANE){
         for(var cc=c1; cc<=c2; cc++) over[cc]=(over[cc]||0)+1;
         return;
       }
-      lanes[li]=c2;
+      if(!lanes[li]) lanes[li]=[];
+      lanes[li].push([c1,c2]);
       var b=el('div','bar');
       b.style.gridColumn=c1+' / span '+(c2-c1+1);
       b.style.gridRow=(li+2);
