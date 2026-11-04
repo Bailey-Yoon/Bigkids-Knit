@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>D76 · Total Scheduler</title>
-<link rel="icon" href="/Bigkids-Knit/favicon.svg">
+<link rel="icon" href="https://bailey-yoon.github.io/Bigkids-Knit/favicon.svg">
 <style>
 /* ── 디자인 토큰 (정본: _shared/d76_design.css · 3a "Launcher") ───────────── */
 :root{
@@ -271,14 +271,14 @@ a:hover{color:var(--tool-deep)}
 <body>
 
 <div class="topbar">
-  <a class="brand" href="/Bigkids-Knit/">📊 Big Kids Hub</a>
+  <a class="brand" href="https://bailey-yoon.github.io/Bigkids-Knit/" target="_blank" rel="noopener">📊 Big Kids Hub</a>
   <span class="sep">|</span>
-  <a href="/Bigkids-Knit/reports/tools/">🧮 Tools</a>
+  <a href="https://bailey-yoon.github.io/Bigkids-Knit/reports/tools/" target="_blank" rel="noopener">🧮 Tools</a>
   <span class="sep">|</span>
   <span class="here">🗓 Total Scheduler</span>
   <span class="live" id="live">—</span>
 </div>
-<a class="fab" href="/Bigkids-Knit/reports/tools/" title="D76 Tools">🧮</a>
+<a class="fab" href="https://bailey-yoon.github.io/Bigkids-Knit/reports/tools/" target="_blank" rel="noopener" title="D76 Tools">🧮</a>
 
 <div class="wrap">
 
@@ -1451,10 +1451,40 @@ $('#bCsv').addEventListener('click', function(){
   });
   dl('﻿'+lines.join('\r\n'), 'Total_Scheduler_'+W.from+'_to_'+W.to+'.csv', 'text/csv;charset=utf-8');
 });
-function dl(text, name, mime){
+/* ⚠ 아티팩트(claude.ai)로 띄우면 <a download> 가 **아무 일도 하지 않는다.**
+   파일을 건네는 건 downloads 기능이 맡는다. 보통 웹페이지(GitHub Pages)에서는
+   그 기능이 없으니 예전 방식으로 떨어진다 — 양쪽 다 돌아가야 한다 */
+var DL=null, DL_ASKED=false;
+function dlReady(){
+  if(DL_ASKED) return Promise.resolve(DL);
+  DL_ASKED=true;
+  try{
+    if(window.claude && typeof window.claude.use==='function'){
+      return window.claude.use('downloads')
+        .then(function(d){ DL=d||null; return DL; })
+        .catch(function(){ return null; });
+    }
+  }catch(e){}
+  return Promise.resolve(null);
+}
+function dlFallback(text, name, mime){
   var b=new Blob([text],{type:mime||'text/plain;charset=utf-8'}), u=URL.createObjectURL(b);
   var a=el('a'); a.href=u; a.download=name; document.body.appendChild(a); a.click();
   document.body.removeChild(a); setTimeout(function(){ URL.revokeObjectURL(u); }, 1500);
+}
+function dl(text, name, mime){
+  dlReady().then(function(d){
+    if(!d){ dlFallback(text, name, mime); return; }
+    d.save({ filename:name, data:new Blob([text],{type:mime||'text/plain;charset=utf-8'}) })
+     .catch(function(err){
+       var c=(err && err.code) || '';
+       if(c==='declined') return;              /* 사람이 거절한 것 — 아무 말도 하지 않는다 */
+       if(c==='unavailable' || c==='not_granted' || c==='capability_disabled' || c==='capability_removed'){
+         dlFallback(text, name, mime); return; /* 기능이 없는 화면이면 예전 방식으로 */
+       }
+       alert('내보내기를 하지 못했습니다 ('+(c||'알 수 없는 오류')+').\n잠시 뒤 다시 눌러 주세요.');
+     });
+  });
 }
 
 ['#d','#w','#q','#sh'].forEach(function(sel){
