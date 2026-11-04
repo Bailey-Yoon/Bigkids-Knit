@@ -256,7 +256,12 @@ a:hover{color:var(--tool-deep)}
 .day > .dh .rel.past{background:var(--amber)}
 .day > .dh .n{margin-left:auto;font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
 .day.isbase > .dh{background:var(--tool-tint)}
-.ev{display:flex;gap:11px;align-items:flex-start;padding:12px 18px;border-top:1px solid var(--line)}
+.evg{display:flex;align-items:center;gap:8px;padding:10px 18px 4px;
+  border-top:1px solid var(--line);background:#fbfbfd;font-size:12.5px;color:var(--body)}
+.evg .gb{width:9px;height:9px;border-radius:50%;flex:none}
+.evg .gn{margin-left:auto;font-size:11.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+.evg + .ev{border-top:0}
+.ev{display:flex;gap:11px;align-items:flex-start;padding:10px 18px;border-top:1px solid var(--line)}
 .ev.ok{background:#fbfbfd}
 .ev .cb{flex:none;margin-top:2px}
 .ev .cb input{width:19px;height:19px;cursor:pointer;accent-color:#00695c}
@@ -1029,7 +1034,7 @@ var AD_BAGRID = {
           var x=CV(ws,r,c); if(x==null) continue;
           nv++; if(parseD(x)) ok++;
         }
-        if(nv && ok/nv>=0.5) dcols.push({c:c, l:baLabel(head[c-1])});
+        if(nv && ok/nv>=0.5) dcols.push({c:c, l:baLabel(head[c-1]), oi:dcols.length});
       }
       if(!dcols.length){ warns.push('시트 "'+sname+'" 에 날짜 열이 없습니다'); return; }
       /* 참고로 붙일 열 */
@@ -1055,7 +1060,7 @@ var AD_BAGRID = {
         var ds=[];
         dcols.forEach(function(d){
           var iso=parseD(CV(ws,r,d.c));
-          if(iso) ds.push({l:d.l, v:iso});
+          if(iso) ds.push({l:d.l, v:iso, oi:d.oi});   /* oi = 그리드의 열 순서 = 공정 순서 */
         });
         if(!ds.length) continue;
         var inf=[];
@@ -1138,7 +1143,8 @@ function events(){
     var ds=r.d||[];
     for(var j=0;j<ds.length;j++){
       out.push({ id:r.t+'|'+(r.k||r.id)+'|'+ds[j].l+'|'+ds[j].v,
-                 t:t, row:r, label:ds[j].l, date:ds[j].v });
+                 t:t, row:r, label:ds[j].l, date:ds[j].v,
+                 oi:(ds[j].oi==null? 999 : ds[j].oi) });
     }
   }
   out.sort(function(a,b){
@@ -1628,7 +1634,35 @@ function drawList(W, evs){
       if(n) n.scrollIntoView({behavior:'smooth', block:'nearest'});
     }; })(iso));
     d.appendChild(h);
-    if(open) by[iso].forEach(function(e){ d.appendChild(evNode(e)); });
+    if(open){
+      /* 같은 마감끼리 묶는다 — 안 묶으면 한 날에 수십 줄이 뒤섞여 그냥 긴 스크롤이 된다 */
+      var g={}, gk=[];
+      by[iso].forEach(function(e){
+        var k=e.t.id+'\u0001'+e.label;
+        if(!g[k]){ g[k]={t:e.t, label:e.label, oi:e.oi, list:[]}; gk.push(k); }
+        if(e.oi<g[k].oi) g[k].oi=e.oi;
+        g[k].list.push(e);
+      });
+      gk.sort(function(a,b){
+        var A=g[a], B=g[b];
+        var r2=typeRank(A.t)-typeRank(B.t);
+        if(r2) return r2;
+        if(A.oi!==B.oi) return A.oi-B.oi;      /* 원본 그리드의 열 순서 */
+        return A.label<B.label? -1 : 1;
+      });
+      gk.forEach(function(k){
+        var G=g[k];
+        var gh=el('div','evg');
+        gh.innerHTML='<span class="gb" style="background:'+G.t.color+'"></span>'+
+                     '<b>'+esc(G.label)+'</b><span class="gn">'+G.list.length+'건</span>';
+        d.appendChild(gh);
+        G.list.sort(function(x,y){
+          if(x.row.sc!==y.row.sc) return (x.row.sc||'')<(y.row.sc||'')? -1:1;
+          return x.row.ti<y.row.ti? -1:1;
+        });
+        G.list.forEach(function(e){ d.appendChild(evNode(e)); });
+      });
+    }
     box.appendChild(d);
   });
 }
@@ -1645,8 +1679,10 @@ function evNode(e){
   cb.appendChild(inp); n.appendChild(cb);
   var bd=el('div','bd');
   var r1=el('div','r1');
-  r1.innerHTML = '<span class="badge" style="background:'+e.t.color+'">'+esc(e.t.name)+'</span>'+
-                 '<span class="lab">'+esc(e.label)+'</span>'+
+  /* 배지는 달력 막대와 같은 색을 쓴다 (시즌마다 조금씩 다르다).
+     이슈 이름은 위의 묶음 머리에 있으므로 줄에서는 뺀다 */
+  r1.innerHTML = '<span class="badge" style="background:'+barColor(e.t, e.row.sc)+'">'+
+                 esc(e.t.name)+(e.row.sc? ' '+esc(scopeLabel(e.row.sc)) : '')+'</span>'+
                  '<span class="ti">'+esc(e.row.ti)+'</span>'+
                  /* 어댑터 키는 '시트|행' · '그룹|과업' 처럼 배지·제목과 겹치는 내부 값이라 숨긴다.
                     직접 열 지정으로 들어온 키(PO-26114 등)만 보여준다 */
