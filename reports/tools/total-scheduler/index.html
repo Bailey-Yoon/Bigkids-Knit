@@ -81,6 +81,9 @@ a:hover{color:var(--tool-deep)}
 .hrow .what{font-size:13px;flex:1;min-width:150px}
 .hrow .cnt{font-size:12px;color:var(--sub);font-variant-numeric:tabular-nums}
 .page[hidden]{display:none}
+/* ⚠ .panel 등이 display:flex 를 주면 hidden 속성이 무시된다 — 업로드 탭의 2·3단계 칸이
+   파일을 올리기 전부터 빈 채로 보였다 (2026-11-05). hidden 은 언제나 숨긴다 */
+[hidden]{display:none!important}
 
 .panel{background:var(--card);border-radius:var(--r-xl);padding:20px 22px;margin-bottom:18px;
   display:flex;flex-direction:column;gap:15px}
