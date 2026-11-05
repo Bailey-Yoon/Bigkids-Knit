@@ -357,7 +357,7 @@ def build(today, o, ev, hols=()):
     return title, body
 
 
-def write_feed(today, title, body, test=False):
+def write_feed(today, title, body, test=False, resend=False):
     # ⚠ 게시 시각은 **실제로 만든 시각**이어야 한다. 06:00 같은 고정값을 쓰면, GitHub 예약 실행이
     #   늦어져 플로가 그 사이 한 번 피드를 본 경우 "이미 지난 항목" 으로 보고 건너뛸 수 있다.
     #   같은 날 두 번 보내지 않는 건 main() 의 guid 검사가 맡는다
@@ -370,6 +370,9 @@ def write_feed(today, title, body, test=False):
     if test:   # Power Automate 연결 시험용 — 지금 시각의 새 항목이라 플로가 바로 반응한다
         gid += '-test-' + made.strftime('%H%M%S')
         title = '[테스트] ' + title
+    elif resend:   # 그날 메일을 고쳐 다시 보낼 때 — 정기 항목과 guid 가 달라 중복 검사에 안 걸린다
+        gid += '-r-' + made.strftime('%H%M%S')
+        title = '[다시 보냄] ' + title
     pub_s = pub.strftime('%a, %d %b %Y %H:%M:%S +0900')
     xml = ('<?xml version="1.0" encoding="UTF-8"?>\n'
            '<rss version="2.0"><channel>\n'
@@ -396,6 +399,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--date', help='YYYY-MM-DD (기본: 오늘 KST)')
     ap.add_argument('--test', action='store_true', help='연결 시험: 지금 시각으로 새 항목을 올린다 (제목에 [테스트])')
+    ap.add_argument('--resend', action='store_true', help='그날 메일을 고쳐 다시 보낸다 (제목에 [다시 보냄], 플로를 수동 실행)')
     ap.add_argument('--html', help='본문을 이 파일로도 저장 (미리보기용, 피드는 건드리지 않음)')
     a = ap.parse_args()
     today = date.fromisoformat(a.date) if a.date else datetime.now(KST).date()
@@ -419,11 +423,11 @@ def main():
                     '<body style="margin:0;padding:20px;background:#f3f2f6">%s</body>' % (esc(title), body))
         return
     # 같은 날 정기 항목이 이미 있으면 다시 쓰지 않는다 — 다시 쓰면 게시 시각이 바뀌어 메일이 또 나간다
-    if not a.test and os.path.exists(FEED):
+    if not a.test and not a.resend and os.path.exists(FEED):
         if ('d76-2team-brief-%s</guid>' % today.isoformat()) in open(FEED, encoding='utf-8').read():
             print('%s — 이미 만든 날: 피드 유지' % today)
             return
-    write_feed(today, title, body, test=a.test)
+    write_feed(today, title, body, test=a.test, resend=a.resend)
     print('피드 갱신:', FEED)
 
 
