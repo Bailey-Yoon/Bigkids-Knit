@@ -1,44 +1,23 @@
 name: 오늘의 일정 브리핑
-
-# Total Scheduler 스냅샷(seed.json)으로 평일 아침 브리핑을 만들어 data/brief/feed.xml 에 커밋한다.
-# 메일은 여기서 보내지 않는다 — Power Automate(회사 Microsoft 365)가 이 피드를 지켜보다가
-# 새 항목이 올라오면 팀 메일로 보낸다. 회사 메일 계정을 GitHub 에 둘 필요가 없다.
-#
-# 주말·휴일(연차표의 '휴일·공지')에는 항목을 만들지 않는다 → 메일도 안 나간다.
-# 손으로 돌릴 때 test 를 켜면 지금 시각의 [테스트] 항목을 올린다 (플로 연결 시험용).
-
+# 평일 06:30 KST. 로직은 scripts/daily_brief.sh
 on:
   schedule:
-    # 06:30 KST 월~금 = 21:30 UTC 일~목. GitHub 예약 실행은 수십 분 늦을 수 있다.
     - cron: '30 21 * * 0-4'
   workflow_dispatch:
     inputs:
       test:
-        description: '연결 시험 — 지금 시각으로 [테스트] 항목을 올린다'
         type: boolean
         default: false
-
 permissions:
   contents: write
-
 concurrency:
   group: daily-brief
-  cancel-in-progress: false
-
 jobs:
   brief:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-
-      - name: 브리핑 만들기
-        run: |
-          if [ "${{ inputs.test }}" = "true" ]; then
-            python scripts/build_daily_brief.py --test
-          else
-            python scripts/build_daily_brief.py
-  %
+      - run: bash scripts/daily_brief.sh "${{ inputs.test }}"
