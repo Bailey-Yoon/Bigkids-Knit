@@ -234,9 +234,31 @@ a:hover{color:var(--tool-deep)}
 .callgd{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px;font-size:11.5px;color:var(--sub)}
 .callgd span{display:inline-flex;align-items:center;gap:5px}
 .callgd i{width:16px;height:9px;border-radius:2px;display:block}
+/* 공휴일 — 일정 막대(진한 면 + 흰 글자)와 섞이지 않게 연한 면 + 진한 글자 + 왼쪽 띠.
+   나라 코드를 글자로 붙인다 (색만으로 나라를 구분하지 않는다) */
+.h-kr{background:#fdecec;color:#a31515;border-color:#cc0000}
+.h-us{background:#e9f0fa;color:#0d4a8f;border-color:#0277bd}
+.h-lny{background:#fff2df;color:#7a4200;border-color:#c25700}
+.h-id{background:#e7f4ec;color:#1b5e34;border-color:#2e7d4f}
+.h-ca{background:#f2ecf8;color:#55308a;border-color:#7b52ab}
+.hbar{font-size:10px;font-weight:600;line-height:1.35;padding:1px 5px;
+  border-left:3px solid;border-color:inherit;border-radius:2px}
+.hbar.h-kr{border-color:#cc0000} .hbar.h-us{border-color:#0277bd} .hbar.h-lny{border-color:#c25700}
+.hbar.h-id{border-color:#2e7d4f} .hbar.h-ca{border-color:#7b52ab}
+.hbar b{font-weight:800;margin-right:3px}
+.hbar.est{border-left-style:dashed}
+.hbar:hover, .hbar:focus-visible{outline:1px solid currentColor;outline-offset:-1px}
+.dnum.hol{color:var(--tcom)}
+.htag{font-size:11px;font-weight:700;border-radius:3px;padding:1px 6px;white-space:nowrap}
+.chiplab{font-size:12px;font-weight:700;color:var(--muted);align-self:center;
+  margin-left:6px;padding-left:12px;border-left:1px solid var(--line)}
+.chip .dot.sq{border-radius:2px}
+.datastamp{font-size:12.5px;color:var(--sub);padding:0 2px}
+.datastamp b{color:var(--body)}
 @media(max-width:640px){
   .daybg{min-height:52px} .dnum{font-size:10.5px;padding-left:4px}
   .bar{font-size:9.5px;padding:2px 3px;margin:0 1px}
+  .hbar{font-size:9px;padding:1px 3px}
 }
 
 /* ── 일정 목록 ── */
@@ -1094,6 +1116,47 @@ var AD_BAGRID = {
 var ADAPTERS=[AD_LEAVE, AD_TNA, AD_BAGRID];
 function adById(id){ for(var i=0;i<ADAPTERS.length;i++) if(ADAPTERS[i].id===id) return ADAPTERS[i]; return null; }
 
+/* ══════════════ 공휴일 ══════════════
+   나라별 공휴일 — 엑셀이 아니라 코드에 들어 있다 (_Backend/3_Scripts/make_holidays.py 가 만든다).
+   ⚠ events() 에 섞지 말 것. 섞으면 목록·2주 요약·CSV·아침 메일에 "할 일" 처럼 쌓인다.
+   달력에서만 맨 위 줄에 따로 깔고, 날짜 목록 머리·연차 탭에 이름을 적는다 */
+/*HOLI-BEGIN*/
+/* make_holidays.py 2026~2028 · 89건 — 손으로 고치지 말 것 */
+var HOLI=[{"g":"kr","c":"KR","f":"2026-01-01","t":"2026-01-01","n":"신정","off":["2026-01-01"]},{"g":"us","c":"US","f":"2026-01-01","t":"2026-01-01","n":"New Year's Day","off":["2026-01-01"]},{"g":"us","c":"US","f":"2026-01-19","t":"2026-01-19","n":"MLK Day","off":["2026-01-19"]},{"g":"kr","c":"KR","f":"2026-02-14","t":"2026-02-18","n":"설 연휴","off":["2026-02-16","2026-02-17","2026-02-18"]},{"g":"lny","c":"VN","f":"2026-02-14","t":"2026-02-22","n":"Tết","off":["2026-02-16","2026-02-17","2026-02-18","2026-02-19","2026-02-20"],"note":"법정 휴일 기준 · 공장 휴무는 보통 더 길다"},{"g":"lny","c":"CN","f":"2026-02-15","t":"2026-02-23","n":"춘절 (CNY)","off":["2026-02-16","2026-02-17","2026-02-18","2026-02-19","2026-02-20","2026-02-23"],"note":"법정 휴일 기준 · 공장 휴무는 보통 더 길다 · 주말 대체 근무 2/14, 2/28"},{"g":"us","c":"US","f":"2026-02-16","t":"2026-02-16","n":"Presidents' Day","off":["2026-02-16"]},{"g":"id","c":"ID","f":"2026-02-19","t":"2026-03-20","n":"라마단","off":[],"est":1,"note":"르바란 첫날에서 30일 역산 — 실제 시작은 정부 발표로 하루 앞뒤로 갈 수 있다"},{"g":"kr","c":"KR","f":"2026-03-01","t":"2026-03-02","n":"삼일절 · 대체 3/2","off":["2026-03-01","2026-03-02"]},{"g":"id","c":"ID","f":"2026-03-21","t":"2026-03-22","n":"르바란 (Idul Fitri)","off":["2026-03-21","2026-03-22"],"note":"공장은 앞뒤 단체 휴무(cuti bersama)로 보통 1주 이상 쉰다"},{"g":"ca","c":"GT·NI","f":"2026-03-29","t":"2026-04-05","n":"세마나 산타","off":["2026-04-02","2026-04-03","2026-04-04"],"note":"종려주일~부활절 · 법정 휴일 GT 목·금·토 / NI 목·금 · 공장은 보통 한 주를 쉰다"},{"g":"kr","c":"KR","f":"2026-05-01","t":"2026-05-01","n":"노동절","off":["2026-05-01"]},{"g":"kr","c":"KR","f":"2026-05-05","t":"2026-05-05","n":"어린이날","off":["2026-05-05"]},{"g":"kr","c":"KR","f":"2026-05-24","t":"2026-05-25","n":"부처님오신날 · 대체 5/25","off":["2026-05-24","2026-05-25"]},{"g":"us","c":"US","f":"2026-05-25","t":"2026-05-25","n":"Memorial Day","off":["2026-05-25"]},{"g":"kr","c":"KR","f":"2026-06-03","t":"2026-06-03","n":"지방선거","off":["2026-06-03"]},{"g":"kr","c":"KR","f":"2026-06-06","t":"2026-06-06","n":"현충일","off":["2026-06-06"]},{"g":"us","c":"US","f":"2026-06-19","t":"2026-06-19","n":"Juneteenth","off":["2026-06-19"]},{"g":"us","c":"US","f":"2026-07-03","t":"2026-07-04","n":"Independence Day","off":["2026-07-03","2026-07-04"]},{"g":"kr","c":"KR","f":"2026-07-17","t":"2026-07-17","n":"제헌절","off":["2026-07-17"]},{"g":"kr","c":"KR","f":"2026-08-15","t":"2026-08-17","n":"광복절 · 대체 8/17","off":["2026-08-15","2026-08-17"]},{"g":"us","c":"US","f":"2026-09-07","t":"2026-09-07","n":"Labor Day","off":["2026-09-07"]},{"g":"kr","c":"KR","f":"2026-09-24","t":"2026-09-27","n":"추석 연휴","off":["2026-09-24","2026-09-25","2026-09-26"]},{"g":"kr","c":"KR","f":"2026-10-03","t":"2026-10-05","n":"개천절 · 대체 10/5","off":["2026-10-03","2026-10-05"]},{"g":"kr","c":"KR","f":"2026-10-09","t":"2026-10-09","n":"한글날","off":["2026-10-09"]},{"g":"us","c":"US","f":"2026-10-12","t":"2026-10-12","n":"Columbus Day","off":["2026-10-12"]},{"g":"us","c":"US","f":"2026-11-11","t":"2026-11-11","n":"Veterans Day","off":["2026-11-11"]},{"g":"us","c":"US","f":"2026-11-26","t":"2026-11-26","n":"Thanksgiving","off":["2026-11-26"]},{"g":"kr","c":"KR","f":"2026-12-25","t":"2026-12-25","n":"성탄절","off":["2026-12-25"]},{"g":"us","c":"US","f":"2026-12-25","t":"2026-12-25","n":"Christmas","off":["2026-12-25"]},{"g":"kr","c":"KR","f":"2027-01-01","t":"2027-01-01","n":"신정","off":["2027-01-01"]},{"g":"us","c":"US","f":"2027-01-01","t":"2027-01-01","n":"New Year's Day","off":["2027-01-01"]},{"g":"us","c":"US","f":"2027-01-18","t":"2027-01-18","n":"MLK Day","off":["2027-01-18"]},{"g":"lny","c":"VN","f":"2027-02-04","t":"2027-02-10","n":"Tết","off":["2027-02-04","2027-02-05","2027-02-06","2027-02-07","2027-02-08","2027-02-09","2027-02-10"],"note":"법정 휴일 기준 · 공장 휴무는 보통 더 길다"},{"g":"lny","c":"CN","f":"2027-02-05","t":"2027-02-10","n":"춘절 (CNY)","off":["2027-02-05","2027-02-06","2027-02-07","2027-02-08","2027-02-09","2027-02-10"],"note":"법정 휴일 기준 · 공장 휴무는 보통 더 길다"},{"g":"kr","c":"KR","f":"2027-02-06","t":"2027-02-09","n":"설 연휴","off":["2027-02-06","2027-02-07","2027-02-08","2027-02-09"]},{"g":"id","c":"ID","f":"2027-02-08","t":"2027-03-09","n":"라마단","off":[],"est":1,"note":"르바란 첫날에서 30일 역산 — 실제 시작은 정부 발표로 하루 앞뒤로 갈 수 있다"},{"g":"us","c":"US","f":"2027-02-15","t":"2027-02-15","n":"Presidents' Day","off":["2027-02-15"]},{"g":"kr","c":"KR","f":"2027-03-01","t":"2027-03-01","n":"삼일절","off":["2027-03-01"]},{"g":"id","c":"ID","f":"2027-03-10","t":"2027-03-11","n":"르바란 (Idul Fitri)","off":["2027-03-10","2027-03-11"],"est":1,"note":"공장은 앞뒤 단체 휴무(cuti bersama)로 보통 1주 이상 쉰다"},{"g":"ca","c":"GT·NI","f":"2027-03-21","t":"2027-03-28","n":"세마나 산타","off":["2027-03-25","2027-03-26","2027-03-27"],"note":"종려주일~부활절 · 법정 휴일 GT 목·금·토 / NI 목·금 · 공장은 보통 한 주를 쉰다"},{"g":"kr","c":"KR","f":"2027-05-01","t":"2027-05-03","n":"노동절 · 대체 5/3","off":["2027-05-01","2027-05-03"]},{"g":"kr","c":"KR","f":"2027-05-05","t":"2027-05-05","n":"어린이날","off":["2027-05-05"]},{"g":"kr","c":"KR","f":"2027-05-13","t":"2027-05-13","n":"부처님오신날","off":["2027-05-13"]},{"g":"us","c":"US","f":"2027-05-31","t":"2027-05-31","n":"Memorial Day","off":["2027-05-31"]},{"g":"kr","c":"KR","f":"2027-06-06","t":"2027-06-06","n":"현충일","off":["2027-06-06"]},{"g":"us","c":"US","f":"2027-06-18","t":"2027-06-19","n":"Juneteenth","off":["2027-06-18","2027-06-19"]},{"g":"us","c":"US","f":"2027-07-04","t":"2027-07-05","n":"Independence Day","off":["2027-07-04","2027-07-05"]},{"g":"kr","c":"KR","f":"2027-07-17","t":"2027-07-19","n":"제헌절 · 대체 7/19","off":["2027-07-17","2027-07-19"]},{"g":"kr","c":"KR","f":"2027-08-15","t":"2027-08-16","n":"광복절 · 대체 8/16","off":["2027-08-15","2027-08-16"]},{"g":"us","c":"US","f":"2027-09-06","t":"2027-09-06","n":"Labor Day","off":["2027-09-06"]},{"g":"kr","c":"KR","f":"2027-09-14","t":"2027-09-16","n":"추석 연휴","off":["2027-09-14","2027-09-15","2027-09-16"]},{"g":"kr","c":"KR","f":"2027-10-03","t":"2027-10-04","n":"개천절 · 대체 10/4","off":["2027-10-03","2027-10-04"]},{"g":"kr","c":"KR","f":"2027-10-09","t":"2027-10-11","n":"한글날 · 대체 10/11","off":["2027-10-09","2027-10-11"]},{"g":"us","c":"US","f":"2027-10-11","t":"2027-10-11","n":"Columbus Day","off":["2027-10-11"]},{"g":"us","c":"US","f":"2027-11-11","t":"2027-11-11","n":"Veterans Day","off":["2027-11-11"]},{"g":"us","c":"US","f":"2027-11-25","t":"2027-11-25","n":"Thanksgiving","off":["2027-11-25"]},{"g":"us","c":"US","f":"2027-12-24","t":"2027-12-25","n":"Christmas","off":["2027-12-24","2027-12-25"]},{"g":"kr","c":"KR","f":"2027-12-25","t":"2027-12-27","n":"성탄절 · 대체 12/27","off":["2027-12-25","2027-12-27"]},{"g":"us","c":"US","f":"2027-12-31","t":"2028-01-01","n":"New Year's Day","off":["2027-12-31","2028-01-01"]},{"g":"kr","c":"KR","f":"2028-01-01","t":"2028-01-01","n":"신정","off":["2028-01-01"]},{"g":"us","c":"US","f":"2028-01-17","t":"2028-01-17","n":"MLK Day","off":["2028-01-17"]},{"g":"lny","c":"VN","f":"2028-01-22","t":"2028-01-30","n":"Tết","off":["2028-01-24","2028-01-25","2028-01-26","2028-01-27","2028-01-28","2028-01-29"],"note":"법정 휴일 기준 · 공장 휴무는 보통 더 길다"},{"g":"lny","c":"CN","f":"2028-01-25","t":"2028-01-30","n":"춘절 (CNY)","off":["2028-01-25","2028-01-26","2028-01-27","2028-01-28"],"note":"법정 휴일 기준 · 공장 휴무는 보통 더 길다"},{"g":"kr","c":"KR","f":"2028-01-26","t":"2028-01-30","n":"설 연휴","off":["2028-01-26","2028-01-27","2028-01-28"]},{"g":"id","c":"ID","f":"2028-01-28","t":"2028-02-26","n":"라마단","off":[],"est":1,"note":"르바란 첫날에서 30일 역산 — 실제 시작은 정부 발표로 하루 앞뒤로 갈 수 있다"},{"g":"us","c":"US","f":"2028-02-21","t":"2028-02-21","n":"Presidents' Day","off":["2028-02-21"]},{"g":"id","c":"ID","f":"2028-02-27","t":"2028-02-28","n":"르바란 (Idul Fitri)","off":["2028-02-27","2028-02-28"],"est":1,"note":"공장은 앞뒤 단체 휴무(cuti bersama)로 보통 1주 이상 쉰다"},{"g":"kr","c":"KR","f":"2028-03-01","t":"2028-03-01","n":"삼일절","off":["2028-03-01"]},{"g":"ca","c":"GT·NI","f":"2028-04-09","t":"2028-04-16","n":"세마나 산타","off":["2028-04-13","2028-04-14","2028-04-15"],"note":"종려주일~부활절 · 법정 휴일 GT 목·금·토 / NI 목·금 · 공장은 보통 한 주를 쉰다"},{"g":"kr","c":"KR","f":"2028-04-12","t":"2028-04-12","n":"국회의원 선거일","off":["2028-04-12"]},{"g":"kr","c":"KR","f":"2028-05-01","t":"2028-05-01","n":"노동절","off":["2028-05-01"]},{"g":"kr","c":"KR","f":"2028-05-02","t":"2028-05-02","n":"부처님오신날","off":["2028-05-02"]},{"g":"kr","c":"KR","f":"2028-05-05","t":"2028-05-05","n":"어린이날","off":["2028-05-05"]},{"g":"us","c":"US","f":"2028-05-29","t":"2028-05-29","n":"Memorial Day","off":["2028-05-29"]},{"g":"kr","c":"KR","f":"2028-06-06","t":"2028-06-06","n":"현충일","off":["2028-06-06"]},{"g":"us","c":"US","f":"2028-06-19","t":"2028-06-19","n":"Juneteenth","off":["2028-06-19"]},{"g":"us","c":"US","f":"2028-07-04","t":"2028-07-04","n":"Independence Day","off":["2028-07-04"]},{"g":"kr","c":"KR","f":"2028-07-17","t":"2028-07-17","n":"제헌절","off":["2028-07-17"]},{"g":"kr","c":"KR","f":"2028-08-15","t":"2028-08-15","n":"광복절","off":["2028-08-15"]},{"g":"us","c":"US","f":"2028-09-04","t":"2028-09-04","n":"Labor Day","off":["2028-09-04"]},{"g":"kr","c":"KR","f":"2028-09-30","t":"2028-10-05","n":"추석 연휴","off":["2028-10-02","2028-10-03","2028-10-04","2028-10-05"]},{"g":"kr","c":"KR","f":"2028-10-03","t":"2028-10-03","n":"개천절","off":["2028-10-03"]},{"g":"kr","c":"KR","f":"2028-10-09","t":"2028-10-09","n":"한글날","off":["2028-10-09"]},{"g":"us","c":"US","f":"2028-10-09","t":"2028-10-09","n":"Columbus Day","off":["2028-10-09"]},{"g":"us","c":"US","f":"2028-11-10","t":"2028-11-11","n":"Veterans Day","off":["2028-11-10","2028-11-11"]},{"g":"us","c":"US","f":"2028-11-23","t":"2028-11-23","n":"Thanksgiving","off":["2028-11-23"]},{"g":"kr","c":"KR","f":"2028-12-25","t":"2028-12-25","n":"성탄절","off":["2028-12-25"]},{"g":"us","c":"US","f":"2028-12-25","t":"2028-12-25","n":"Christmas","off":["2028-12-25"]}];
+/*HOLI-END*/
+var HOL_G=[['kr','한국'],['us','미국'],['lny','베트남·중국 설'],['id','인니 라마단'],['ca','과테·니카 세마나 산타']];
+var HOL_KEY='d76_tsched_hol_v1', HOL_OFF={};
+try{ HOL_OFF=JSON.parse(localStorage.getItem(HOL_KEY)||'{}')||{}; }catch(e){ HOL_OFF={}; }
+function holSave(){ try{ localStorage.setItem(HOL_KEY, JSON.stringify(HOL_OFF)); }catch(e){} }
+/* 클래스 이름을 문자열로 이어 붙이지 않는다 — check.py 가 정의를 찾을 수 있게 */
+var HOL_CLS={kr:'h-kr',us:'h-us',lny:'h-lny',id:'h-id',ca:'h-ca'};
+function holCls(g){ return HOL_CLS[g]||''; }
+var HOL_RANK={}; HOL_G.forEach(function(g,i){ HOL_RANK[g[0]]=i; });
+var KR_RED={};                     /* 한국 법정 공휴일 날짜 → 이름 (빨간 날) */
+HOLI.forEach(function(h){ if(h.g==='kr') h.off.forEach(function(d){ KR_RED[d]=h.n; }); });
+function holName(h){ return h.c+' '+h.n+(h.est?' (예상)':''); }
+function holTitle(h){
+  return holName(h)+' ('+md(h.f)+(h.f!==h.t?' ~ '+md(h.t):'')+')'+(h.note?' — '+h.note:'');
+}
+/* skip = 이미 연차표의 '휴일·공지' 막대가 깔린 날 — 한국 공휴일을 두 번 그리지 않는다 */
+function holIn(from, to, skip){
+  return HOLI.filter(function(h){
+    if(HOL_OFF[h.g] || h.t<from || h.f>to) return false;
+    if(h.g==='kr' && skip){
+      for(var d=h.f; d<=h.t; d=shift(d,1)) if(skip[d]) return false;
+    }
+    return true;
+  }).sort(function(a,b){
+    var r=HOL_RANK[a.g]-HOL_RANK[b.g];
+    return r || (a.f<b.f?-1:a.f>b.f?1:0);
+  });
+}
+function holTags(iso){
+  return holIn(iso, iso, null).map(function(h){
+    return '<span class="htag '+holCls(h.g)+'" title="'+esc(holTitle(h))+'">'+esc(holName(h))+'</span>';
+  }).join(' ');
+}
+
 /* ══════════════ 저장 ══════════════ */
 var STORE_OK = (function(){
   try{ localStorage.setItem('__t','1'); localStorage.removeItem('__t'); return true; }
@@ -1212,7 +1275,6 @@ function visible(){
 }
 function drawFilters(){
   var box=$('#filters'); box.innerHTML='';
-  if(!ST.types.length) return;
   typesInOrder().forEach(function(t){
     var n = events().filter(function(e){ return e.t.id===t.id; }).length;
     var b = el('button','chip');
@@ -1225,6 +1287,20 @@ function drawFilters(){
     b.addEventListener('click', function(){
       if(OFF[t.id]) delete OFF[t.id]; else OFF[t.id]=1;
       drawFilters(); render();
+    });
+    box.appendChild(b);
+  });
+  /* 공휴일 켜고 끄기 — 이 브라우저에만 기억한다 (보는 사람 취향) */
+  var lab=el('span','chiplab'); lab.textContent='공휴일'; box.appendChild(lab);
+  HOL_G.forEach(function(g){
+    var b=el('button','chip');
+    b.type='button';
+    b.setAttribute('aria-pressed', HOL_OFF[g[0]]?'false':'true');
+    b.title=g[1]+' 공휴일 · 눌러서 켜고 끄기';
+    b.innerHTML='<span class="dot sq '+holCls(g[0])+'" style="border:2px solid"></span>'+esc(g[1]);
+    b.addEventListener('click', function(){
+      if(HOL_OFF[g[0]]) delete HOL_OFF[g[0]]; else HOL_OFF[g[0]]=1;
+      holSave(); drawFilters(); render();
     });
     box.appendChild(b);
   });
@@ -1459,6 +1535,11 @@ function renderMonth(box, ym, spans, opt){
   var y=+ym.slice(0,4), mo=+ym.slice(5,7);
   var first=new Date(y, mo-1, 1), last=new Date(y, mo, 0);
   var mFrom=isoOf(first), mTo=isoOf(last), today=isoToday();
+  var noKR={};                 /* 연차표가 이미 '휴일·공지' 로 그린 날 */
+  spans.forEach(function(sp){
+    if(sp.label!=='휴일·공지') return;
+    for(var d=sp.from; d<=sp.to; d=shift(d,1)) noKR[d]=1;
+  });
   if(opt.label){ var lb=el('div','mlbl'); lb.textContent=y+'년 '+mo+'월'; box.appendChild(lb); }
   var hd=el('div','calhead');
   ['일','월','화','수','목','금','토'].forEach(function(w,i){
@@ -1485,7 +1566,8 @@ function renderMonth(box, ym, spans, opt){
       bg.setAttribute('aria-label', iso);
       bg.addEventListener('click', (function(x){ return function(){ opt.onDay(x); }; })(iso));
       wk.appendChild(bg);
-      var dn=el('div','dnum'+(d.getDay()===0?' sun':d.getDay()===6?' sat':'')+(out?' out':''));
+      var red=(!HOL_OFF.kr && KR_RED[iso]);
+      var dn=el('div','dnum'+(d.getDay()===0?' sun':d.getDay()===6?' sat':'')+(red?' hol':'')+(out?' out':''));
       dn.style.gridColumn=(i+1); dn.style.gridRow='1';
       /* 달력이 길어 몇 월인지 놓치기 쉽다 — 날짜마다 월을 같이 적는다 */
       dn.textContent=(d.getMonth()+1)+'/'+d.getDate();
@@ -1513,6 +1595,30 @@ function renderMonth(box, ym, spans, opt){
       for(var k=0;k<lane.length;k++){ if(!(c2 < lane[k][0] || c1 > lane[k][1])) return false; }
       return true;
     }
+    /* 공휴일은 일정 막대보다 위, 자기 줄에 깐다. 접기(MAXLANE) 대상이 아니다 */
+    var hl=[];
+    holIn(wkFrom, wkTo, noKR).forEach(function(h){
+      var c1=Math.max(1, dayDiff(wkFrom, h.f)+1), c2=Math.min(7, dayDiff(wkFrom, h.t)+1);
+      var li=0;
+      while(li<hl.length && !laneFree(hl[li], c1, c2)) li++;
+      if(!hl[li]) hl[li]=[];
+      hl[li].push([c1,c2]);
+      var b=el('button','bar hbar '+holCls(h.g)+(h.est?' est':'')+(c2>=5?' rev':''));
+      b.type='button';
+      b.style.gridColumn=c1+' / span '+(c2-c1+1);
+      b.style.gridRow=(li+2);
+      b.innerHTML=(h.f<wkFrom?'◀ ':'')+'<b>'+esc(h.c)+'</b>'+esc(h.n+(h.est?' (예상)':''))+(h.t>wkTo?' ▶':'');
+      b.title=holTitle(h);
+      b.addEventListener('click', (function(w0, a, z){ return function(ev){
+        ev.stopPropagation();
+        var r=this.getBoundingClientRect();
+        var k=r.width>0 ? Math.floor((ev.clientX-r.left)/r.width*(z-a+1)) : 0;
+        if(k<0) k=0; if(k>z-a) k=z-a;
+        opt.onDay(shift(w0, (a-1)+k));
+      }; })(wkFrom, c1, c2));
+      wk.appendChild(b);
+    });
+    var HO=hl.length;
     mine.forEach(function(sp){
       var c1=Math.max(1, dayDiff(wkFrom, sp.from)+1);
       var c2=Math.min(7, dayDiff(wkFrom, sp.to)+1);
@@ -1527,7 +1633,7 @@ function renderMonth(box, ym, spans, opt){
       var b=el('button','bar'+(c2>=5?' rev':''));   /* 오른쪽 칸은 왼쪽으로 펼친다 */
       b.type='button';
       b.style.gridColumn=c1+' / span '+(c2-c1+1);
-      b.style.gridRow=(li+2);
+      b.style.gridRow=(li+2+HO);
       b.style.background=barColor(sp.t, sp.sc);
       b.textContent=(sp.from<wkFrom?'◀ ':'')+barText(sp)+(sp.to>wkTo?' ▶':'');
       b.title=sp.t.name+(sp.sc? ' · '+scopeLabel(sp.sc):'')+' · '+sp.label+' · '+sp.ti+
@@ -1548,7 +1654,7 @@ function renderMonth(box, ym, spans, opt){
       if(overMax){
         var m=el('button','barmore');
         m.type='button';
-        m.style.gridColumn='1 / span 7'; m.style.gridRow=(MAXLANE+2);
+        m.style.gridColumn='1 / span 7'; m.style.gridRow=(MAXLANE+2+HO);
         m.textContent='+ 이 주에 '+overMax+'건 더 — 눌러서 펼치기';
         m.addEventListener('click', (function(x){ return function(ev){
           ev.stopPropagation(); CAL_OPEN[x]=1; render();
@@ -1557,7 +1663,7 @@ function renderMonth(box, ym, spans, opt){
       }else if(CAL_OPEN[wkFrom] && !CAL_ALL){
         var m2=el('button','barmore');
         m2.type='button';
-        m2.style.gridColumn='1 / span 7'; m2.style.gridRow=(lanes.length+2);
+        m2.style.gridColumn='1 / span 7'; m2.style.gridRow=(lanes.length+2+HO);
         m2.textContent='− 접기';
         m2.addEventListener('click', (function(x){ return function(ev){
           ev.stopPropagation(); delete CAL_OPEN[x]; render();
@@ -1612,7 +1718,8 @@ function drawCal(W){
       }
     });
   }
-  calLegend(box, '<i style="background:#dfe9f3"></i>목록이 보고 있는 구간 ('+md(W.from)+'~'+md(W.to)+')');
+  calLegend(box, '<i style="background:#dfe9f3"></i>목록이 보고 있는 구간 ('+md(W.from)+'~'+md(W.to)+')'+
+    (HOL_OFF.kr? '' : '</span><span><b style="color:#cc0000">빨간 날짜</b> = 한국 공휴일'));
 }
 
 function drawList(W, evs){
@@ -1651,6 +1758,7 @@ function drawList(W, evs){
     h.innerHTML='<span class="car">'+(open?'▾':'▸')+'</span>'+
                 '<span class="dd">'+(dd.getMonth()+1)+'/'+dd.getDate()+' ('+WD[dd.getDay()]+')</span>'+
                 '<span class="rel '+relCls+'">'+relTxt+'</span>'+
+                holTags(iso)+
                 '<span class="ddots">'+dots+'</span>'+
                 '<span class="n">'+by[iso].length+'건</span>';
     h.addEventListener('click', (function(x){ return function(){
@@ -1870,7 +1978,8 @@ function drawLeaveDay(){
   var h='<div class="lvday">'+
     '<h3>'+(d.getMonth()+1)+'/'+d.getDate()+' ('+WD[d.getDay()]+')'+(LV_DAY===today?' · 오늘':'')+'</h3>'+
     '<div class="hint">'+dLabel(dayDiff(today, LV_DAY))+
-      (no.length? ' · '+no.map(function(e){ return esc(e.row.ti); }).join(' · ') : '')+'</div>'+
+      (no.length? ' · '+no.map(function(e){ return esc(e.row.ti); }).join(' · ') : '')+
+      (holIn(LV_DAY, LV_DAY, null).length? ' &nbsp;'+holTags(LV_DAY) : '')+'</div>'+
     '<div class="lvcols">'+
       '<div class="lvcol"><h4>이 날 연차 '+lv.length+'명</h4>'+
         (lv.length? lv.map(function(e){ return item(e,false); }).join('') : '<div class="lvnone">없습니다</div>')+
@@ -2662,63 +2771,74 @@ $('#bDemo').addEventListener('click', function(){ putDemo(true); });
    페이지 옆에 seed.json 이 있으면 **내 브라우저가 비어 있을 때만** 읽어 보여준다.
    읽은 것을 localStorage 에 저장하지는 않는다 — 직접 올리거나 체크를 해야
    그때부터 내 것이 정본이 된다. 로컬 파일로 열면 fetch 가 막혀 그냥 비어 있다 */
-var SEED=null;                 /* 받아온 스냅샷 (버튼으로 다시 적용할 수 있게 들고 있는다) */
-function seedBanner(html){
-  var box=$('#seedBox'); box.hidden=false; box.innerHTML=html;
+var SEED=null, SEED_CHK=0;      /* 받아온 팀 공용 데이터 (버튼으로 다시 적용할 수 있게 들고 있는다) */
+/* 보는 사람에게는 "스냅샷" 이라는 말을 쓰지 않는다 — 무슨 뜻인지 안 읽혔다 (2026-11-05 사용자).
+   평소에는 「데이터 기준 11/5 10:43」 한 줄만, 내 브라우저가 팀 것과 다를 때만 노란 상자 */
+function atText(at){
+  var d=new Date(at);
+  if(!at || isNaN(d)) return esc(String(at||'').slice(0,10));
+  return (d.getMonth()+1)+'/'+d.getDate()+' ('+WD[d.getDay()]+') '+p2(d.getHours())+':'+p2(d.getMinutes());
+}
+function seedBanner(warn, html){
+  var box=$('#seedBox'); box.hidden=false; box.className=warn?'warn':'datastamp'; box.innerHTML=html;
   var b=document.getElementById('bReseed');
   if(b) b.addEventListener('click', function(){
     if(!SEED) return;
-    if(ST.own && !confirm('직접 올리신 내용을 버리고 사이트 스냅샷으로 되돌립니다. 계속할까요?')) return;
+    if(ST.own && !confirm('직접 올리신 내용을 버리고 팀 공용 데이터로 바꿉니다. 계속할까요?')) return;
     applySeed(SEED);
   });
 }
-function applySeed(o){
+function stampOk(extra){
+  seedBanner(false, '데이터 기준 <b>'+atText(ST.seedAt)+'</b> · 담당자가 엑셀을 새로 반영하면 이 화면도 저절로 바뀝니다.'+
+    (extra? ' <b>'+extra+'</b>' : ''));
+}
+function applySeed(o, extra){
   ST.types=o.types||[]; ST.rows=o.rows||[];
   ST.seedAt=String(o.at||''); ST.own=false;
-  syncTypeNames();              /* 옛 스냅샷에 박힌 타입 이름을 지금 이름으로 */
+  syncTypeNames();              /* 옛 데이터에 박힌 타입 이름을 지금 이름으로 */
   bust(); save();
-  var at=ST.seedAt.slice(0,10);
-  seedBanner('<b>사이트 스냅샷'+(at? ' ('+esc(at)+' 기준)':'')+'을 보고 있습니다.</b> '+
-    '새 스냅샷이 올라오면 다음에 열 때 저절로 따라옵니다. '+
-    '<b>⬆ 업로드</b> 에서 직접 올리면 그때부터 내 브라우저 것만 보입니다 — '+
-    '올린 파일은 어디에도 전송되지 않습니다.');
+  stampOk(extra);
   drawFilters(); render(); drawUsage(); drawTypes();
 }
 /* ⚠ 예전에는 "비어 있을 때만" 읽었다. 그런데 체크 한 번만 눌러도 내용이
-   localStorage 에 저장돼, **그 뒤로는 새 스냅샷이 영영 안 보였다** (2026-11-04).
-   그래서 어디서 온 것인지(`seedAt`)와 직접 올린 것인지(`own`)를 들고 비교한다 */
+   localStorage 에 저장돼, **그 뒤로는 새 데이터가 영영 안 보였다** (2026-11-04).
+   그래서 어디서 온 것인지(`seedAt`)와 직접 올린 것인지(`own`)를 들고 비교한다.
+   열 때 한 번 + 열어 둔 동안 10분마다 + 탭으로 돌아올 때 다시 본다 —
+   열어 둔 창이 하루 종일 옛 데이터를 보여주지 않게 (2026-11-05).
+   ⚠ 아티팩트판은 seed.json 이 그 판에 같이 묶여 있어 다시 게시해야 바뀐다
+     (아티팩트는 connect-src 'self' 라 GitHub 를 직접 못 읽는다 — 2026-11-05 확인) */
 function loadSeed(){
-  var req;
+  SEED_CHK=Date.now();
+  var req, first=!SEED;
   try{ req=fetch('seed.json?t='+Date.now(), {cache:'no-store'}); }catch(e){ return; }
   req.then(function(r){ return r.ok ? r.json() : null; })
      .then(function(o){
        if(!o || !Array.isArray(o.rows) || !o.rows.length) return;
        SEED=o;
        var at=String(o.at||''), mine=String(ST.seedAt||'');
-       if(!ST.rows.length){ applySeed(o); return; }        /* 비어 있으면 그냥 적용 */
-       if(!ST.own && mine && at>mine){ applySeed(o); return; }  /* 더 새 스냅샷 → 따라간다 */
-       if(!ST.own && mine){                                 /* 같은 스냅샷 */
-         seedBanner('<b>사이트 스냅샷 ('+esc(mine.slice(0,10))+' 기준)을 보고 있습니다.</b> '+
-           '새 스냅샷이 올라오면 다음에 열 때 저절로 따라옵니다. '+
-           '<button class="btn ghost sm" id="bReseed" style="margin-left:8px">최신본 다시 불러오기</button>');
+       if(!ST.rows.length){ applySeed(o); return; }             /* 비어 있으면 그냥 적용 */
+       if(!ST.own && mine && at>mine){                         /* 더 새 데이터 → 따라간다 */
+         applySeed(o, first? '' : '방금 새 데이터로 바뀌었습니다.');
          return;
        }
+       if(!ST.own && mine){ stampOk(''); return; }             /* 이미 최신 */
        if(ST.own){
          /* 직접 올린 내용이 있다 — 절대 덮지 않고 알리기만 한다 */
-         seedBanner('<b>직접 올리신 내용을 보고 있습니다.</b> '+
-           '사이트에는 '+esc(at.slice(0,10))+' 기준 스냅샷이 올라와 있습니다. '+
-           '<button class="btn ghost sm" id="bReseed" style="margin-left:8px">사이트 스냅샷으로 되돌리기</button>');
+         seedBanner(true, '<b>직접 올리신 내용을 보고 있습니다</b> — 팀 공용 데이터('+atText(at)+' 기준)와 다를 수 있습니다. '+
+           '<button class="btn ghost sm" id="bReseed" style="margin-left:8px">팀 공용 데이터로 돌아가기</button>');
          return;
        }
        /* 출처를 모르는 옛 데이터 — 이 도구의 예전 판이 저장해 둔 것이다.
           덮으면 직접 올린 것을 날릴 수 있어 묻기만 한다 */
-       seedBanner('<b>이 브라우저에 예전부터 저장돼 있던 내용을 보고 있습니다 — 언제 것인지 알 수 없습니다.</b> '+
-         '사이트에는 '+esc(at.slice(0,10))+' 기준 스냅샷이 올라와 있습니다. '+
-         '빠진 항목이나 지워졌어야 할 줄이 보이면 눌러 주세요. '+
-         '<button class="btn ghost sm" id="bReseed" style="margin-left:8px">사이트 스냅샷 불러오기</button>');
+       seedBanner(true, '<b>이 브라우저에 예전 내용이 남아 있습니다.</b> 팀 공용 데이터는 '+atText(at)+' 기준입니다. '+
+         '<button class="btn ghost sm" id="bReseed" style="margin-left:8px">팀 공용 데이터로 바꾸기</button>');
      })
      .catch(function(){ /* seed.json 이 없으면 그냥 빈 화면 */ });
 }
+setInterval(function(){ if(!document.hidden) loadSeed(); }, 10*60*1000);
+document.addEventListener('visibilitychange', function(){
+  if(!document.hidden && Date.now()-SEED_CHK > 60*1000) loadSeed();
+});
 
 /* ══════════════ 시작 ══════════════ */
 load();
