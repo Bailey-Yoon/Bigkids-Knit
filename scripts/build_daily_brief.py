@@ -2,7 +2,8 @@
 """Total Scheduler — 매일 아침 「오늘의 일정」 브리핑 (RSS 피드)
 
 GitHub Actions 가 평일 아침에 돌린다 (.github/workflows/daily-brief.yml).
-읽는 것 : reports/tools/total-scheduler/seed.json   (스케줄러가 보여주는 그 스냅샷)
+읽는 것 : data/brief/schedule.json   (아티팩트 공유 저장소의 사본 — 클라우드 예약 작업이 매일 아침 옮긴다)
+          data/brief/holidays.json   (공휴일 표 — make_holidays.py)
 쓰는 것 : data/brief/feed.xml                        (항목 1개짜리 RSS)
 
 메일은 여기서 보내지 않는다. 회사 메일 계정을 GitHub 에 둘 수 없어서,
@@ -31,7 +32,10 @@ except Exception:
     pass
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SEED = os.path.join(ROOT, 'reports', 'tools', 'total-scheduler', 'seed.json')
+# ⚠ 스케줄러는 2026-11-05 부터 **아티팩트로만** 돈다 (사이트판 내림). 정본은 아티팩트의 공유 저장소이고,
+#   GitHub 는 거기를 직접 못 읽는다 → 클라우드 예약 작업이 평일 06:00 에 scripts/artifact_to_schedule.py 로
+#   이 파일을 만들어 커밋한다. 그 작업이 멈추면 메일은 **마지막으로 옮긴 데이터**로 나간다 (꼬리에 경고)
+SEED = os.path.join(ROOT, 'data', 'brief', 'schedule.json')
 FEED = os.path.join(ROOT, 'data', 'brief', 'feed.xml')
 # 공휴일 표 — Total_Scheduler/_Backend/3_Scripts/make_holidays.py 가 만든다 (스케줄러 달력과 같은 표)
 HOLS = os.path.join(ROOT, 'data', 'brief', 'holidays.json')
@@ -43,7 +47,6 @@ AHEAD = 7                       # 앞으로 며칠치를 같이 보여줄지
 
 SITE = 'https://bailey-yoon.github.io/Bigkids-Knit/'
 APP_ART = 'https://claude.ai/artifact/NwsJhhJrS4211TVWdX8CRK'
-APP_SITE = SITE + 'reports/tools/total-scheduler/'
 FEED_URL = SITE + 'data/brief/feed.xml'
 
 # 스케줄러와 같은 색 (막대 색) — 메일은 CSS 변수를 못 쓰므로 값으로 박는다
@@ -292,19 +295,19 @@ def build(today, o, ev, hols=()):
     rows.append(section('앞으로 %d일 · 공휴일' % AHEAD, b or none('앞으로 %d일 안에 시작하는 공휴일이 없습니다' % AHEAD), '#7a4200'))
 
     at = str(o.get('at', ''))[:10]
+    synced = str(o.get('synced', '') or at)[:10]
     try:
-        stale = (today - date.fromisoformat(at)).days
+        stale = (today - date.fromisoformat(synced)).days
     except Exception:
         stale = None
     warn = ''
-    if stale is not None and stale >= 14:
-        warn = ('<div style="margin-top:6px;color:#8a4b00">⚠ 일정 스냅샷이 %d일 전 것입니다. '
-                '엑셀이 바뀌었다면 스냅샷 갱신이 필요합니다.</div>') % stale
+    if stale is not None and stale >= 2:
+        warn = ('<div style="margin-top:6px;color:#8a4b00">⚠ 공유 일정을 %d일째 못 옮겨 왔습니다. '
+                '예약 작업(클라우드)을 확인해 주세요.</div>') % stale
 
     foot = ('<tr><td style="padding:14px 20px 18px;border-top:1px solid #e7e5ee;font-size:12px;color:#6e6d77;line-height:1.6">'
-            '일정 스냅샷 <b style="color:#4a4954">%s</b> 기준 · 매일 평일 아침 자동 발송<br>'
-            '전체 일정 보기: <a href="%s" style="color:#0277bd">Total Scheduler</a> '
-            '(<a href="%s" style="color:#0277bd">사이트판</a>)%s</td></tr>') % (esc(at or '?'), APP_ART, APP_SITE, warn)
+            '일정 데이터 <b style="color:#4a4954">%s</b> 마지막 변경 기준 · 매일 평일 아침 자동 발송<br>'
+            '전체 일정 보기 · 연차 올리기: <a href="%s" style="color:#0277bd">Total Scheduler</a>%s</td></tr>') % (esc(at or '?'), APP_ART, warn)
 
     head = ('<tr><td style="background:#eef4fa;padding:18px 20px">'
             '<div style="font-size:11px;letter-spacing:2px;font-weight:700;color:#014b7e">BIG KIDS 2팀 · TOTAL SCHEDULER</div>'
@@ -339,7 +342,7 @@ def write_feed(today, title, body, test=False):
            '<rss version="2.0"><channel>\n'
            '<title>Big Kids 2팀 · 오늘의 일정</title>\n'
            '<link>%s</link>\n'
-           '<description>Total Scheduler 스냅샷으로 만드는 평일 아침 브리핑</description>\n'
+           '<description>Total Scheduler 공유 일정으로 만드는 평일 아침 브리핑</description>\n'
            '<language>ko</language>\n'
            '<lastBuildDate>%s</lastBuildDate>\n'
            '<item>\n'
@@ -349,7 +352,7 @@ def write_feed(today, title, body, test=False):
            '<pubDate>%s</pubDate>\n'
            '<description><![CDATA[%s]]></description>\n'
            '</item>\n'
-           '</channel></rss>\n') % (APP_SITE, pub_s, esc(title), APP_ART, gid, pub_s,
+           '</channel></rss>\n') % (APP_ART, pub_s, esc(title), APP_ART, gid, pub_s,
                                      body.replace(']]>', ']]&gt;'))
     os.makedirs(os.path.dirname(FEED), exist_ok=True)
     with open(FEED, 'w', encoding='utf-8', newline='\n') as f:
