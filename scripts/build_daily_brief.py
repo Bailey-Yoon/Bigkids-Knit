@@ -274,10 +274,14 @@ def write_feed(today, title, body, test=False):
     # ⚠ 게시 시각은 **실제로 만든 시각**이어야 한다. 06:00 같은 고정값을 쓰면, GitHub 예약 실행이
     #   늦어져 플로가 그 사이 한 번 피드를 본 경우 "이미 지난 항목" 으로 보고 건너뛸 수 있다.
     #   같은 날 두 번 보내지 않는 건 main() 의 guid 검사가 맡는다
-    pub = datetime.now(KST).replace(microsecond=0)
+    #   ⚠ 그리고 GitHub Pages 는 파일을 **최대 10분 캐시**한다 (max-age=600). 그동안 플로는 옛 피드를
+    #   보면서 '여기까지 봤다' 시각만 앞으로 옮기므로, 뒤늦게 보이는 항목은 게시 시각이 그보다 과거라
+    #   새 항목으로 치지 않는다 (2026-11-05 시험 메일 2통이 이렇게 빠졌다). 그래서 **15분 뒤 시각**을 적는다
+    made = datetime.now(KST).replace(microsecond=0)
+    pub = made + timedelta(minutes=15)
     gid = today.isoformat()
     if test:   # Power Automate 연결 시험용 — 지금 시각의 새 항목이라 플로가 바로 반응한다
-        gid += '-test-' + pub.strftime('%H%M%S')
+        gid += '-test-' + made.strftime('%H%M%S')
         title = '[테스트] ' + title
     pub_s = pub.strftime('%a, %d %b %Y %H:%M:%S +0900')
     xml = ('<?xml version="1.0" encoding="UTF-8"?>\n'
