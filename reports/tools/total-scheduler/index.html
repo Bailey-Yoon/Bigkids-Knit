@@ -916,8 +916,8 @@ var AD_TNA = {
         var owner=CT(ws,r,2); if(owner) inf.push({l:'담당', v:owner.replace(/\s*\n\s*/g,' · ')});
         if(dueC){ var d2=parseD(CV(ws,r,dueC)); if(d2) inf.push({l:'DUE', v:d2}); }
         if(CT(ws,r,1)) inf.push({l:'마일스톤', v:'●'});
-        rows.push({ id:uid(), t:null, k:grp+'|'+task, ti:task,
-                    d:[{l:grp, v:iso}], info:inf, f:fname, u:nowIso });
+        rows.push({ id:uid(), t:null, k:grp+'|'+task, ti:task, sc:grp,
+                    d:[{l:grp, v:iso, oi:groups.length-1}], info:inf, f:fname, u:nowIso });
       }
       if(!n) warns.push(grp+' 그룹에 START 날짜가 하나도 없습니다');
       if(skipped) warns.push(grp+' 그룹의 START 칸 '+skipped+'개가 날짜가 아니라 버렸습니다 (#NO MATCH 등)');
@@ -1331,8 +1331,24 @@ function buildScopeIdx(){
   });
 }
 function scopeLabel(sc){
-  var m=String(sc||'').match(/^(\d{4})\s+(\S+)$/);
-  return m ? m[2]+"'"+m[1].slice(2) : String(sc||'');
+  var v=String(sc||'');
+  var m=v.match(/^(\d{4})\s+(\S+)$/);      /* BA grid: "2027 C2" -> C2'27 */
+  if(m) return m[2]+"'"+m[1].slice(2);
+  m=v.match(/^C(\d)(\d{2})\b/);            /* TNA: "C327 JUN W5" -> C3'27 */
+  if(m) return 'C'+m[1]+"'"+m[2];
+  return v;
+}
+/* 흰 글자를 얹으므로 4.5:1 을 넘어야 한다. 색상을 돌리면 같은 밝기라도
+   대비가 떨어지는 색이 있다 (빨강을 주황 쪽으로 돌리면 3.7:1 까지 내려간다).
+   계산한 색이 모자라면 넘을 때까지 어둡게 한다 */
+function whiteRatio(hex){
+  var h=hex.replace('#','');
+  var c=[0,2,4].map(function(i){
+    var v=parseInt(h.substr(i,2),16)/255;
+    return v<=0.03928 ? v/12.92 : Math.pow((v+0.055)/1.055, 2.4);
+  });
+  var L=0.2126*c[0]+0.7152*c[1]+0.0722*c[2];
+  return 1.05/(L+0.05);
 }
 function barColor(t, sc){
   if(!sc) return t.color;
@@ -1340,8 +1356,11 @@ function barColor(t, sc){
   if(!i) return t.color;                       /* 첫 시즌은 기본 색 그대로 */
   var p=hex2hsl(t.color);
   var h=(p[0] + i*27) % 360;
+  var sat=Math.max(0.35, p[1]);
   var l=Math.max(0.30, Math.min(0.46, p[2] + (i%2 ? 0.04 : -0.04)));
-  return hsl2hex(h, Math.max(0.35, p[1]), l);
+  var c=hsl2hex(h, sat, l), g=0;
+  while(whiteRatio(c) < 4.5 && l > 0.12 && g++ < 24){ l-=0.02; c=hsl2hex(h, sat, l); }
+  return c;
 }
 /* 달력 막대에 쓰는 짧은 이슈 이름. 원래 머리글이 길어 그대로 쓰면 칸을 다 먹는다.
    (전체 이름은 막대에 마우스를 올리면 나온다) */
@@ -1365,6 +1384,9 @@ function barText(sp){
   if(sp.t.adapter==='leave') return sp.ti+' '+sp.label;
   if(sp.t.adapter==='ba'){
     return (sp.sc? scopeLabel(sp.sc)+' ':'')+shortLabel(sp.label)+' : '+sp.ti;
+  }
+  if(sp.t.adapter==='tna'){
+    return (sp.sc? scopeLabel(sp.sc)+' : ':'')+sp.ti;
   }
   if(sp.sc) return scopeLabel(sp.sc)+' · '+sp.ti;
   return sp.ti;
@@ -1462,7 +1484,8 @@ function renderMonth(box, ym, spans, opt){
       wk.appendChild(bg);
       var dn=el('div','dnum'+(d.getDay()===0?' sun':d.getDay()===6?' sat':'')+(out?' out':''));
       dn.style.gridColumn=(i+1); dn.style.gridRow='1';
-      dn.textContent=d.getDate();
+      /* 달력이 길어 몇 월인지 놓치기 쉽다 — 날짜마다 월을 같이 적는다 */
+      dn.textContent=(d.getMonth()+1)+'/'+d.getDate();
       wk.appendChild(dn);
     }
     var mine=spans.filter(function(sp){ return sp.to>=wkFrom && sp.from<=wkTo; });
