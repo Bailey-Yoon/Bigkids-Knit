@@ -137,7 +137,7 @@ def load():
                 dd = date.fromisoformat(d['v'])
             except Exception:
                 continue
-            ev.append({'ad': t.get('adapter') or '', 'label': d.get('l', ''), 'date': dd,
+            ev.append({'ad': t.get('adapter') or '', 'tn': t.get('name', ''), 'label': d.get('l', ''), 'date': dd,
                        'oi': d.get('oi', 999) if d.get('oi') is not None else 999,
                        'ti': r.get('ti', ''), 'sc': r.get('sc', ''),
                        'info': {i.get('l'): i.get('v') for i in (r.get('info') or [])}})
@@ -205,6 +205,16 @@ def tc_block(evs):
     return ''.join(out)
 
 
+C_OTHER = '#37474f'
+KNOWN = ('leave', 'ba', 'tna')
+
+
+def other_line(e):
+    """기타 메모 · 수기로 만든 타입 — 「태그 · 제목」, 기타 메모가 아닌 타입이면 타입 이름도"""
+    tn = '' if e['tn'] == '기타 메모' else ' <span style="color:#6e6d77">· %s</span>' % esc(e['tn'])
+    return '<div style="margin:2px 0">%s%s%s</div>' % (chip(e['label'] or '메모', C_OTHER), esc(e['ti']), tn)
+
+
 def section(title, body, color='#1d1c22'):
     return ('<tr><td style="padding:16px 20px 4px;border-top:1px solid #e7e5ee">'
             '<div style="font-size:15px;font-weight:700;color:%s;margin-bottom:6px">%s</div>%s</td></tr>') % (color, esc(title), body)
@@ -231,6 +241,9 @@ def build(today, o, ev, hols=()):
     notice = [e for e in on if e['ad'] == 'leave' and '공지' in e['label']]
     dg = [e for e in on if e['ad'] == 'ba']
     tc = [e for e in on if e['ad'] == 'tna']
+    # ⚠ 연차 · Due Date Grid · Target Calendar 가 아닌 타입(기타 메모 등 수기 입력)도 빠뜨리지 말 것 —
+    #   처음엔 세 종류만 골라 써서 수기 메모가 메일에 하나도 안 나왔다 (2026-11-06 사용자)
+    ot = [e for e in on if e['ad'] not in KNOWN]
 
     end = today + timedelta(days=AHEAD)
     nxt = [e for e in ev if today < e['date'] <= end]
@@ -248,6 +261,9 @@ def build(today, o, ev, hols=()):
     rows.append(section('오늘 연차', t_lv, C_LEAVE))
     rows.append(section('오늘 마감 · Due Date Grid', dg_block(dg) if dg else none('오늘 마감은 없습니다'), C_DG_DEF))
     rows.append(section('오늘 시작 · Target Calendar', tc_block(tc) if tc else none(), C_TC_DEF))
+    if ot:
+        rows.append(section('오늘 · 기타 일정 (수기 입력)',
+                            ''.join(other_line(e) for e in sorted(ot, key=lambda e: (e['tn'], e['ti']))), C_OTHER))
 
     # ── 앞으로 7일 ──
     by = {}
@@ -289,6 +305,17 @@ def build(today, o, ev, hols=()):
         b += '<div style="margin:8px 0 2px"><b>%s</b></div>%s' % (esc(mdw(d)), tc_block(tcn[d]))
     rows.append(section('앞으로 %d일 · Target Calendar 시작' % AHEAD, b or none(), C_TC_DEF))
 
+    otn = {}
+    for e in nxt:
+        if e['ad'] not in KNOWN:
+            otn.setdefault(e['date'], []).append(e)
+    if otn:
+        b = ''
+        for d in sorted(otn):
+            b += '<div style="margin:8px 0 2px"><b>%s</b></div>%s' % (
+                esc(mdw(d)), ''.join(other_line(e) for e in sorted(otn[d], key=lambda e: (e['tn'], e['ti']))))
+        rows.append(section('앞으로 %d일 · 기타 일정 (수기 입력)' % AHEAD, b, C_OTHER))
+
     h_next = [h for h in hols if today < h['f'] <= end]
     b = ''.join('<div style="margin:3px 0"><b>%s</b>&nbsp;&nbsp;&nbsp;%s</div>' % (esc(mdw(h['f'])), hol_line(h))
                 for h in sorted(h_next, key=lambda h: (h['f'], h['g'])))
@@ -317,8 +344,9 @@ def build(today, o, ev, hols=()):
     head = ('<tr><td style="background:#eef4fa;padding:18px 20px">'
             '<div style="font-size:11px;letter-spacing:2px;font-weight:700;color:#014b7e">BIG KIDS 2팀 · TOTAL SCHEDULER</div>'
             '<div style="font-size:22px;font-weight:700;color:#1d1c22;margin-top:4px">%s 오늘의 일정</div>'
-            '<div style="font-size:13px;color:#4a4954;margin-top:4px">연차 %d명 · 오늘 마감 %d건 · 앞으로 %d일 마감 %d건</div>'
-            '</td></tr>') % (esc(mdw(today)), len(lv), len(dg), AHEAD, sum(len(v) for v in by.values()))
+            '<div style="font-size:13px;color:#4a4954;margin-top:4px">연차 %d명 · 오늘 마감 %d건 · 앞으로 %d일 마감 %d건%s</div>'
+            '</td></tr>') % (esc(mdw(today)), len(lv), len(dg), AHEAD, sum(len(v) for v in by.values()),
+                             (' · 오늘 기타 %d건' % len(ot)) if ot else '')
 
     body = ('<table role="presentation" width="100%%" cellpadding="0" cellspacing="0" border="0" '
             'style="max-width:680px;background:#ffffff;border:1px solid #e7e5ee;border-collapse:separate;'
