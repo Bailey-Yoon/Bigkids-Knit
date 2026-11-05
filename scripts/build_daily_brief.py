@@ -11,6 +11,8 @@ Power Automate(회사 Microsoft 365)가 이 피드를 지켜보다가 새 항목
 
   · 주말은 만들지 않는다
   · 연차표에 '휴일·공지' 가 걸린 날(신정·추석 등)도 만들지 않는다 — 단 '근무' 가 든 공지는 근무일이다
+  · 한국 법정 공휴일(holidays.json)도 만들지 않는다 — 연차표에 아직 없는 해(2027~)를 위해. 같은 날 '근무' 공지가 있으면 만든다
+  · 해외 공휴일(미국·VN Tết·CN 춘절·인니 라마단·세마나 산타)은 「오늘」「앞으로 7일」 칸에 적는다
   · 만들지 않는 날은 피드를 건드리지 않는다 → 직전 항목은 이미 보냈으므로 메일이 다시 나가지 않는다
   · 같은 날 두 번 돌아도 guid·pubDate 가 같아 메일이 두 번 나가지 않는다
 
@@ -31,6 +33,9 @@ except Exception:
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SEED = os.path.join(ROOT, 'reports', 'tools', 'total-scheduler', 'seed.json')
 FEED = os.path.join(ROOT, 'data', 'brief', 'feed.xml')
+# 공휴일 표 — Total_Scheduler/_Backend/3_Scripts/make_holidays.py 가 만든다 (스케줄러 달력과 같은 표)
+HOLS = os.path.join(ROOT, 'data', 'brief', 'holidays.json')
+C_HOL = {'kr': '#cc0000', 'us': '#0277bd', 'lny': '#c25700', 'id': '#2e7d4f', 'ca': '#7b52ab'}
 
 KST = timezone(timedelta(hours=9))
 WD = '월화수목금토일'
@@ -88,6 +93,32 @@ def mdw(d):
 
 def esc(s):
     return html.escape(str(s), quote=True)
+
+
+def load_hols():
+    """[{g,c,f,t,n,off,est,note}] — f/t/off 는 date 로 바꿔 둔다. 파일이 없으면 빈 목록"""
+    try:
+        hs = json.load(open(HOLS, encoding='utf-8'))['holidays']
+    except Exception:
+        return []
+    for h in hs:
+        h['f'], h['t'] = date.fromisoformat(h['f']), date.fromisoformat(h['t'])
+        h['off'] = [date.fromisoformat(x) for x in h.get('off', [])]
+    return hs
+
+
+def hol_name(h):
+    return h['n'] + (' (예상)' if h.get('est') else '')
+
+
+def hol_line(h, today=None):
+    """KR 설 연휴 · 2/14 (토) ~ 2/18 (수)  — 오늘 칸에서는 끝나는 날만"""
+    if today is not None:
+        span = (' <span style="color:#6e6d77">· %s까지</span>' % esc(mdw(h['t']))) if h['t'] > today else ''
+    else:
+        span = (' <span style="color:#6e6d77">· %s ~ %s</span>' % (esc(mdw(h['f'])), esc(mdw(h['t'])))
+                if h['f'] != h['t'] else '')
+    return '%s<b>%s</b>%s' % (chip(h['c'], C_HOL.get(h['g'], '#5f5e68')), esc(hol_name(h)), span)
 
 
 def load():
@@ -180,7 +211,7 @@ def none(text='없음'):
     return '<div style="color:#6e6d77">%s</div>' % esc(text)
 
 
-def build(today, o, ev):
+def build(today, o, ev, hols=()):
     """(제목, 본문 HTML) — 만들지 않는 날이면 None"""
     if today.weekday() >= 5:
         return None, '주말'
@@ -188,6 +219,10 @@ def build(today, o, ev):
     hol = [e for e in on if e['ad'] == 'leave' and '공지' in e['label'] and '근무' not in e['ti']]
     if hol:
         return None, '휴일 (' + ', '.join(e['ti'] for e in hol) + ')'
+    work = [e for e in on if e['ad'] == 'leave' and '공지' in e['label'] and '근무' in e['ti']]
+    kr = [h for h in hols if h['g'] == 'kr' and today in h['off']]
+    if kr and not work:
+        return None, '공휴일 (' + ', '.join(h['n'] for h in kr) + ')'
 
     lv = [e for e in on if e['ad'] == 'leave' and '공지' not in e['label']]
     notice = [e for e in on if e['ad'] == 'leave' and '공지' in e['label']]
@@ -199,6 +234,10 @@ def build(today, o, ev):
 
     # ── 오늘 ──
     rows = []
+    h_now = [h for h in hols if h['g'] != 'kr' and h['f'] <= today <= h['t']]
+    if h_now:
+        rows.append(section('오늘 해외 공휴일',
+                            ''.join('<div style="margin:3px 0">%s</div>' % hol_line(h, today) for h in h_now), '#7a4200'))
     t_lv = (''.join('<div style="margin:2px 0">%s</div>' % leave_line(e) for e in sorted(lv, key=lambda e: e['ti']))
             if lv else none('오늘 연차인 사람은 없습니다'))
     if notice:
@@ -246,6 +285,11 @@ def build(today, o, ev):
     for d in sorted(tcn):
         b += '<div style="margin:8px 0 2px"><b>%s</b></div>%s' % (esc(mdw(d)), tc_block(tcn[d]))
     rows.append(section('앞으로 %d일 · Target Calendar 시작' % AHEAD, b or none(), C_TC_DEF))
+
+    h_next = [h for h in hols if today < h['f'] <= end]
+    b = ''.join('<div style="margin:3px 0"><b>%s</b>&nbsp;&nbsp;&nbsp;%s</div>' % (esc(mdw(h['f'])), hol_line(h))
+                for h in sorted(h_next, key=lambda h: (h['f'], h['g'])))
+    rows.append(section('앞으로 %d일 · 공휴일' % AHEAD, b or none('앞으로 %d일 안에 시작하는 공휴일이 없습니다' % AHEAD), '#7a4200'))
 
     at = str(o.get('at', ''))[:10]
     try:
@@ -320,13 +364,14 @@ def main():
     a = ap.parse_args()
     today = date.fromisoformat(a.date) if a.date else datetime.now(KST).date()
     o, ev = load()
-    title, body = build(today, o, ev)
+    hols = load_hols()
+    title, body = build(today, o, ev, hols)
     if title is None and a.test:
         # 시험은 주말·휴일에도 돌아야 한다 — 가장 가까운 다음 근무일 내용으로 만든다
         d = today
         while title is None:
             d += timedelta(days=1)
-            title, body = build(d, o, ev)
+            title, body = build(d, o, ev, hols)
         today = d
     if title is None:
         print('%s — 만들지 않음: %s' % (today, body))

@@ -250,8 +250,7 @@ a:hover{color:var(--tool-deep)}
 .hbar:hover, .hbar:focus-visible{outline:1px solid currentColor;outline-offset:-1px}
 .dnum.hol{color:var(--tcom)}
 .htag{font-size:11px;font-weight:700;border-radius:3px;padding:1px 6px;white-space:nowrap}
-.chiplab{font-size:12px;font-weight:700;color:var(--muted);align-self:center;
-  margin-left:6px;padding-left:12px;border-left:1px solid var(--line)}
+.holchip{margin-left:10px}
 .chip .dot.sq{border-radius:2px}
 .datastamp{font-size:12.5px;color:var(--sub);padding:0 2px}
 .datastamp b{color:var(--body)}
@@ -1290,20 +1289,19 @@ function drawFilters(){
     });
     box.appendChild(b);
   });
-  /* 공휴일 켜고 끄기 — 이 브라우저에만 기억한다 (보는 사람 취향) */
-  var lab=el('span','chiplab'); lab.textContent='공휴일'; box.appendChild(lab);
-  HOL_G.forEach(function(g){
-    var b=el('button','chip');
-    b.type='button';
-    b.setAttribute('aria-pressed', HOL_OFF[g[0]]?'false':'true');
-    b.title=g[1]+' 공휴일 · 눌러서 켜고 끄기';
-    b.innerHTML='<span class="dot sq '+holCls(g[0])+'" style="border:2px solid"></span>'+esc(g[1]);
-    b.addEventListener('click', function(){
-      if(HOL_OFF[g[0]]) delete HOL_OFF[g[0]]; else HOL_OFF[g[0]]=1;
-      holSave(); drawFilters(); render();
-    });
-    box.appendChild(b);
+  /* 공휴일 켜고 끄기 — 버튼 하나로 전부 (나라별 버튼은 뺐다, 사용자 지정 2026-11-05).
+     이 브라우저에만 기억한다 (보는 사람 취향) */
+  var hon=HOL_G.some(function(g){ return !HOL_OFF[g[0]]; });
+  var hb=el('button','chip holchip');
+  hb.type='button';
+  hb.setAttribute('aria-pressed', hon?'true':'false');
+  hb.title='공휴일 (한국 · 미국 · VN Tết · CN 춘절 · 인니 라마단 · 세마나 산타) · 눌러서 켜고 끄기';
+  hb.innerHTML='<span class="dot sq h-kr" style="border:2px solid"></span>공휴일';
+  hb.addEventListener('click', function(){
+    if(hon){ HOL_OFF={}; HOL_G.forEach(function(g){ HOL_OFF[g[0]]=1; }); } else HOL_OFF={};
+    holSave(); drawFilters(); render();
   });
+  box.appendChild(hb);
 }
 function render(){
   /* 숫자 타일(이 구간 전체 / 기준일 이전 …)은 뺐다 — 자리만 차지하고 읽히지 않았다
