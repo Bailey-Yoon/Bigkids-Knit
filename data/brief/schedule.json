@@ -1,8 +1,8 @@
 {
 "v": 3,
-"at": "2026-11-05T01:43:05.473Z",
-"built": "2026-11-05T07:38:47.000Z",
-"synced": "2026-11-05",
+"at": "2026-11-05T09:34:22.168Z",
+"built": "2026-11-05T09:34:23.388Z",
+"synced": "2026-11-06",
 "from": "2026-11-04",
 "to": "2026-12-20",
 "stale_days": [],
@@ -21,6 +21,11 @@
 "id": "6ig6jc9d",
 "name": "Due Date Grid",
 "adapter": "ba"
+},
+{
+"id": "ue2uoc3t",
+"name": "기타 메모",
+"adapter": ""
 }
 ],
 "rows": [
@@ -72,6 +77,32 @@
 "l": "CMS Due Date",
 "v": "2026-11-06",
 "oi": 5
+}
+],
+"info": []
+},
+{
+"t": "ue2uoc3t",
+"ti": "서울미팅 2차",
+"sc": "",
+"d": [
+{
+"l": "Seoul Meeting",
+"v": "2026-11-06",
+"oi": 999
+}
+],
+"info": []
+},
+{
+"t": "ue2uoc3t",
+"ti": "Anna C2'27 Buyer Reference Sample 파일 EOD",
+"sc": "",
+"d": [
+{
+"l": "기타",
+"v": "2026-11-06",
+"oi": 999
 }
 ],
 "info": []
@@ -200,6 +231,19 @@
 ]
 },
 {
+"t": "ue2uoc3t",
+"ti": "과테에서 088ZL Any color 퀄리티 sample  ydg 발송 예정",
+"sc": "",
+"d": [
+{
+"l": "기타",
+"v": "2026-11-09",
+"oi": 999
+}
+],
+"info": []
+},
+{
 "t": "cacc8vj1",
 "ti": "박헌범",
 "sc": "",
@@ -286,6 +330,58 @@
 "l": "APEX Map/ Drill",
 "v": "2026-11-13",
 "oi": 0
+}
+],
+"info": []
+},
+{
+"t": "6ig6jc9d",
+"ti": "SS Classic Graphic Tee (Bulk Order 62%)",
+"sc": "2027 C2",
+"d": [
+{
+"l": "Vendor Pre-ISU",
+"v": "2026-11-15",
+"oi": 4
+}
+],
+"info": []
+},
+{
+"t": "6ig6jc9d",
+"ti": "SS Oversized Graphic Tee (Bulk Order 62%)",
+"sc": "2027 C2",
+"d": [
+{
+"l": "Vendor Pre-ISU",
+"v": "2026-11-15",
+"oi": 4
+}
+],
+"info": []
+},
+{
+"t": "6ig6jc9d",
+"ti": "SS Classic Graphic Tee (In-season Test Model)",
+"sc": "2027 C3",
+"d": [
+{
+"l": "Vendor Pre-ISU",
+"v": "2026-11-15",
+"oi": 4
+}
+],
+"info": []
+},
+{
+"t": "6ig6jc9d",
+"ti": "SS Oversized Graphic Tee (In-Season Test Model)",
+"sc": "2027 C3",
+"d": [
+{
+"l": "Vendor Pre-ISU",
+"v": "2026-11-15",
+"oi": 4
 }
 ],
 "info": []
@@ -467,58 +563,6 @@
 ]
 },
 {
-"t": "6ig6jc9d",
-"ti": "SS Classic Graphic Tee (Bulk Order 62%)",
-"sc": "2027 C2",
-"d": [
-{
-"l": "Vendor Pre-ISU",
-"v": "2026-11-15",
-"oi": 4
-}
-],
-"info": []
-},
-{
-"t": "6ig6jc9d",
-"ti": "SS Oversized Graphic Tee (Bulk Order 62%)",
-"sc": "2027 C2",
-"d": [
-{
-"l": "Vendor Pre-ISU",
-"v": "2026-11-15",
-"oi": 4
-}
-],
-"info": []
-},
-{
-"t": "6ig6jc9d",
-"ti": "SS Classic Graphic Tee (In-season Test Model)",
-"sc": "2027 C3",
-"d": [
-{
-"l": "Vendor Pre-ISU",
-"v": "2026-11-15",
-"oi": 4
-}
-],
-"info": []
-},
-{
-"t": "6ig6jc9d",
-"ti": "SS Oversized Graphic Tee (In-Season Test Model)",
-"sc": "2027 C3",
-"d": [
-{
-"l": "Vendor Pre-ISU",
-"v": "2026-11-15",
-"oi": 4
-}
-],
-"info": []
-},
-{
 "t": "cacc8vj1",
 "ti": "황예나",
 "sc": "",
@@ -566,6 +610,32 @@
 "l": "APEX Map/ Drill",
 "v": "2026-11-16",
 "oi": 0
+}
+],
+"info": []
+},
+{
+"t": "ue2uoc3t",
+"ti": "CM26/1 원사 주 3컨테이너(55톤) 입고 시작, C2'27 Greige 편직 시작",
+"sc": "",
+"d": [
+{
+"l": "기타",
+"v": "2026-11-16",
+"oi": 999
+}
+],
+"info": []
+},
+{
+"t": "ue2uoc3t",
+"ti": "Vertical로부터 C3'27 FAB-L53E1 샘플 야드지 ETD",
+"sc": "",
+"d": [
+{
+"l": "기타",
+"v": "2026-11-16",
+"oi": 999
 }
 ],
 "info": []
@@ -749,6 +819,58 @@
 "info": []
 },
 {
+"t": "6ig6jc9d",
+"ti": "Hot Price Hero Tank",
+"sc": "2027 C2",
+"d": [
+{
+"l": "Vendor Pre-ISU",
+"v": "2026-11-22",
+"oi": 4
+}
+],
+"info": []
+},
+{
+"t": "6ig6jc9d",
+"ti": "Core + SS Graphic Tee",
+"sc": "2027 C2",
+"d": [
+{
+"l": "Vendor Pre-ISU",
+"v": "2026-11-22",
+"oi": 4
+}
+],
+"info": []
+},
+{
+"t": "6ig6jc9d",
+"ti": "SS Classic Graphic Tee (In-season Test Model)",
+"sc": "2027 C3",
+"d": [
+{
+"l": "PO Due Date",
+"v": "2026-11-22",
+"oi": 6
+}
+],
+"info": []
+},
+{
+"t": "6ig6jc9d",
+"ti": "SS Oversized Graphic Tee (In-Season Test Model)",
+"sc": "2027 C3",
+"d": [
+{
+"l": "PO Due Date",
+"v": "2026-11-22",
+"oi": 6
+}
+],
+"info": []
+},
+{
 "t": "9x3me2q3",
 "ti": "Raw Materials Finalization Deadline",
 "sc": "C327 JUN W5",
@@ -925,64 +1047,25 @@
 ]
 },
 {
-"t": "6ig6jc9d",
-"ti": "Hot Price Hero Tank",
-"sc": "2027 C2",
-"d": [
-{
-"l": "Vendor Pre-ISU",
-"v": "2026-11-22",
-"oi": 4
-}
-],
-"info": []
-},
-{
-"t": "6ig6jc9d",
-"ti": "Core + SS Graphic Tee",
-"sc": "2027 C2",
-"d": [
-{
-"l": "Vendor Pre-ISU",
-"v": "2026-11-22",
-"oi": 4
-}
-],
-"info": []
-},
-{
-"t": "6ig6jc9d",
-"ti": "SS Classic Graphic Tee (In-season Test Model)",
-"sc": "2027 C3",
-"d": [
-{
-"l": "PO Due Date",
-"v": "2026-11-22",
-"oi": 6
-}
-],
-"info": []
-},
-{
-"t": "6ig6jc9d",
-"ti": "SS Oversized Graphic Tee (In-Season Test Model)",
-"sc": "2027 C3",
-"d": [
-{
-"l": "PO Due Date",
-"v": "2026-11-22",
-"oi": 6
-}
-],
-"info": []
-},
-{
 "t": "cacc8vj1",
 "ti": "손지원",
 "sc": "",
 "d": [
 {
 "l": "휴가",
+"v": "2026-11-23",
+"oi": 999
+}
+],
+"info": []
+},
+{
+"t": "ue2uoc3t",
+"ti": "C227 Core graphic TEST 오더 납기 (TEXPIA 2)",
+"sc": "",
+"d": [
+{
+"l": "기타",
 "v": "2026-11-23",
 "oi": 999
 }
@@ -1050,6 +1133,19 @@
 "l": "Vendor Align Due Date",
 "v": "2026-11-27",
 "oi": 3
+}
+],
+"info": []
+},
+{
+"t": "ue2uoc3t",
+"ti": "C227 Core graphic TEST 오더 공장에서 실제 출고일 (TEXPIA 2)",
+"sc": "",
+"d": [
+{
+"l": "기타",
+"v": "2026-11-27",
+"oi": 999
 }
 ],
 "info": []
@@ -1606,6 +1702,45 @@
 "info": []
 },
 {
+"t": "6ig6jc9d",
+"ti": "Core + Halloween Fleece bottom",
+"sc": "2027 C3",
+"d": [
+{
+"l": "Vendor Pre-ISU",
+"v": "2026-12-06",
+"oi": 3
+}
+],
+"info": []
+},
+{
+"t": "6ig6jc9d",
+"ti": "Core + Halloween Fleece tops",
+"sc": "2027 C3",
+"d": [
+{
+"l": "Vendor Pre-ISU",
+"v": "2026-12-06",
+"oi": 4
+}
+],
+"info": []
+},
+{
+"t": "6ig6jc9d",
+"ti": "Core+ Raglan Graphic",
+"sc": "2027 C3",
+"d": [
+{
+"l": "Vendor Pre-ISU",
+"v": "2026-12-06",
+"oi": 4
+}
+],
+"info": []
+},
+{
 "t": "9x3me2q3",
 "ti": "POG Build",
 "sc": "C327 JUN W5",
@@ -1692,45 +1827,6 @@
 "v": "2026-12-11"
 }
 ]
-},
-{
-"t": "6ig6jc9d",
-"ti": "Core + Halloween Fleece bottom",
-"sc": "2027 C3",
-"d": [
-{
-"l": "Vendor Pre-ISU",
-"v": "2026-12-06",
-"oi": 3
-}
-],
-"info": []
-},
-{
-"t": "6ig6jc9d",
-"ti": "Core + Halloween Fleece tops",
-"sc": "2027 C3",
-"d": [
-{
-"l": "Vendor Pre-ISU",
-"v": "2026-12-06",
-"oi": 4
-}
-],
-"info": []
-},
-{
-"t": "6ig6jc9d",
-"ti": "Core+ Raglan Graphic",
-"sc": "2027 C3",
-"d": [
-{
-"l": "Vendor Pre-ISU",
-"v": "2026-12-06",
-"oi": 4
-}
-],
-"info": []
 },
 {
 "t": "6ig6jc9d",
@@ -1876,6 +1972,32 @@
 "info": []
 },
 {
+"t": "6ig6jc9d",
+"ti": "Warp Knit Jogger",
+"sc": "2027 C3",
+"d": [
+{
+"l": "Vendor Pre-ISU",
+"v": "2026-12-13",
+"oi": 3
+}
+],
+"info": []
+},
+{
+"t": "6ig6jc9d",
+"ti": "Work Shirt",
+"sc": "2027 C3",
+"d": [
+{
+"l": "Vendor Pre-ISU",
+"v": "2026-12-13",
+"oi": 4
+}
+],
+"info": []
+},
+{
 "t": "9x3me2q3",
 "ti": "Design & Development Brief sent to Extended Partners",
 "sc": "C427 OCT W1",
@@ -1984,32 +2106,6 @@
 "v": "2027-01-08"
 }
 ]
-},
-{
-"t": "6ig6jc9d",
-"ti": "Warp Knit Jogger",
-"sc": "2027 C3",
-"d": [
-{
-"l": "Vendor Pre-ISU",
-"v": "2026-12-13",
-"oi": 3
-}
-],
-"info": []
-},
-{
-"t": "6ig6jc9d",
-"ti": "Work Shirt",
-"sc": "2027 C3",
-"d": [
-{
-"l": "Vendor Pre-ISU",
-"v": "2026-12-13",
-"oi": 4
-}
-],
-"info": []
 },
 {
 "t": "9x3me2q3",
