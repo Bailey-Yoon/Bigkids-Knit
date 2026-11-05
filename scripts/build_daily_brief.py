@@ -33,7 +33,7 @@ except Exception:
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # ⚠ 스케줄러는 2026-11-05 부터 **아티팩트로만** 돈다 (사이트판 내림). 정본은 아티팩트의 공유 저장소이고,
-#   GitHub 는 거기를 직접 못 읽는다 → 클라우드 예약 작업이 평일 06:00 에 scripts/artifact_to_schedule.py 로
+#   GitHub 는 거기를 직접 못 읽는다 → 클라우드 예약 작업이 평일 06:00 에 scripts/digest_to_schedule.py 로
 #   이 파일을 만들어 커밋한다. 그 작업이 멈추면 메일은 **마지막으로 옮긴 데이터**로 나간다 (꼬리에 경고)
 SEED = os.path.join(ROOT, 'data', 'brief', 'schedule.json')
 FEED = os.path.join(ROOT, 'data', 'brief', 'feed.xml')
@@ -304,6 +304,11 @@ def build(today, o, ev, hols=()):
     if stale is not None and stale >= 2:
         warn = ('<div style="margin-top:6px;color:#8a4b00">⚠ 공유 일정을 %d일째 못 옮겨 왔습니다. '
                 '예약 작업(클라우드)을 확인해 주세요.</div>') % stale
+
+    rng = str(o.get('to', '') or '')
+    if rng and rng < (today + timedelta(days=AHEAD)).isoformat():
+        warn += ('<div style="margin-top:6px;color:#8a4b00">⚠ 옮겨 온 일정이 %s 까지만 있습니다. '
+                 '스케줄러를 한 번 열면 저절로 늘어납니다.</div>') % esc(rng)
 
     foot = ('<tr><td style="padding:14px 20px 18px;border-top:1px solid #e7e5ee;font-size:12px;color:#6e6d77;line-height:1.6">'
             '일정 데이터 <b style="color:#4a4954">%s</b> 마지막 변경 기준 · 매일 평일 아침 자동 발송<br>'
