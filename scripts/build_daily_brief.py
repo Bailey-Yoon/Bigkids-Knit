@@ -271,10 +271,12 @@ def build(today, o, ev):
 
 
 def write_feed(today, title, body, test=False):
-    pub = datetime(today.year, today.month, today.day, 6, 0, tzinfo=KST)
+    # ⚠ 게시 시각은 **실제로 만든 시각**이어야 한다. 06:00 같은 고정값을 쓰면, GitHub 예약 실행이
+    #   늦어져 플로가 그 사이 한 번 피드를 본 경우 "이미 지난 항목" 으로 보고 건너뛸 수 있다.
+    #   같은 날 두 번 보내지 않는 건 main() 의 guid 검사가 맡는다
+    pub = datetime.now(KST).replace(microsecond=0)
     gid = today.isoformat()
     if test:   # Power Automate 연결 시험용 — 지금 시각의 새 항목이라 플로가 바로 반응한다
-        pub = datetime.now(KST).replace(microsecond=0)
         gid += '-test-' + pub.strftime('%H%M%S')
         title = '[테스트] ' + title
     pub_s = pub.strftime('%a, %d %b %Y %H:%M:%S +0900')
@@ -324,6 +326,11 @@ def main():
             f.write('<!doctype html><meta charset="utf-8"><title>%s</title>'
                     '<body style="margin:0;padding:20px;background:#f3f2f6">%s</body>' % (esc(title), body))
         return
+    # 같은 날 정기 항목이 이미 있으면 다시 쓰지 않는다 — 다시 쓰면 게시 시각이 바뀌어 메일이 또 나간다
+    if not a.test and os.path.exists(FEED):
+        if ('d76-2team-brief-%s</guid>' % today.isoformat()) in open(FEED, encoding='utf-8').read():
+            print('%s — 이미 만든 날: 피드 유지' % today)
+            return
     write_feed(today, title, body, test=a.test)
     print('피드 갱신:', FEED)
 
