@@ -259,7 +259,7 @@ def build(today, o, ev, hols=()):
     if notice:
         t_lv += ''.join('<div style="margin:2px 0;color:#8a4b00">공지 · %s</div>' % esc(e['ti']) for e in notice)
     rows.append(section('오늘 연차', t_lv, C_LEAVE))
-    rows.append(section('오늘 마감 · Due Date Grid', dg_block(dg) if dg else none('오늘 마감은 없습니다'), C_DG_DEF))
+    rows.append(section('오늘 일정 · Due Date Grid', dg_block(dg) if dg else none('오늘 Due Date Grid 일정은 없습니다'), C_DG_DEF))
     rows.append(section('오늘 시작 · Target Calendar', tc_block(tc) if tc else none(), C_TC_DEF))
     if ot:
         rows.append(section('오늘 · 기타 일정 (수기 입력)',
@@ -279,7 +279,7 @@ def build(today, o, ev, hols=()):
                   '%sD-%d%s</span>%s<b>%s</b></div>%s') % ('#c25700' if n <= 2 else '#5f5e68', SP, n, SP, SP + SP,
                                                        esc(mdw(d)), dg_block(by[d]))
     else:
-        b = none('앞으로 %d일 안에 마감이 없습니다' % AHEAD)
+        b = none('앞으로 %d일 안에 Due Date Grid 일정이 없습니다' % AHEAD)
     rows.append(section('앞으로 %d일 · Due Date Grid' % AHEAD, b, C_DG_DEF))
 
     lvn = {}
@@ -344,7 +344,7 @@ def build(today, o, ev, hols=()):
     head = ('<tr><td style="background:#eef4fa;padding:18px 20px">'
             '<div style="font-size:11px;letter-spacing:2px;font-weight:700;color:#014b7e">BIG KIDS 2팀 · TOTAL SCHEDULER</div>'
             '<div style="font-size:22px;font-weight:700;color:#1d1c22;margin-top:4px">%s 오늘의 일정</div>'
-            '<div style="font-size:13px;color:#4a4954;margin-top:4px">연차 %d명 · 오늘 마감 %d건 · 앞으로 %d일 마감 %d건%s</div>'
+            '<div style="font-size:13px;color:#4a4954;margin-top:4px">연차 %d명 · 오늘 일정 %d건 · 앞으로 %d일 일정 %d건%s</div>'
             '</td></tr>') % (esc(mdw(today)), len(lv), len(dg), AHEAD, sum(len(v) for v in by.values()),
                              (' · 오늘 기타 %d건' % len(ot)) if ot else '')
 
@@ -353,7 +353,7 @@ def build(today, o, ev, hols=()):
             "font-family:'Malgun Gothic','Apple SD Gothic Neo','Segoe UI',sans-serif;font-size:14px;line-height:1.55;color:#1d1c22\">"
             '%s%s%s</table>') % (head, ''.join(rows), foot)
 
-    title = '[2팀 일정] %s 오늘의 일정 · 연차 %d · 마감 %d' % (mdw(today), len(lv), len(dg))
+    title = '[2팀 일정] %s 오늘의 일정 · 연차 %d · 일정 %d' % (mdw(today), len(lv), len(dg))
     return title, body
 
 
