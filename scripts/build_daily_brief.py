@@ -110,9 +110,15 @@ def load():
     return o, ev
 
 
+# ⚠ Outlook(데스크톱)은 span 의 padding·margin 을 무시한다 — 배지 글자가 색 면 끝에 딱 붙고
+#   뒤 글자와도 붙어 "짜투리" 처럼 보였다 (2026-11-05 첫 메일). 색 면 안팎을 **공백 문자**로 띄운다
+SP = '&nbsp;'
+
+
 def chip(text, color):
-    return ('<span style="display:inline-block;background:%s;color:#ffffff;font-size:11px;font-weight:700;'
-            'border-radius:3px;padding:1px 6px;margin:0 4px 2px 0;white-space:nowrap">%s</span>') % (color, esc(text))
+    return ('<span style="background:%s;color:#ffffff;font-size:11px;font-weight:700;'
+            'border-radius:3px;padding:1px 6px;white-space:nowrap">%s%s%s</span>%s') % (
+                color, SP, esc(text), SP, SP + SP)
 
 
 def dg_color(sc):
@@ -210,9 +216,10 @@ def build(today, o, ev):
         b = ''
         for d in sorted(by):
             n = (d - today).days
-            b += ('<div style="margin:10px 0 2px"><span style="display:inline-block;background:%s;color:#ffffff;'
-                  'font-size:11px;font-weight:700;border-radius:999px;padding:1px 8px;margin-right:6px">D-%d</span>'
-                  '<b>%s</b></div>%s') % ('#c25700' if n <= 2 else '#5f5e68', n, esc(mdw(d)), dg_block(by[d]))
+            b += ('<div style="margin:10px 0 2px"><span style="background:%s;color:#ffffff;'
+                  'font-size:11px;font-weight:700;border-radius:999px;padding:1px 8px;white-space:nowrap">'
+                  '%sD-%d%s</span>%s<b>%s</b></div>%s') % ('#c25700' if n <= 2 else '#5f5e68', SP, n, SP, SP + SP,
+                                                       esc(mdw(d)), dg_block(by[d]))
     else:
         b = none('앞으로 %d일 안에 마감이 없습니다' % AHEAD)
     rows.append(section('앞으로 %d일 · Due Date Grid' % AHEAD, b, C_DG_DEF))
@@ -224,10 +231,10 @@ def build(today, o, ev):
     hn = sorted({(e['date'], e['ti']) for e in nxt if e['ad'] == 'leave' and '공지' in e['label']})
     b = ''
     for d in sorted(lvn):
-        b += '<div style="margin:2px 0"><b style="display:inline-block;min-width:74px">%s</b> %s</div>' % (
+        b += '<div style="margin:2px 0"><b>%s</b>&nbsp;&nbsp;&nbsp;%s</div>' % (
             esc(mdw(d)), ' · '.join(leave_line(e) for e in sorted(lvn[d], key=lambda e: e['ti'])))
     for d, ti in hn:
-        b += '<div style="margin:2px 0;color:#8a4b00"><b style="display:inline-block;min-width:74px">%s</b> 공지 · %s</div>' % (
+        b += '<div style="margin:2px 0;color:#8a4b00"><b>%s</b>&nbsp;&nbsp;&nbsp;공지 · %s</div>' % (
             esc(mdw(d)), esc(ti))
     rows.append(section('앞으로 %d일 · 연차' % AHEAD, b or none(), C_LEAVE))
 
