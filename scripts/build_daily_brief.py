@@ -220,6 +220,19 @@ def section(title, body, color='#1d1c22'):
             '<div style="font-size:15px;font-weight:700;color:%s;margin-bottom:6px">%s</div>%s</td></tr>') % (color, esc(title), body)
 
 
+def group(title, sub):
+    """큰 묶음 머리 — 「오늘의 일정」 「앞으로 7일」. 그 아래 칸들은 sub() 로 작게"""
+    return ('<tr><td style="padding:12px 20px;background:#f3f2f6;border-top:1px solid #e7e5ee;'
+            'border-left:4px solid #014b7e"><span style="font-size:17px;font-weight:700;color:#1d1c22">%s</span>'
+            '%s<span style="font-size:12.5px;color:#4a4954">%s</span></td></tr>') % (esc(title), SP + SP, esc(sub))
+
+
+def sub(title, body, color='#1d1c22', first=False):
+    return ('<tr><td style="padding:%s 20px 6px%s">'
+            '<div style="font-size:13.5px;font-weight:700;color:%s;margin-bottom:4px">%s</div>%s</td></tr>') % (
+                '12px' if first else '10px', '' if first else ';border-top:1px solid #f0eef4', color, esc(title), body)
+
+
 def none(text='없음'):
     return '<div style="color:#6e6d77">%s</div>' % esc(text)
 
@@ -248,39 +261,29 @@ def build(today, o, ev, hols=()):
     end = today + timedelta(days=AHEAD)
     nxt = [e for e in ev if today < e['date'] <= end]
 
-    # ── 오늘 ──
+    # ⚠ 두 묶음으로 나눈다: 「오늘의 일정」 아래 연차 · Due Date Grid · Target Calendar · 기타 일정,
+    #   「앞으로 7일」 아래 같은 순서. 칸마다 「오늘 …」「앞으로 7일 · …」 를 붙였더니 머리가 반복돼
+    #   정신없었다 (2026-11-06 사용자). 공휴일은 있을 때만 맨 끝에 붙인다
     rows = []
-    h_now = [h for h in hols if h['g'] != 'kr' and h['f'] <= today <= h['t']]
-    if h_now:
-        rows.append(section('오늘 해외 공휴일',
-                            ''.join('<div style="margin:3px 0">%s</div>' % hol_line(h, today) for h in h_now), '#7a4200'))
+
+    # ── 오늘의 일정 ──
+    rows.append(group('오늘의 일정', mdw(today)))
     t_lv = (''.join('<div style="margin:2px 0">%s</div>' % leave_line(e) for e in sorted(lv, key=lambda e: e['ti']))
-            if lv else none('오늘 연차인 사람은 없습니다'))
+            if lv else none('연차인 사람은 없습니다'))
     if notice:
         t_lv += ''.join('<div style="margin:2px 0;color:#8a4b00">공지 · %s</div>' % esc(e['ti']) for e in notice)
-    rows.append(section('오늘 연차', t_lv, C_LEAVE))
-    rows.append(section('오늘 일정 · Due Date Grid', dg_block(dg) if dg else none('오늘 Due Date Grid 일정은 없습니다'), C_DG_DEF))
-    rows.append(section('오늘 시작 · Target Calendar', tc_block(tc) if tc else none(), C_TC_DEF))
-    if ot:
-        rows.append(section('오늘 · 기타 일정 (수기 입력)',
-                            ''.join(other_line(e) for e in sorted(ot, key=lambda e: (e['tn'], e['ti']))), C_OTHER))
+    rows.append(sub('연차', t_lv, C_LEAVE, first=True))
+    rows.append(sub('Due Date Grid', dg_block(dg) if dg else none(), C_DG_DEF))
+    rows.append(sub('Target Calendar', tc_block(tc) if tc else none(), C_TC_DEF))
+    rows.append(sub('기타 일정', ''.join(other_line(e) for e in sorted(ot, key=lambda e: (e['tn'], e['ti'])))
+                    if ot else none(), C_OTHER))
+    h_now = [h for h in hols if h['g'] != 'kr' and h['f'] <= today <= h['t']]
+    if h_now:
+        rows.append(sub('해외 공휴일',
+                        ''.join('<div style="margin:3px 0">%s</div>' % hol_line(h, today) for h in h_now), '#7a4200'))
 
     # ── 앞으로 7일 ──
-    by = {}
-    for e in nxt:
-        if e['ad'] == 'ba':
-            by.setdefault(e['date'], []).append(e)
-    if by:
-        b = ''
-        for d in sorted(by):
-            n = (d - today).days
-            b += ('<div style="margin:10px 0 2px"><span style="background:%s;color:#ffffff;'
-                  'font-size:11px;font-weight:700;border-radius:999px;padding:1px 8px;white-space:nowrap">'
-                  '%sD-%d%s</span>%s<b>%s</b></div>%s') % ('#c25700' if n <= 2 else '#5f5e68', SP, n, SP, SP + SP,
-                                                       esc(mdw(d)), dg_block(by[d]))
-    else:
-        b = none('앞으로 %d일 안에 Due Date Grid 일정이 없습니다' % AHEAD)
-    rows.append(section('앞으로 %d일 · Due Date Grid' % AHEAD, b, C_DG_DEF))
+    rows.append(group('앞으로 %d일' % AHEAD, '%s ~ %s' % (mdw(today + timedelta(days=1)), mdw(end))))
 
     lvn = {}
     for e in nxt:
@@ -294,7 +297,20 @@ def build(today, o, ev, hols=()):
     for d, ti in hn:
         b += '<div style="margin:2px 0;color:#8a4b00"><b>%s</b>&nbsp;&nbsp;&nbsp;공지 · %s</div>' % (
             esc(mdw(d)), esc(ti))
-    rows.append(section('앞으로 %d일 · 연차' % AHEAD, b or none(), C_LEAVE))
+    rows.append(sub('연차', b or none(), C_LEAVE, first=True))
+
+    by = {}
+    for e in nxt:
+        if e['ad'] == 'ba':
+            by.setdefault(e['date'], []).append(e)
+    b = ''
+    for d in sorted(by):
+        n = (d - today).days
+        b += ('<div style="margin:10px 0 2px"><span style="background:%s;color:#ffffff;'
+              'font-size:11px;font-weight:700;border-radius:999px;padding:1px 8px;white-space:nowrap">'
+              '%sD-%d%s</span>%s<b>%s</b></div>%s') % ('#c25700' if n <= 2 else '#5f5e68', SP, n, SP, SP + SP,
+                                                   esc(mdw(d)), dg_block(by[d]))
+    rows.append(sub('Due Date Grid', b or none(), C_DG_DEF))
 
     tcn = {}
     for e in nxt:
@@ -303,23 +319,22 @@ def build(today, o, ev, hols=()):
     b = ''
     for d in sorted(tcn):
         b += '<div style="margin:8px 0 2px"><b>%s</b></div>%s' % (esc(mdw(d)), tc_block(tcn[d]))
-    rows.append(section('앞으로 %d일 · Target Calendar 시작' % AHEAD, b or none(), C_TC_DEF))
+    rows.append(sub('Target Calendar', b or none(), C_TC_DEF))
 
     otn = {}
     for e in nxt:
         if e['ad'] not in KNOWN:
             otn.setdefault(e['date'], []).append(e)
-    if otn:
-        b = ''
-        for d in sorted(otn):
-            b += '<div style="margin:8px 0 2px"><b>%s</b></div>%s' % (
-                esc(mdw(d)), ''.join(other_line(e) for e in sorted(otn[d], key=lambda e: (e['tn'], e['ti']))))
-        rows.append(section('앞으로 %d일 · 기타 일정 (수기 입력)' % AHEAD, b, C_OTHER))
+    b = ''
+    for d in sorted(otn):
+        b += '<div style="margin:8px 0 2px"><b>%s</b></div>%s' % (
+            esc(mdw(d)), ''.join(other_line(e) for e in sorted(otn[d], key=lambda e: (e['tn'], e['ti']))))
+    rows.append(sub('기타 일정', b or none(), C_OTHER))
 
     h_next = [h for h in hols if today < h['f'] <= end]
-    b = ''.join('<div style="margin:3px 0"><b>%s</b>&nbsp;&nbsp;&nbsp;%s</div>' % (esc(mdw(h['f'])), hol_line(h))
-                for h in sorted(h_next, key=lambda h: (h['f'], h['g'])))
-    rows.append(section('앞으로 %d일 · 공휴일' % AHEAD, b or none('앞으로 %d일 안에 시작하는 공휴일이 없습니다' % AHEAD), '#7a4200'))
+    if h_next:
+        rows.append(sub('공휴일', ''.join('<div style="margin:3px 0"><b>%s</b>&nbsp;&nbsp;&nbsp;%s</div>' % (
+            esc(mdw(h['f'])), hol_line(h)) for h in sorted(h_next, key=lambda h: (h['f'], h['g']))), '#7a4200'))
 
     at = str(o.get('at', ''))[:10]
     synced = str(o.get('synced', '') or at)[:10]
@@ -343,7 +358,7 @@ def build(today, o, ev, hols=()):
 
     head = ('<tr><td style="background:#eef4fa;padding:18px 20px">'
             '<div style="font-size:11px;letter-spacing:2px;font-weight:700;color:#014b7e">BIG KIDS 2팀 · TOTAL SCHEDULER</div>'
-            '<div style="font-size:22px;font-weight:700;color:#1d1c22;margin-top:4px">%s 오늘의 일정</div>'
+            '<div style="font-size:22px;font-weight:700;color:#1d1c22;margin-top:4px">%s 2팀 일정 브리핑</div>'
             '<div style="font-size:13px;color:#4a4954;margin-top:4px">연차 %d명 · 오늘 일정 %d건 · 앞으로 %d일 일정 %d건%s</div>'
             '</td></tr>') % (esc(mdw(today)), len(lv), len(dg), AHEAD, sum(len(v) for v in by.values()),
                              (' · 오늘 기타 %d건' % len(ot)) if ot else '')
