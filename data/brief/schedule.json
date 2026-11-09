@@ -1,10 +1,10 @@
 {
 "v": 3,
-"at": "2026-11-05T09:34:22.168Z",
-"built": "2026-11-05T09:34:23.388Z",
-"synced": "2026-11-09",
-"from": "2026-11-04",
-"to": "2026-12-20",
+"at": "2026-11-09T08:41:20.000Z",
+"built": "2026-11-09T08:41:20.000Z",
+"synced": "2026-11-10",
+"from": "2026-11-08",
+"to": "2026-12-24",
 "stale_days": [],
 "types": [
 {
@@ -29,84 +29,6 @@
 }
 ],
 "rows": [
-{
-"t": "cacc8vj1",
-"ti": "최희재",
-"sc": "",
-"d": [
-{
-"l": "반반차(오전)",
-"v": "2026-11-05",
-"oi": 999
-}
-],
-"info": []
-},
-{
-"t": "6ig6jc9d",
-"ti": "Mesh Short",
-"sc": "2027 C2",
-"d": [
-{
-"l": "CMS Due Date",
-"v": "2026-11-06",
-"oi": 5
-}
-],
-"info": []
-},
-{
-"t": "6ig6jc9d",
-"ti": "Core + Fleece Hoodie",
-"sc": "2027 C2",
-"d": [
-{
-"l": "CMS Due Date",
-"v": "2026-11-06",
-"oi": 5
-}
-],
-"info": []
-},
-{
-"t": "6ig6jc9d",
-"ti": "Core SS Polo",
-"sc": "2027 C2",
-"d": [
-{
-"l": "CMS Due Date",
-"v": "2026-11-06",
-"oi": 5
-}
-],
-"info": []
-},
-{
-"t": "ue2uoc3t",
-"ti": "서울미팅 2차",
-"sc": "",
-"d": [
-{
-"l": "Seoul Meeting",
-"v": "2026-11-06",
-"oi": 999
-}
-],
-"info": []
-},
-{
-"t": "ue2uoc3t",
-"ti": "Anna C2'27 Buyer Reference Sample 파일 EOD",
-"sc": "",
-"d": [
-{
-"l": "기타",
-"v": "2026-11-06",
-"oi": 999
-}
-],
-"info": []
-},
 {
 "t": "9x3me2q3",
 "ti": "TPR Meeting",
@@ -335,58 +257,6 @@
 "info": []
 },
 {
-"t": "6ig6jc9d",
-"ti": "SS Classic Graphic Tee (Bulk Order 62%)",
-"sc": "2027 C2",
-"d": [
-{
-"l": "Vendor Pre-ISU",
-"v": "2026-11-15",
-"oi": 4
-}
-],
-"info": []
-},
-{
-"t": "6ig6jc9d",
-"ti": "SS Oversized Graphic Tee (Bulk Order 62%)",
-"sc": "2027 C2",
-"d": [
-{
-"l": "Vendor Pre-ISU",
-"v": "2026-11-15",
-"oi": 4
-}
-],
-"info": []
-},
-{
-"t": "6ig6jc9d",
-"ti": "SS Classic Graphic Tee (In-season Test Model)",
-"sc": "2027 C3",
-"d": [
-{
-"l": "Vendor Pre-ISU",
-"v": "2026-11-15",
-"oi": 4
-}
-],
-"info": []
-},
-{
-"t": "6ig6jc9d",
-"ti": "SS Oversized Graphic Tee (In-Season Test Model)",
-"sc": "2027 C3",
-"d": [
-{
-"l": "Vendor Pre-ISU",
-"v": "2026-11-15",
-"oi": 4
-}
-],
-"info": []
-},
-{
 "t": "9x3me2q3",
 "ti": "Segmentation Submission and Review",
 "sc": "C327 JUN W5",
@@ -561,6 +431,58 @@
 "v": "2026-12-11"
 }
 ]
+},
+{
+"t": "6ig6jc9d",
+"ti": "SS Classic Graphic Tee (Bulk Order 62%)",
+"sc": "2027 C2",
+"d": [
+{
+"l": "Vendor Pre-ISU",
+"v": "2026-11-15",
+"oi": 4
+}
+],
+"info": []
+},
+{
+"t": "6ig6jc9d",
+"ti": "SS Oversized Graphic Tee (Bulk Order 62%)",
+"sc": "2027 C2",
+"d": [
+{
+"l": "Vendor Pre-ISU",
+"v": "2026-11-15",
+"oi": 4
+}
+],
+"info": []
+},
+{
+"t": "6ig6jc9d",
+"ti": "SS Classic Graphic Tee (In-season Test Model)",
+"sc": "2027 C3",
+"d": [
+{
+"l": "Vendor Pre-ISU",
+"v": "2026-11-15",
+"oi": 4
+}
+],
+"info": []
+},
+{
+"t": "6ig6jc9d",
+"ti": "SS Oversized Graphic Tee (In-Season Test Model)",
+"sc": "2027 C3",
+"d": [
+{
+"l": "Vendor Pre-ISU",
+"v": "2026-11-15",
+"oi": 4
+}
+],
+"info": []
 },
 {
 "t": "cacc8vj1",
@@ -819,58 +741,6 @@
 "info": []
 },
 {
-"t": "6ig6jc9d",
-"ti": "Hot Price Hero Tank",
-"sc": "2027 C2",
-"d": [
-{
-"l": "Vendor Pre-ISU",
-"v": "2026-11-22",
-"oi": 4
-}
-],
-"info": []
-},
-{
-"t": "6ig6jc9d",
-"ti": "Core + SS Graphic Tee",
-"sc": "2027 C2",
-"d": [
-{
-"l": "Vendor Pre-ISU",
-"v": "2026-11-22",
-"oi": 4
-}
-],
-"info": []
-},
-{
-"t": "6ig6jc9d",
-"ti": "SS Classic Graphic Tee (In-season Test Model)",
-"sc": "2027 C3",
-"d": [
-{
-"l": "PO Due Date",
-"v": "2026-11-22",
-"oi": 6
-}
-],
-"info": []
-},
-{
-"t": "6ig6jc9d",
-"ti": "SS Oversized Graphic Tee (In-Season Test Model)",
-"sc": "2027 C3",
-"d": [
-{
-"l": "PO Due Date",
-"v": "2026-11-22",
-"oi": 6
-}
-],
-"info": []
-},
-{
 "t": "9x3me2q3",
 "ti": "Raw Materials Finalization Deadline",
 "sc": "C327 JUN W5",
@@ -1045,6 +915,32 @@
 "v": "2026-11-27"
 }
 ]
+},
+{
+"t": "6ig6jc9d",
+"ti": "Hot Price Hero Tank",
+"sc": "2027 C2",
+"d": [
+{
+"l": "Vendor Pre-ISU",
+"v": "2026-11-22",
+"oi": 4
+}
+],
+"info": []
+},
+{
+"t": "6ig6jc9d",
+"ti": "Core + SS Graphic Tee",
+"sc": "2027 C2",
+"d": [
+{
+"l": "Vendor Pre-ISU",
+"v": "2026-11-22",
+"oi": 4
+}
+],
+"info": []
 },
 {
 "t": "cacc8vj1",
@@ -1498,19 +1394,6 @@
 "info": []
 },
 {
-"t": "6ig6jc9d",
-"ti": "Core+ Raglan Graphic",
-"sc": "2027 C3",
-"d": [
-{
-"l": "APEX Map/ Drill",
-"v": "2026-11-30",
-"oi": 0
-}
-],
-"info": []
-},
-{
 "t": "cacc8vj1",
 "ti": "최희재",
 "sc": "",
@@ -1676,71 +1559,6 @@
 "info": []
 },
 {
-"t": "6ig6jc9d",
-"ti": "Core+ Raglan Graphic",
-"sc": "2027 C3",
-"d": [
-{
-"l": "Fabric Commit Due Date",
-"v": "2026-12-04",
-"oi": 2
-}
-],
-"info": []
-},
-{
-"t": "6ig6jc9d",
-"ti": "Core+ Raglan Graphic",
-"sc": "2027 C3",
-"d": [
-{
-"l": "Vendor Align Due Date",
-"v": "2026-12-04",
-"oi": 3
-}
-],
-"info": []
-},
-{
-"t": "6ig6jc9d",
-"ti": "Core + Halloween Fleece bottom",
-"sc": "2027 C3",
-"d": [
-{
-"l": "Vendor Pre-ISU",
-"v": "2026-12-06",
-"oi": 3
-}
-],
-"info": []
-},
-{
-"t": "6ig6jc9d",
-"ti": "Core + Halloween Fleece tops",
-"sc": "2027 C3",
-"d": [
-{
-"l": "Vendor Pre-ISU",
-"v": "2026-12-06",
-"oi": 4
-}
-],
-"info": []
-},
-{
-"t": "6ig6jc9d",
-"ti": "Core+ Raglan Graphic",
-"sc": "2027 C3",
-"d": [
-{
-"l": "Vendor Pre-ISU",
-"v": "2026-12-06",
-"oi": 4
-}
-],
-"info": []
-},
-{
 "t": "9x3me2q3",
 "ti": "POG Build",
 "sc": "C327 JUN W5",
@@ -1830,20 +1648,33 @@
 },
 {
 "t": "6ig6jc9d",
-"ti": "Warp Knit Jogger",
+"ti": "Core + Halloween Fleece bottom",
 "sc": "2027 C3",
 "d": [
 {
-"l": "APEX Map/ Drill",
-"v": "2026-12-07",
-"oi": 0
+"l": "Vendor Pre-ISU",
+"v": "2026-12-06",
+"oi": 3
 }
 ],
 "info": []
 },
 {
 "t": "6ig6jc9d",
-"ti": "Work Shirt",
+"ti": "Core + Halloween Fleece tops",
+"sc": "2027 C3",
+"d": [
+{
+"l": "Vendor Pre-ISU",
+"v": "2026-12-06",
+"oi": 4
+}
+],
+"info": []
+},
+{
+"t": "6ig6jc9d",
+"ti": "Warp Knit Jogger",
 "sc": "2027 C3",
 "d": [
 {
@@ -1960,39 +1791,26 @@
 },
 {
 "t": "6ig6jc9d",
-"ti": "Work Shirt",
+"ti": "SS Classic Graphic Tee (In-season Test Model)",
 "sc": "2027 C3",
 "d": [
 {
-"l": "Vendor Align Due Date",
+"l": "PO Due Date",
 "v": "2026-12-11",
-"oi": 3
+"oi": 6
 }
 ],
 "info": []
 },
 {
 "t": "6ig6jc9d",
-"ti": "Warp Knit Jogger",
+"ti": "SS Oversized Graphic Tee (In-Season Test Model)",
 "sc": "2027 C3",
 "d": [
 {
-"l": "Vendor Pre-ISU",
-"v": "2026-12-13",
-"oi": 3
-}
-],
-"info": []
-},
-{
-"t": "6ig6jc9d",
-"ti": "Work Shirt",
-"sc": "2027 C3",
-"d": [
-{
-"l": "Vendor Pre-ISU",
-"v": "2026-12-13",
-"oi": 4
+"l": "PO Due Date",
+"v": "2026-12-11",
+"oi": 6
 }
 ],
 "info": []
@@ -2108,6 +1926,19 @@
 ]
 },
 {
+"t": "6ig6jc9d",
+"ti": "Warp Knit Jogger",
+"sc": "2027 C3",
+"d": [
+{
+"l": "Vendor Pre-ISU",
+"v": "2026-12-13",
+"oi": 3
+}
+],
+"info": []
+},
+{
 "t": "9x3me2q3",
 "ti": "Sample Yardage Handoff to PDS",
 "sc": "C427 OCT W1",
@@ -2204,19 +2035,6 @@
 "info": []
 },
 {
-"t": "6ig6jc9d",
-"ti": "Core+ Raglan Graphic",
-"sc": "2027 C3",
-"d": [
-{
-"l": "CMS Due Date",
-"v": "2026-12-18",
-"oi": 5
-}
-],
-"info": []
-},
-{
 "t": "9x3me2q3",
 "ti": "Commit",
 "sc": "C327 JUN W5",
@@ -2281,6 +2099,97 @@
 "v": "2026-12-25"
 }
 ]
+},
+{
+"t": "cacc8vj1",
+"ti": "김유민",
+"sc": "",
+"d": [
+{
+"l": "휴가",
+"v": "2026-12-21",
+"oi": 999
+}
+],
+"info": []
+},
+{
+"t": "6ig6jc9d",
+"ti": "Core+ Raglan Graphic",
+"sc": "2027 C3",
+"d": [
+{
+"l": "APEX Map/ Drill",
+"v": "2026-12-21",
+"oi": 0
+}
+],
+"info": []
+},
+{
+"t": "cacc8vj1",
+"ti": "김유민",
+"sc": "",
+"d": [
+{
+"l": "휴가",
+"v": "2026-12-22",
+"oi": 999
+}
+],
+"info": []
+},
+{
+"t": "cacc8vj1",
+"ti": "김유민",
+"sc": "",
+"d": [
+{
+"l": "휴가",
+"v": "2026-12-23",
+"oi": 999
+}
+],
+"info": []
+},
+{
+"t": "cacc8vj1",
+"ti": "최희재",
+"sc": "",
+"d": [
+{
+"l": "휴가",
+"v": "2026-12-23",
+"oi": 999
+}
+],
+"info": []
+},
+{
+"t": "cacc8vj1",
+"ti": "김유민",
+"sc": "",
+"d": [
+{
+"l": "휴가",
+"v": "2026-12-24",
+"oi": 999
+}
+],
+"info": []
+},
+{
+"t": "cacc8vj1",
+"ti": "최희재",
+"sc": "",
+"d": [
+{
+"l": "휴가",
+"v": "2026-12-24",
+"oi": 999
+}
+],
+"info": []
 }
 ]
 }
