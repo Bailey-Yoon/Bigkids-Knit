@@ -1,10 +1,10 @@
 {
 "v": 3,
-"at": "2026-11-09T08:41:20.000Z",
-"built": "2026-11-09T08:41:20.000Z",
-"synced": "2026-11-10",
-"from": "2026-11-08",
-"to": "2026-12-24",
+"at": "2026-11-10T10:07:17.000Z",
+"built": "2026-11-10T10:07:17.000Z",
+"synced": "2026-11-11",
+"from": "2026-11-09",
+"to": "2026-12-25",
 "stale_days": [],
 "types": [
 {
@@ -29,94 +29,6 @@
 }
 ],
 "rows": [
-{
-"t": "9x3me2q3",
-"ti": "TPR Meeting",
-"sc": "C227 APR W4",
-"d": [
-{
-"l": "C227 APR W4",
-"v": "2026-11-08",
-"oi": 0
-}
-],
-"info": [
-{
-"l": "담당",
-"v": "SOURCING"
-},
-{
-"l": "DUE",
-"v": "2026-11-13"
-}
-]
-},
-{
-"t": "9x3me2q3",
-"ti": "Fabric Financial Promise & Yarn Commits Sent",
-"sc": "C327 JUN W5",
-"d": [
-{
-"l": "C327 JUN W5",
-"v": "2026-11-08",
-"oi": 1
-}
-],
-"info": [
-{
-"l": "담당",
-"v": "FE · PLANNING · SOURCING"
-},
-{
-"l": "DUE",
-"v": "2026-11-13"
-}
-]
-},
-{
-"t": "9x3me2q3",
-"ti": "Product EOF review to support assortment decisions",
-"sc": "C327 JUN W5",
-"d": [
-{
-"l": "C327 JUN W5",
-"v": "2026-11-08",
-"oi": 1
-}
-],
-"info": [
-{
-"l": "담당",
-"v": "DESIGN · TECH DEV"
-},
-{
-"l": "DUE",
-"v": "2026-11-13"
-}
-]
-},
-{
-"t": "9x3me2q3",
-"ti": "Cycle (Project Kick-Off) Meeting",
-"sc": "C427 OCT W1",
-"d": [
-{
-"l": "C427 OCT W1",
-"v": "2026-11-08",
-"oi": 2
-}
-],
-"info": [
-{
-"l": "담당",
-"v": "CFT · PM"
-},
-{
-"l": "DUE",
-"v": "2026-11-13"
-}
-]
-},
 {
 "t": "cacc8vj1",
 "ti": "박수진",
@@ -736,6 +648,32 @@
 "l": "Vendor Align Due Date",
 "v": "2026-11-20",
 "oi": 3
+}
+],
+"info": []
+},
+{
+"t": "6ig6jc9d",
+"ti": "SS Classic Graphic Tee (In-season Test Model)",
+"sc": "2027 C3",
+"d": [
+{
+"l": "S/Off Approved (1st physical)",
+"v": "2026-11-20",
+"oi": 1
+}
+],
+"info": []
+},
+{
+"t": "6ig6jc9d",
+"ti": "SS Oversized Graphic Tee (In-Season Test Model)",
+"sc": "2027 C3",
+"d": [
+{
+"l": "S/Off Approved (1st physical)",
+"v": "2026-11-20",
+"oi": 1
 }
 ],
 "info": []
@@ -2186,6 +2124,97 @@
 {
 "l": "휴가",
 "v": "2026-12-24",
+"oi": 999
+}
+],
+"info": []
+},
+{
+"t": "ue2uoc3t",
+"ti": "과테말라 지사 연말연휴 기간. (업체 휴무 일정도 지사 연휴 일정과 동일)",
+"sc": "",
+"d": [
+{
+"l": "기타",
+"v": "2026-12-24",
+"oi": 999
+}
+],
+"info": []
+},
+{
+"t": "cacc8vj1",
+"ti": "크리스마스",
+"sc": "",
+"d": [
+{
+"l": "휴일·공지",
+"v": "2026-12-25",
+"oi": 999
+}
+],
+"info": []
+},
+{
+"t": "6ig6jc9d",
+"ti": "Hot Price Hero Tank",
+"sc": "2027 C2",
+"d": [
+{
+"l": "PO Due Date",
+"v": "2026-12-25",
+"oi": 6
+}
+],
+"info": []
+},
+{
+"t": "6ig6jc9d",
+"ti": "Core + SS Graphic Tee",
+"sc": "2027 C2",
+"d": [
+{
+"l": "PO Due Date",
+"v": "2026-12-25",
+"oi": 6
+}
+],
+"info": []
+},
+{
+"t": "6ig6jc9d",
+"ti": "Core+ Raglan Graphic",
+"sc": "2027 C3",
+"d": [
+{
+"l": "Fabric Commit Due Date",
+"v": "2026-12-25",
+"oi": 2
+}
+],
+"info": []
+},
+{
+"t": "6ig6jc9d",
+"ti": "Core+ Raglan Graphic",
+"sc": "2027 C3",
+"d": [
+{
+"l": "Vendor Align Due Date",
+"v": "2026-12-25",
+"oi": 3
+}
+],
+"info": []
+},
+{
+"t": "ue2uoc3t",
+"ti": "과테말라 지사 연말연휴 기간. (업체 휴무 일정도 지사 연휴 일정과 동일)",
+"sc": "",
+"d": [
+{
+"l": "기타",
+"v": "2026-12-25",
 "oi": 999
 }
 ],
