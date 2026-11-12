@@ -1,19 +1,19 @@
 {
  "degraded": false,
- "marketDataDate": "2026-11-11",
- "snapshotDate": "2026-11-11",
+ "marketDataDate": "2026-11-12",
+ "snapshotDate": "2026-11-12",
  "sources": [
   "vercel",
   "yahoo"
  ],
  "tiles": [
   {
-   "changePct": -0.1143759545226509,
+   "changePct": -0.10188059919316428,
    "comment": "",
    "key": "usCotton",
    "label": "U.S. Cotton",
    "note": "ICE Dec-26 선물",
-   "price": 78.6,
+   "price": 78.44,
    "source": "yahoo:CTZ26.NYB",
    "unit": "¢/lb"
   },
@@ -58,22 +58,22 @@
    "unit": "¢/lb"
   },
   {
-   "changePct": -0.20725213273863974,
+   "changePct": -0.9360901314269705,
    "comment": "",
    "key": "wti",
    "label": "WTI Crude",
    "note": "NYMEX",
-   "price": 86.67,
+   "price": 85.72,
    "source": "yahoo:CL=F",
    "unit": "USD/bbl"
   },
   {
-   "changePct": -0.06481548560226294,
+   "changePct": -1.078053162139676,
    "comment": "",
    "key": "brent",
    "label": "Brent Crude",
    "note": "Global benchmark",
-   "price": 92.51,
+   "price": 91.76,
    "source": "yahoo:BZ=F",
    "unit": "USD/bbl"
   }
