@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<title>Big Kids · Cotton On</title>
+<link rel="icon" href="/Bigkids-Knit/favicon.svg">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+:root{--tcom:#CC0000;--gf:#5e35b1;--tool:#0277bd;
+  --comp:#37474f;--comp-tint:#eef1f3;--comp-deep:#263238;
+  --asp:#795548;--asp-tint:#f6f1ee;--asp-deep:#4e342e;
+  --grp:var(--comp);--grp-tint:var(--comp-tint);--grp-deep:var(--comp-deep);
+  --ink:#1d1c22;--body:#4a4954;--sub:#6a6a72;--muted:#6e6d77;--neg:#CC0000;
+  --bg:#f3f2f6;--card:#fff;--bar:#1b1b22;--line:#e7e5ee;
+  --r-sm:8px;--r-md:10px;--r-lg:14px;--r-xl:16px;
+  --sh-1:0 1px 2px rgba(20,18,30,.06);--sh-2:0 8px 22px rgba(20,18,30,.11)}
+body.asp{--grp:var(--asp);--grp-tint:var(--asp-tint);--grp-deep:var(--asp-deep)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,"Segoe UI","Apple SD Gothic Neo","Noto Sans KR",sans-serif;
+  background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased}
+a{color:var(--tool)}
+:focus-visible{outline:2px solid var(--tool);outline-offset:2px;border-radius:var(--r-sm)}
+.topbar{position:sticky;top:0;z-index:100;background:var(--bar);color:#fff;
+  font-size:13px;padding:11px 20px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.topbar a{color:#fff;text-decoration:none}
+.topbar .brand{font-weight:700}.topbar .sep{opacity:.3}.topbar .here{color:#cfd8dc}
+.fab{position:fixed;right:18px;bottom:18px;z-index:99;width:52px;height:52px;border-radius:50%;
+  background:var(--bar);color:#fff;display:flex;align-items:center;justify-content:center;
+  font-size:20px;text-decoration:none;box-shadow:var(--sh-2)}
+.wrap{max-width:1040px;margin:0 auto;padding:26px 20px 56px}
+.hero{background:var(--grp-tint);border-radius:var(--r-xl);padding:22px 24px;margin-bottom:20px}
+.hero .eyebrow{font-size:11px;letter-spacing:.16em;font-weight:700;color:var(--grp-deep)}
+.hero h1{font-size:26px;line-height:1.25;margin:6px 0}
+.hero .meta{font-size:13px;color:var(--sub);line-height:1.6}
+h2{font-size:16px;font-weight:700;margin:26px 2px 12px}
+h3{font-size:14px;font-weight:700;margin:18px 2px 8px;color:var(--grp-deep)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:6px}
+.kpi{background:var(--card);border-radius:var(--r-lg);padding:15px 17px;box-shadow:var(--sh-1)}
+.kpi .v{font-size:24px;font-weight:700;font-variant-numeric:tabular-nums}
+.kpi .l{font-size:11.5px;color:var(--sub);margin-top:4px}
+.kpi.g .v{color:var(--grp-deep)}
+.box{background:var(--card);border-radius:var(--r-lg);padding:18px 20px;box-shadow:var(--sh-1);
+  font-size:13px;line-height:1.75;color:var(--body)}
+.box ul{margin:8px 0 0 18px}
+.info{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:14px}
+.badge{display:inline-block;font-size:11.5px;font-weight:700;border-radius:var(--r-sm);padding:3px 9px;
+  border:1px solid var(--line);background:#f7f6fa;color:var(--ink);white-space:nowrap}
+.badge.yes{background:#e8f5e9;border-color:#c8e6c9;color:#1b5e20}
+.badge.no{background:#f4f3f6;border-color:var(--line);color:var(--muted)}
+table{border-collapse:collapse;width:100%;font-size:12.5px}
+th,td{padding:7px 9px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}
+th{background:#faf9fc;font-size:11.5px;color:var(--sub);font-weight:700}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
+.bar{height:9px;border-radius:5px;background:var(--grp);display:inline-block;vertical-align:middle}
+.pct{color:var(--muted);font-size:11.5px}
+table.rt{background:var(--card);border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--sh-1)}
+table.rt img.ph{width:86px;height:86px;object-fit:contain;background:#fff;border-radius:8px;display:block}
+.id{font-family:"SF Mono",Consolas,monospace;font-size:11px;color:var(--muted)}
+.nm{font-weight:600}
+.st{font-size:11px;color:var(--muted);margin-top:2px}
+.imp{display:flex;flex-wrap:wrap;gap:4px;align-items:center;max-width:180px}
+.imp .n{font-size:11.5px;font-weight:800;margin-right:3px;white-space:nowrap}
+.imp .sw{width:22px;height:22px;border-radius:50%;object-fit:cover;border:1px solid var(--line);
+  display:inline-block;background:#fff}
+.imp .chip{font-size:10.5px;color:var(--sub);background:#f4f3f8;border:1px solid var(--line);
+  border-radius:9px;padding:1px 7px;white-space:nowrap}
+.imp .more{font-size:10.5px;color:var(--muted)}
+.mat{font-size:12px;line-height:1.5}
+.mat .m2{color:var(--muted)}
+.pr{white-space:nowrap;font-variant-numeric:tabular-nums}
+.pr s{color:var(--muted);font-size:11.5px}
+.pr .sale{color:var(--neg);font-weight:700}
+.pr .off{font-size:11px;color:var(--neg)}
+.pr .mem{font-size:11px;color:var(--sub)}
+.rv{white-space:nowrap;font-size:12px}
+.note{font-size:12px;color:var(--muted);margin-top:22px;line-height:1.7}
+.round{display:flex;flex-direction:column;gap:12px;background:var(--card);border-radius:var(--r-lg);
+  padding:20px 22px;margin-bottom:12px;color:var(--ink);text-decoration:none;box-shadow:var(--sh-1);
+  transition:box-shadow .14s,transform .14s}
+.round:hover{box-shadow:var(--sh-2);transform:translateY(-2px);color:var(--ink)}
+.round .head{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.round .t{font-size:19px;font-weight:700}
+.round .latest{font-size:11px;font-weight:700;color:#fff;background:var(--grp);padding:4px 9px;border-radius:var(--r-sm)}
+.round .d{font-size:13px;color:var(--sub);line-height:1.6}
+.round .foot{display:flex;gap:20px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:12px}
+.round .foot b{font-size:19px;font-variant-numeric:tabular-nums;display:block}
+.round .foot span{font-size:11.5px;color:var(--sub);display:block}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+a.bcard{display:flex;flex-direction:column;gap:10px;background:var(--card);border-radius:var(--r-lg);
+  padding:18px 20px;color:var(--ink);text-decoration:none;box-shadow:var(--sh-1);transition:box-shadow .14s,transform .14s}
+a.bcard:hover{box-shadow:var(--sh-2);transform:translateY(-2px);color:var(--ink)}
+a.bcard .t{font-size:17px;font-weight:700}
+a.bcard .s{font-size:12px;color:var(--sub)}
+a.bcard .ages{font-size:12px;color:var(--body);line-height:1.6}
+a.bcard .foot{display:flex;gap:16px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:10px}
+a.bcard .foot b{font-size:16px;display:block;font-variant-numeric:tabular-nums}
+a.bcard .foot span{font-size:11px;color:var(--sub);display:block}
+.sec{border-radius:var(--r-xl);padding:20px 22px;margin-bottom:22px}
+.sec.comp{background:var(--comp-tint)} .sec.asp{background:var(--asp-tint)}
+.sec .lbl{font-size:16px;font-weight:700;margin-bottom:12px}
+.sec.comp .lbl{color:var(--comp-deep)} .sec.asp .lbl{color:var(--asp-deep)}
+@media(max-width:760px){ .info{grid-template-columns:1fr} }
+@media(max-width:640px){ .hero{padding:18px} .hero h1{font-size:22px}
+  table.rt img.ph{width:60px;height:60px} .imp{max-width:120px} }
+</style>
+</head>
+<body>
+<div class="topbar"><a class="brand" href="/Bigkids-Knit/">📊 Big Kids Hub</a><span class="sep">|</span><a href="/Bigkids-Knit/reports/competitors/">🏷️ Competitor · ✨ Aspirational</a><span class="sep">|</span><a class="here" href="/Bigkids-Knit/reports/competitors/cottonon/">🏷️ Cotton On</a></div><a class="fab" href="/Bigkids-Knit/" title="Big Kids Hub">📊</a>
+<div class="wrap">
+<div class="hero"><div class="eyebrow">COMPETITOR · 격주 트래킹</div><h1>🏷️ Cotton On</h1><div class="meta">Cotton On Kids · 키즈 신상 · 정가 / 판매가 · 컬러웨이 · 소재 (격주)</div></div>
+<div class="info"><div class="box"><b>연령 구간</b> <span class="pct">(사이트 구간 · 분류 · 실제 사이즈)</span><table style="margin-top:6px"><tr><th>사이트 구간</th><th>분류</th><th>사이즈</th></tr><tr><td>Girls · Boys</td><td>Kids</td><td><b>2–10</b></td></tr><tr><td>Baby</td><td>Baby</td><td><b>0–3Y</b></td></tr></table></div><div class="box"><b>리뷰</b><br><span class="badge yes">리뷰 있음</span> 사이트에 소비자 리뷰가 달린다 · 이번 회차 리뷰 있는 스타일 <b>112</b>건<br><br><b>통화</b> USD · <b>출처</b> <a href="https://cottonon.com/US/" target="_blank" rel="noopener">cottonon.com/US</a><ul><li>⚠ 미국 사이트 키즈는 <b>2–10세까지만</b> 있다 (빅키즈 상단 구간 없음)</li><li>리뷰는 브라우저에서만 그려진다 — 목록 화면에 <b>표시된 별점·리뷰 수</b>를 읽었다</li></ul></div></div>
+<h2>최신 회차</h2>
+<a class="round" href="2026-11-12.html"><div class="head"><div class="t">2026-11-12 · 기준선</div><span class="latest">LATEST</span></div><div class="d">첫 수집 — 143개 스타일을 기준선으로 잡았습니다. 다음 회차부터 비교가 나옵니다.</div><div class="foot"><div><b>143</b><span>스타일</span></div><div><b>1073</b><span>컬러웨이</span></div><div><b>$29.00</b><span>정가 중앙값</span></div><div><b>0</b><span>할인 중</span></div><div><b>112</b><span>리뷰 있는 스타일</span></div></div></a>
+<div class="note">Target(Big Boys · Big Girls)과 같은 방식으로 격주 수집합니다. 회차가 쌓이면 이 목록 아래에 지난 회차가 붙습니다.</div>
+</div>
+</body>
+</html>

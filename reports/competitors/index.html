@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<title>Big Kids · Competitor · Aspirational</title>
+<link rel="icon" href="/Bigkids-Knit/favicon.svg">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+:root{--tcom:#CC0000;--gf:#5e35b1;--tool:#0277bd;
+  --comp:#37474f;--comp-tint:#eef1f3;--comp-deep:#263238;
+  --asp:#795548;--asp-tint:#f6f1ee;--asp-deep:#4e342e;
+  --grp:var(--comp);--grp-tint:var(--comp-tint);--grp-deep:var(--comp-deep);
+  --ink:#1d1c22;--body:#4a4954;--sub:#6a6a72;--muted:#6e6d77;--neg:#CC0000;
+  --bg:#f3f2f6;--card:#fff;--bar:#1b1b22;--line:#e7e5ee;
+  --r-sm:8px;--r-md:10px;--r-lg:14px;--r-xl:16px;
+  --sh-1:0 1px 2px rgba(20,18,30,.06);--sh-2:0 8px 22px rgba(20,18,30,.11)}
+body.asp{--grp:var(--asp);--grp-tint:var(--asp-tint);--grp-deep:var(--asp-deep)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,"Segoe UI","Apple SD Gothic Neo","Noto Sans KR",sans-serif;
+  background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased}
+a{color:var(--tool)}
+:focus-visible{outline:2px solid var(--tool);outline-offset:2px;border-radius:var(--r-sm)}
+.topbar{position:sticky;top:0;z-index:100;background:var(--bar);color:#fff;
+  font-size:13px;padding:11px 20px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.topbar a{color:#fff;text-decoration:none}
+.topbar .brand{font-weight:700}.topbar .sep{opacity:.3}.topbar .here{color:#cfd8dc}
+.fab{position:fixed;right:18px;bottom:18px;z-index:99;width:52px;height:52px;border-radius:50%;
+  background:var(--bar);color:#fff;display:flex;align-items:center;justify-content:center;
+  font-size:20px;text-decoration:none;box-shadow:var(--sh-2)}
+.wrap{max-width:1040px;margin:0 auto;padding:26px 20px 56px}
+.hero{background:var(--grp-tint);border-radius:var(--r-xl);padding:22px 24px;margin-bottom:20px}
+.hero .eyebrow{font-size:11px;letter-spacing:.16em;font-weight:700;color:var(--grp-deep)}
+.hero h1{font-size:26px;line-height:1.25;margin:6px 0}
+.hero .meta{font-size:13px;color:var(--sub);line-height:1.6}
+h2{font-size:16px;font-weight:700;margin:26px 2px 12px}
+h3{font-size:14px;font-weight:700;margin:18px 2px 8px;color:var(--grp-deep)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:6px}
+.kpi{background:var(--card);border-radius:var(--r-lg);padding:15px 17px;box-shadow:var(--sh-1)}
+.kpi .v{font-size:24px;font-weight:700;font-variant-numeric:tabular-nums}
+.kpi .l{font-size:11.5px;color:var(--sub);margin-top:4px}
+.kpi.g .v{color:var(--grp-deep)}
+.box{background:var(--card);border-radius:var(--r-lg);padding:18px 20px;box-shadow:var(--sh-1);
+  font-size:13px;line-height:1.75;color:var(--body)}
+.box ul{margin:8px 0 0 18px}
+.info{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:14px}
+.badge{display:inline-block;font-size:11.5px;font-weight:700;border-radius:var(--r-sm);padding:3px 9px;
+  border:1px solid var(--line);background:#f7f6fa;color:var(--ink);white-space:nowrap}
+.badge.yes{background:#e8f5e9;border-color:#c8e6c9;color:#1b5e20}
+.badge.no{background:#f4f3f6;border-color:var(--line);color:var(--muted)}
+table{border-collapse:collapse;width:100%;font-size:12.5px}
+th,td{padding:7px 9px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}
+th{background:#faf9fc;font-size:11.5px;color:var(--sub);font-weight:700}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
+.bar{height:9px;border-radius:5px;background:var(--grp);display:inline-block;vertical-align:middle}
+.pct{color:var(--muted);font-size:11.5px}
+table.rt{background:var(--card);border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--sh-1)}
+table.rt img.ph{width:86px;height:86px;object-fit:contain;background:#fff;border-radius:8px;display:block}
+.id{font-family:"SF Mono",Consolas,monospace;font-size:11px;color:var(--muted)}
+.nm{font-weight:600}
+.st{font-size:11px;color:var(--muted);margin-top:2px}
+.imp{display:flex;flex-wrap:wrap;gap:4px;align-items:center;max-width:180px}
+.imp .n{font-size:11.5px;font-weight:800;margin-right:3px;white-space:nowrap}
+.imp .sw{width:22px;height:22px;border-radius:50%;object-fit:cover;border:1px solid var(--line);
+  display:inline-block;background:#fff}
+.imp .chip{font-size:10.5px;color:var(--sub);background:#f4f3f8;border:1px solid var(--line);
+  border-radius:9px;padding:1px 7px;white-space:nowrap}
+.imp .more{font-size:10.5px;color:var(--muted)}
+.mat{font-size:12px;line-height:1.5}
+.mat .m2{color:var(--muted)}
+.pr{white-space:nowrap;font-variant-numeric:tabular-nums}
+.pr s{color:var(--muted);font-size:11.5px}
+.pr .sale{color:var(--neg);font-weight:700}
+.pr .off{font-size:11px;color:var(--neg)}
+.pr .mem{font-size:11px;color:var(--sub)}
+.rv{white-space:nowrap;font-size:12px}
+.note{font-size:12px;color:var(--muted);margin-top:22px;line-height:1.7}
+.round{display:flex;flex-direction:column;gap:12px;background:var(--card);border-radius:var(--r-lg);
+  padding:20px 22px;margin-bottom:12px;color:var(--ink);text-decoration:none;box-shadow:var(--sh-1);
+  transition:box-shadow .14s,transform .14s}
+.round:hover{box-shadow:var(--sh-2);transform:translateY(-2px);color:var(--ink)}
+.round .head{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.round .t{font-size:19px;font-weight:700}
+.round .latest{font-size:11px;font-weight:700;color:#fff;background:var(--grp);padding:4px 9px;border-radius:var(--r-sm)}
+.round .d{font-size:13px;color:var(--sub);line-height:1.6}
+.round .foot{display:flex;gap:20px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:12px}
+.round .foot b{font-size:19px;font-variant-numeric:tabular-nums;display:block}
+.round .foot span{font-size:11.5px;color:var(--sub);display:block}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+a.bcard{display:flex;flex-direction:column;gap:10px;background:var(--card);border-radius:var(--r-lg);
+  padding:18px 20px;color:var(--ink);text-decoration:none;box-shadow:var(--sh-1);transition:box-shadow .14s,transform .14s}
+a.bcard:hover{box-shadow:var(--sh-2);transform:translateY(-2px);color:var(--ink)}
+a.bcard .t{font-size:17px;font-weight:700}
+a.bcard .s{font-size:12px;color:var(--sub)}
+a.bcard .ages{font-size:12px;color:var(--body);line-height:1.6}
+a.bcard .foot{display:flex;gap:16px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:10px}
+a.bcard .foot b{font-size:16px;display:block;font-variant-numeric:tabular-nums}
+a.bcard .foot span{font-size:11px;color:var(--sub);display:block}
+.sec{border-radius:var(--r-xl);padding:20px 22px;margin-bottom:22px}
+.sec.comp{background:var(--comp-tint)} .sec.asp{background:var(--asp-tint)}
+.sec .lbl{font-size:16px;font-weight:700;margin-bottom:12px}
+.sec.comp .lbl{color:var(--comp-deep)} .sec.asp .lbl{color:var(--asp-deep)}
+@media(max-width:760px){ .info{grid-template-columns:1fr} }
+@media(max-width:640px){ .hero{padding:18px} .hero h1{font-size:22px}
+  table.rt img.ph{width:60px;height:60px} .imp{max-width:120px} }
+</style>
+</head>
+<body>
+<div class="topbar"><a class="brand" href="/Bigkids-Knit/">📊 Big Kids Hub</a><span class="sep">|</span><a href="/Bigkids-Knit/reports/competitors/">🏷️ Competitor · ✨ Aspirational</a></div><a class="fab" href="/Bigkids-Knit/" title="Big Kids Hub">📊</a>
+<div class="wrap">
+<div class="hero"><div class="eyebrow">COMPETITOR · ASPIRATIONAL · 격주 트래킹</div><h1>🏷️ 경쟁사 · ✨ 벤치마크 키즈</h1><div class="meta">브랜드별 키즈 신상(New Arrivals) · 정가 / 판매가 · 컬러웨이 · 소재 — Target 과 같은 형식<br>브랜드마다 <b>연령 구간</b>과 <b>리뷰 유무</b>가 다릅니다. 카드에 함께 적었습니다.</div></div>
+<div class="sec comp"><div class="lbl">🏷️ Competitor · 경쟁사</div><div class="cards"><a class="bcard" href="/Bigkids-Knit/reports/competitors/walmart/"><div><div class="t">🏷️ Walmart</div><div class="s">Wonder Nation · USD · 2026-11-12</div></div><div class="ages"><b>연령</b> Girls · Boys 4–18 (Husky·Plus 포함) · Toddler 12M–5T · Baby 0–24M</div><div><span class="badge yes">리뷰 있음</span></div><div class="foot"><div><b>504</b><span>기준선 스타일</span></div><div><b>24</b><span>할인 중</span></div><div><b>USD</b><span>통화</span></div></div></a><a class="bcard" href="/Bigkids-Knit/reports/competitors/oldnavy/"><div><div class="t">🏷️ Old Navy</div><div class="s">Competitor · USD · 2026-11-12</div></div><div class="ages"><b>연령</b> Girls · Boys 5–18 (XS–XXL) · Toddler 12M–6T · Baby 0–24M</div><div><span class="badge yes">리뷰 있음</span></div><div class="foot"><div><b>443</b><span>기준선 스타일</span></div><div><b>435</b><span>할인 중</span></div><div><b>USD</b><span>통화</span></div></div></a><a class="bcard" href="/Bigkids-Knit/reports/competitors/gap/"><div><div class="t">🏷️ Gap</div><div class="s">GapKids · babyGap · USD · 2026-11-12</div></div><div class="ages"><b>연령</b> Girls · Boys 4–18 (XS(4/5)–XXL(14/16)) · babyGap 6M–6Y · Baby 0–24M (Up to 7lb)</div><div><span class="badge yes">리뷰 있음</span></div><div class="foot"><div><b>772</b><span>기준선 스타일</span></div><div><b>740</b><span>할인 중</span></div><div><b>USD</b><span>통화</span></div></div></a><a class="bcard" href="/Bigkids-Knit/reports/competitors/zara/"><div><div class="t">🏷️ Zara</div><div class="s">Zara Kids · USD · 2026-11-12</div></div><div class="ages"><b>연령</b> Girl · Boy 6–14Y · Baby Girl · Baby Boy 1½–6Y · Baby 0–18M</div><div><span class="badge no">리뷰 없음</span></div><div class="foot"><div><b>1845</b><span>기준선 스타일</span></div><div><b>1</b><span>할인 중</span></div><div><b>USD</b><span>통화</span></div></div></a><a class="bcard" href="/Bigkids-Knit/reports/competitors/cottonon/"><div><div class="t">🏷️ Cotton On</div><div class="s">Cotton On Kids · USD · 2026-11-12</div></div><div class="ages"><b>연령</b> Girls · Boys 2–10 · Baby 0–3Y</div><div><span class="badge yes">리뷰 있음</span></div><div class="foot"><div><b>143</b><span>기준선 스타일</span></div><div><b>0</b><span>할인 중</span></div><div><b>USD</b><span>통화</span></div></div></a><a class="bcard" href="/Bigkids-Knit/reports/competitors/hm/"><div><div class="t">🏷️ H&amp;M</div><div class="s">H&amp;M Kids · USD · 2026-11-12</div></div><div class="ages"><b>연령</b> Girls · Boys 9–14Y 8-10Y–14Y+ · Girls · Boys 2–8Y 1½-2Y–8Y · Baby · Newborn 0–24M</div><div><span class="badge yes">리뷰 있음</span></div><div class="foot"><div><b>872</b><span>기준선 스타일</span></div><div><b>0</b><span>할인 중</span></div><div><b>USD</b><span>통화</span></div></div></a></div></div>
+<div class="sec asp"><div class="lbl">✨ Aspirational · 벤치마크</div><div class="cards"><a class="bcard" href="/Bigkids-Knit/reports/competitors/ao76/"><div><div class="t">✨ AO76</div><div class="s">Aspirational · EUR · 2026-11-12</div></div><div class="ages"><b>연령</b> Girls · Boys 1–16Y</div><div><span class="badge no">리뷰 없음</span></div><div class="foot"><div><b>327</b><span>기준선 스타일</span></div><div><b>0</b><span>할인 중</span></div><div><b>EUR</b><span>통화</span></div></div></a><a class="bcard" href="/Bigkids-Knit/reports/competitors/tns/"><div><div class="t">✨ The New Society</div><div class="s">Aspirational · EUR · 2026-11-12</div></div><div class="ages"><b>연령</b> Baby 3M–24M · Kids 2Y–16Y · Teen 10Y–18Y</div><div><span class="badge no">리뷰 없음</span></div><div class="foot"><div><b>177</b><span>기준선 스타일</span></div><div><b>0</b><span>할인 중</span></div><div><b>EUR</b><span>통화</span></div></div></a><a class="bcard" href="/Bigkids-Knit/reports/competitors/bellerose/"><div><div class="t">✨ Bellerose</div><div class="s">Aspirational · EUR · 2026-11-12</div></div><div class="ages"><b>연령</b> Girls · Boys 4Y–18</div><div><span class="badge no">리뷰 없음</span></div><div class="foot"><div><b>52</b><span>기준선 스타일</span></div><div><b>45</b><span>할인 중</span></div><div><b>EUR</b><span>통화</span></div></div></a></div></div>
+<div class="note">Pacsun · American Eagle · Urban Outfitters 는 이번 범위에서 뺐습니다 (AE · UO 는 현재 키즈 라인이 없고, Pacsun 은 키즈 페이지가 자동 접속을 막습니다).</div>
+</div>
+</body>
+</html>
