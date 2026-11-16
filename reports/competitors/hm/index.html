@@ -36,6 +36,18 @@ a.bcard .t .logo{height:24px;width:auto;max-width:96px;vertical-align:-5px;margi
 .hero .meta{font-size:13px;color:var(--sub);line-height:1.6}
 h2{font-size:16px;font-weight:700;margin:26px 2px 12px}
 h3{font-size:14px;font-weight:700;margin:18px 2px 8px;color:var(--grp-deep)}
+/* 섹션 메뉴 — 상단바 아래에 붙어 따라온다. top 은 스크립트가 상단바 높이로 맞춘다 */
+.toc{position:sticky;top:41px;z-index:90;background:var(--bg);margin:0 -20px 4px;padding:8px 20px;
+  border-bottom:1px solid var(--line,#e7e5ee);display:flex;flex-wrap:wrap;gap:6px}
+@media(max-width:640px){.toc{flex-wrap:nowrap;overflow-x:auto;white-space:nowrap;scrollbar-width:thin}}
+.toc a{flex:none;font-size:12.5px;font-weight:600;color:var(--ink);text-decoration:none;
+  padding:6px 11px;border-radius:999px;background:#fff;border:1px solid var(--line,#e7e5ee)}
+.toc a:hover{border-color:var(--grp)}
+.toc a.on{background:var(--grp-tint);border-color:var(--grp);color:var(--grp-deep)}
+.toc a.sub{font-weight:500;color:var(--sub)}
+.toc .gap{flex:none;width:1px;background:var(--line,#e7e5ee);margin:4px 2px}
+.toc a.top{margin-left:auto;color:var(--sub)}
+h2[id]{scroll-margin-top:140px}
 .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:6px}
 .kpi{background:var(--card);border-radius:var(--r-lg);padding:15px 17px;box-shadow:var(--sh-1)}
 .kpi .v{font-size:24px;font-weight:700;font-variant-numeric:tabular-nums}
