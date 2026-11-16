@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<title>Big Kids · Toddler Girls (D31)</title>
+<link rel="icon" href="/Bigkids-Knit/favicon.svg">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+/* 토큰 정본: _shared/d76_design.css */
+:root{--tcom:#CC0000;--tcom-tint:#fdf3f3;--tcom-deep:#8f0000;
+  --gf:#5e35b1;--gf-tint:#f6f3fc;--gf-deep:#4527a0;
+  --boy:#c2185b;--boy-tint:#fdf1f6;--boy-deep:#8e1246;--tool:#0277bd;
+  --ink:#1d1c22;--body:#4a4954;--sub:#6a6a72;--muted:#6e6d77;
+  --bg:#f3f2f6;--card:#fff;--bar:#1b1b22;--line:#e7e5ee;
+  --r-sm:8px;--r-md:10px;--r-lg:14px;--r-xl:16px;
+  --sh-1:0 1px 2px rgba(20,18,30,.06);--sh-2:0 8px 22px rgba(20,18,30,.11)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,"Segoe UI","Apple SD Gothic Neo","Noto Sans KR",sans-serif;
+  background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased}
+:focus-visible{outline:2px solid var(--tool);outline-offset:2px;border-radius:var(--r-sm)}
+
+.topbar{position:sticky;top:0;z-index:100;background:var(--bar);color:#fff;
+  font-size:13px;padding:11px 20px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.topbar a{color:#fff;text-decoration:none}
+.topbar .brand{font-weight:700}
+.topbar .sep{opacity:.3}
+.topbar .here{color:#f4a6c4}
+@media(max-width:640px){ .topbar{font-size:12px;padding:10px 14px} }
+.fab{position:fixed;right:18px;bottom:18px;z-index:99;width:52px;height:52px;border-radius:50%;
+  background:var(--bar);color:#fff;display:flex;align-items:center;justify-content:center;
+  font-size:20px;text-decoration:none;box-shadow:var(--sh-2)}
+
+.wrap{max-width:900px;margin:0 auto;padding:26px 20px 56px}
+.hero{background:var(--boy-tint);border-radius:var(--r-xl);padding:22px 24px;margin-bottom:20px}
+.hero .eyebrow{font-size:11px;letter-spacing:.16em;font-weight:700;color:var(--boy-deep)}
+.hero h1{font-size:26px;line-height:1.25;letter-spacing:-.01em;margin:6px 0;color:var(--ink)}
+.hero .meta{font-size:13px;color:var(--sub);line-height:1.6}
+
+h2{font-size:16px;font-weight:700;color:var(--ink);margin:26px 2px 12px}
+
+.card{display:flex;flex-direction:column;gap:12px;background:var(--card);border-radius:var(--r-lg);
+  padding:20px 22px;margin-bottom:12px;color:var(--ink);text-decoration:none;
+  box-shadow:var(--sh-1);transition:box-shadow .14s,transform .14s}
+.card:hover{box-shadow:var(--sh-2);transform:translateY(-2px);color:var(--ink)}
+.card .head{display:flex;align-items:flex-start;gap:12px}
+.card .ico{font-size:26px;line-height:1;flex:none}
+.card .t{font-size:19px;font-weight:700;letter-spacing:-.01em;line-height:1.3}
+.card .d{font-size:13px;color:var(--sub);line-height:1.6;margin-top:3px}
+.card .tag{margin-left:auto;font-size:11px;font-weight:700;color:#fff;
+  padding:4px 9px;border-radius:var(--r-sm);white-space:nowrap}
+.card.tcom .tag{background:var(--tcom)} .card.gf .tag{background:var(--gf)}
+.card .foot{display:flex;gap:20px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:12px}
+.card .foot b{font-size:19px;font-variant-numeric:tabular-nums;display:block}
+.card .foot .dn b{color:var(--tcom)}
+.card .foot span{font-size:11.5px;color:var(--sub);display:block}
+
+.note{font-size:12px;color:var(--muted);margin-top:22px;line-height:1.7}
+.onep{background:var(--card);border-radius:var(--r-lg);padding:14px;box-shadow:var(--sh-1);margin-top:12px}
+.onep a{display:block;line-height:0}
+.onep img{width:100%;height:auto;border-radius:var(--r-md);display:block}
+.onep .cap{line-height:1.6;font-size:11.5px;color:var(--muted);padding:10px 4px 2px}
+@media(max-width:640px){
+  .hero{padding:18px 18px} .hero h1{font-size:22px}
+  .card{padding:18px} .card .foot{gap:14px}
+}
+a.xl{display:flex;align-items:center;gap:10px;margin:-4px 0 14px;padding:9px 14px;background:var(--card);border:1px solid var(--line);border-radius:var(--r-md);font-size:13px;line-height:1.45;color:var(--ink);text-decoration:none;transition:box-shadow .14s}
+a.xl:hover{box-shadow:var(--sh-1)}
+a.xl .xi{font-size:16px;line-height:1;flex:none}
+a.xl .xt{color:var(--sub);flex:1;min-width:0}
+a.xl .xt b{color:var(--ink);font-weight:700;margin-right:4px}
+a.xl .xg{flex:none;font-size:12px;font-weight:700;color:#fff;background:var(--boy);padding:5px 11px;border-radius:var(--r-sm);white-space:nowrap}
+@media(max-width:640px){ a.xl{flex-wrap:wrap} a.xl .xg{width:100%;text-align:center} }
+.hero h1 .tlogo{height:30px;width:auto;vertical-align:-5px;margin-right:8px;border-radius:5px}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <a class="brand" href="/Bigkids-Knit/">📊 Big Kids Hub</a>
+  <span class="sep">|</span>
+  <a class="here" href="./">🧒 Toddler Girls</a>
+</div>
+<a class="fab" href="/Bigkids-Knit/" title="Big Kids Hub">📊</a>
+
+<div class="wrap">
+<div class="hero">
+  <div class="eyebrow">TODDLER GIRLS · 격주 트래킹</div>
+  <h1><img class="tlogo" src="/Bigkids-Knit/assets/logos/target.png" alt="Target">Toddler Girls — Dept 31 🧒</h1>
+  <div class="meta">Target.com Cat &amp; Jack · Toddler Girl(031) · 카탈로그 추적과 게스트 리뷰를 2주 단위로 모읍니다</div>
+</div>
+<h2>최신 회차 2026-11-16 · 기준선</h2>
+<a class="card tcom" href="../toddler-girls-tcom/">
+  <div class="head">
+    <span class="ico">🛒</span>
+    <div>
+      <div class="t">T.COM 카탈로그 트래킹</div>
+      <div class="d">기준선 회차 — 다음 회차부터 신상 · DROPPED · 재등장 · 가격변동</div>
+    </div>
+    <span class="tag">11-16</span>
+  </div>
+  <div class="foot">
+    <div><b>123</b><span>카탈로그</span></div>
+    <div><b>265</b><span>컬러웨이</span></div>
+    <div><b>$7.20</b><span>가격 중앙값</span></div>
+    <div><b>160</b><span>그리드 전수</span></div>
+  </div>
+</a>
+<a class="xl" href="CJ_ToddlerGirls_Catalog_2026-11-16.xlsx" download title="바이어 양식 엑셀">
+  <span class="xi">&#128202;</span>
+  <span class="xt"><b>카탈로그 엑셀</b>123건 &middot; 바이어 양식 &middot; Colorways 포함 &middot; 0.9 MB<br>2026-11-16 기준 &middot; <b>매 회차 최신 한 개만 둡니다</b>(지난 회차는 남기지 않습니다)</span>
+  <span class="xg">&#11015; 내려받기</span>
+</a>
+
+<div class="card gf" style="cursor:default">
+  <div class="head">
+    <span class="ico">💬</span>
+    <div>
+      <div class="t">Guest Feedback</div>
+      <div class="d">게스트 리뷰 수집 · POS/NEG 분석 · 스타일별 코멘트 — <b>다음 회차(격주 수집)부터</b> 시작합니다</div>
+    </div>
+    <span class="tag">준비 중</span>
+  </div>
+</div>
+<h2>엑셀 구성 안내</h2>
+<div class="note">Big Boys(D76) 엑셀과 같은 바이어 &laquo;C&amp;J New Arrivals update&raquo; 양식입니다 &mdash; 제품이 열, 항목이 행. 벤더 행은 비어 있고(공개 카탈로그로는 판단 불가), <b>Colorways</b> 행에 컬러 수와 컬러명, 맨 아래 <b>Swatch</b> 행에 컬러 견본이 들어갑니다.</div>
+<div class="note">Toddler Girls 는 2026-11-16 이 첫 회차(기준선)입니다. 형식과 판정 규칙은 Big Boys(D76)와 같고, 한 장 요약은 비교가 생기는 다음 회차부터 붙습니다.</div>
+</div>
+</body>
+</html>

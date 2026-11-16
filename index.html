@@ -69,7 +69,7 @@ a:hover{color:var(--tool-deep)}
 .sec .lbl .aside .k{font-size:10.5px;color:var(--muted);display:block}
 .sec .lbl .aside .v{font-size:13.5px;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
 .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
-.cards.two{grid-template-columns:repeat(auto-fill,minmax(380px,1fr))}
+.cards.two{grid-template-columns:repeat(2,minmax(0,1fr))}   /* 격주 트래킹 2열 2행 (열=Boys·Girls · 행=Big·Toddler) */
 
 a.card{display:flex;flex-direction:column;gap:10px;background:var(--card);
   border-radius:var(--r-lg);padding:20px 22px;min-height:124px;color:var(--ink);
@@ -251,6 +251,36 @@ a.card .rvb.no{background:#f4f3f6;color:var(--muted)}
         <div><b>2</b><span>신상</span></div>
         <div><b>48</b><span>가격 인하</span></div>
         <div><b>424</b><span>리뷰 누적</span></div>
+      </div>
+    </a>
+    <a class="card boy" href="reports/toddlerboys/">
+      <div class="head">
+        <span class="ico"><img class="blogo" src="/Bigkids-Knit/assets/logos/target.png" alt="Target"></span>
+        <div>
+          <div class="t">Toddler Boys 🧒</div>
+          <div class="d">Dept 33 &middot; Cat &amp; Jack &mdash; T.COM 카탈로그 트래킹 (11-16 기준선) &middot; Guest Feedback 다음 회차부터</div>
+        </div>
+        <span class="tag">11-16</span>
+      </div>
+      <div class="foot">
+        <div><b>124</b><span>기준선 카탈로그</span></div>
+        <div><b>244</b><span>컬러웨이</span></div>
+        <div><b>$12.00</b><span>가격 중앙값</span></div>
+      </div>
+    </a>
+    <a class="card girl" href="reports/toddlergirls/">
+      <div class="head">
+        <span class="ico"><img class="blogo" src="/Bigkids-Knit/assets/logos/target.png" alt="Target"></span>
+        <div>
+          <div class="t">Toddler Girls 🧒</div>
+          <div class="d">Dept 31 &middot; Cat &amp; Jack &mdash; T.COM 카탈로그 트래킹 (11-16 기준선) &middot; Guest Feedback 다음 회차부터</div>
+        </div>
+        <span class="tag">11-16</span>
+      </div>
+      <div class="foot">
+        <div><b>123</b><span>기준선 카탈로그</span></div>
+        <div><b>265</b><span>컬러웨이</span></div>
+        <div><b>$7.20</b><span>가격 중앙값</span></div>
       </div>
     </a>
   </div>
