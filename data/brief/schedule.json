@@ -1,10 +1,10 @@
 {
 "v": 3,
-"at": "2026-11-12T05:48:10.040Z",
-"built": "2026-11-12T05:48:11.206Z",
-"synced": "2026-11-17",
-"from": "2026-11-11",
-"to": "2026-12-27",
+"at": "2026-11-17T04:45:03.806Z",
+"built": "2026-11-17T04:45:05.134Z",
+"synced": "2026-11-18",
+"from": "2026-11-16",
+"to": "2027-01-01",
 "stale_days": [],
 "types": [
 {
@@ -29,312 +29,6 @@
 }
 ],
 "rows": [
-{
-"t": "cacc8vj1",
-"ti": "박수진",
-"sc": "",
-"d": [
-{
-"l": "휴가",
-"v": "2026-11-12",
-"oi": 999
-}
-],
-"info": []
-},
-{
-"t": "cacc8vj1",
-"ti": "윤진성",
-"sc": "",
-"d": [
-{
-"l": "휴가",
-"v": "2026-11-13",
-"oi": 999
-}
-],
-"info": []
-},
-{
-"t": "6ig6jc9d",
-"ti": "SS Classic Graphic Tee (Bulk Order 62%)",
-"sc": "2027 C2",
-"d": [
-{
-"l": "APEX Map/ Drill",
-"v": "2026-11-13",
-"oi": 0
-}
-],
-"info": []
-},
-{
-"t": "6ig6jc9d",
-"ti": "SS Oversized Graphic Tee (Bulk Order 62%)",
-"sc": "2027 C2",
-"d": [
-{
-"l": "APEX Map/ Drill",
-"v": "2026-11-13",
-"oi": 0
-}
-],
-"info": []
-},
-{
-"t": "6ig6jc9d",
-"ti": "SS Classic Graphic Tee (In-season Test Model)",
-"sc": "2027 C3",
-"d": [
-{
-"l": "APEX Map/ Drill",
-"v": "2026-11-13",
-"oi": 0
-}
-],
-"info": []
-},
-{
-"t": "6ig6jc9d",
-"ti": "SS Oversized Graphic Tee (In-Season Test Model)",
-"sc": "2027 C3",
-"d": [
-{
-"l": "APEX Map/ Drill",
-"v": "2026-11-13",
-"oi": 0
-}
-],
-"info": []
-},
-{
-"t": "6ig6jc9d",
-"ti": "SS Classic Graphic Tee (Bulk Order 62%)",
-"sc": "2027 C2",
-"d": [
-{
-"l": "Vendor Pre-ISU",
-"v": "2026-11-15",
-"oi": 4
-}
-],
-"info": []
-},
-{
-"t": "6ig6jc9d",
-"ti": "SS Oversized Graphic Tee (Bulk Order 62%)",
-"sc": "2027 C2",
-"d": [
-{
-"l": "Vendor Pre-ISU",
-"v": "2026-11-15",
-"oi": 4
-}
-],
-"info": []
-},
-{
-"t": "6ig6jc9d",
-"ti": "SS Classic Graphic Tee (In-season Test Model)",
-"sc": "2027 C3",
-"d": [
-{
-"l": "Vendor Pre-ISU",
-"v": "2026-11-15",
-"oi": 4
-}
-],
-"info": []
-},
-{
-"t": "6ig6jc9d",
-"ti": "SS Oversized Graphic Tee (In-Season Test Model)",
-"sc": "2027 C3",
-"d": [
-{
-"l": "Vendor Pre-ISU",
-"v": "2026-11-15",
-"oi": 4
-}
-],
-"info": []
-},
-{
-"t": "9x3me2q3",
-"ti": "Segmentation Submission and Review",
-"sc": "C327 JUN W5",
-"d": [
-{
-"l": "C327 JUN W5",
-"v": "2026-11-15",
-"oi": 1
-}
-],
-"info": [
-{
-"l": "담당",
-"v": "BUYING · SPT"
-},
-{
-"l": "DUE",
-"v": "2026-11-20"
-}
-]
-},
-{
-"t": "9x3me2q3",
-"ti": "Merch Final Assortment Handoff",
-"sc": "C327 JUN W5",
-"d": [
-{
-"l": "C327 JUN W5",
-"v": "2026-11-15",
-"oi": 1
-}
-],
-"info": [
-{
-"l": "담당",
-"v": "BUYING"
-},
-{
-"l": "DUE",
-"v": "2026-11-20"
-}
-]
-},
-{
-"t": "9x3me2q3",
-"ti": "Art Handoff to Legal - Final",
-"sc": "C327 JUN W5",
-"d": [
-{
-"l": "C327 JUN W5",
-"v": "2026-11-15",
-"oi": 1
-}
-],
-"info": [
-{
-"l": "담당",
-"v": "DESIGN · TECH DEV"
-},
-{
-"l": "DUE",
-"v": "2026-11-20"
-}
-]
-},
-{
-"t": "9x3me2q3",
-"ti": "Post Assortment Review: New Artwork Requests & Solid Lab Dips Routed",
-"sc": "C327 JUN W5",
-"d": [
-{
-"l": "C327 JUN W5",
-"v": "2026-11-15",
-"oi": 1
-}
-],
-"info": [
-{
-"l": "담당",
-"v": "DESIGN · VENDOR"
-},
-{
-"l": "DUE",
-"v": "2026-11-20"
-}
-]
-},
-{
-"t": "9x3me2q3",
-"ti": "Final CADs Due",
-"sc": "C327 JUN W5",
-"d": [
-{
-"l": "C327 JUN W5",
-"v": "2026-11-15",
-"oi": 1
-}
-],
-"info": [
-{
-"l": "담당",
-"v": "DESIGN · RBX"
-},
-{
-"l": "DUE",
-"v": "2026-11-20"
-}
-]
-},
-{
-"t": "9x3me2q3",
-"ti": "Final CADs sent to Vendors",
-"sc": "C327 JUN W5",
-"d": [
-{
-"l": "C327 JUN W5",
-"v": "2026-11-15",
-"oi": 1
-}
-],
-"info": [
-{
-"l": "담당",
-"v": "DESIGN · SOURCING · VENDOR"
-},
-{
-"l": "DUE",
-"v": "2026-11-20"
-}
-]
-},
-{
-"t": "9x3me2q3",
-"ti": "Claims Viability",
-"sc": "C427 OCT W1",
-"d": [
-{
-"l": "C427 OCT W1",
-"v": "2026-11-15",
-"oi": 2
-}
-],
-"info": [
-{
-"l": "담당",
-"v": "DESIGN · PSQR · TECH DEV"
-},
-{
-"l": "DUE",
-"v": "2026-11-20"
-}
-]
-},
-{
-"t": "9x3me2q3",
-"ti": "Color Palette Creation",
-"sc": "C427 OCT W1",
-"d": [
-{
-"l": "C427 OCT W1",
-"v": "2026-11-15",
-"oi": 2
-}
-],
-"info": [
-{
-"l": "담당",
-"v": "BUYING · DESIGN"
-},
-{
-"l": "DUE",
-"v": "2026-12-11"
-}
-]
-},
 {
 "t": "cacc8vj1",
 "ti": "황예나",
@@ -639,6 +333,19 @@
 "l": "S/Off Approved (1st physical)",
 "v": "2026-11-20",
 "oi": 1
+}
+],
+"info": []
+},
+{
+"t": "ue2uoc3t",
+"ti": "3:00 p.m. 방문 / 중앙교역 임준혁 차장님",
+"sc": "",
+"d": [
+{
+"l": "기타",
+"v": "2026-11-20",
+"oi": 999
 }
 ],
 "info": []
@@ -2254,6 +1961,149 @@
 {
 "l": "기타",
 "v": "2026-12-27",
+"oi": 999
+}
+],
+"info": []
+},
+{
+"t": "cacc8vj1",
+"ti": "박수진",
+"sc": "",
+"d": [
+{
+"l": "휴가",
+"v": "2026-12-28",
+"oi": 999
+}
+],
+"info": []
+},
+{
+"t": "6ig6jc9d",
+"ti": "Warp Knit Jogger",
+"sc": "2027 C3",
+"d": [
+{
+"l": "CMS Due Date",
+"v": "2026-12-28",
+"oi": 4
+}
+],
+"info": []
+},
+{
+"t": "ue2uoc3t",
+"ti": "과테말라 지사 연말연휴 기간. (업체 휴무 일정도 지사 연휴 일정과 동일)",
+"sc": "",
+"d": [
+{
+"l": "기타",
+"v": "2026-12-28",
+"oi": 999
+}
+],
+"info": []
+},
+{
+"t": "cacc8vj1",
+"ti": "박수진",
+"sc": "",
+"d": [
+{
+"l": "휴가",
+"v": "2026-12-29",
+"oi": 999
+}
+],
+"info": []
+},
+{
+"t": "ue2uoc3t",
+"ti": "과테말라 지사 연말연휴 기간. (업체 휴무 일정도 지사 연휴 일정과 동일)",
+"sc": "",
+"d": [
+{
+"l": "기타",
+"v": "2026-12-29",
+"oi": 999
+}
+],
+"info": []
+},
+{
+"t": "ue2uoc3t",
+"ti": "과테말라 지사 연말연휴 기간. (업체 휴무 일정도 지사 연휴 일정과 동일)",
+"sc": "",
+"d": [
+{
+"l": "기타",
+"v": "2026-12-30",
+"oi": 999
+}
+],
+"info": []
+},
+{
+"t": "cacc8vj1",
+"ti": "황예나",
+"sc": "",
+"d": [
+{
+"l": "휴가",
+"v": "2026-12-31",
+"oi": 999
+}
+],
+"info": []
+},
+{
+"t": "ue2uoc3t",
+"ti": "과테말라 지사 연말연휴 기간. (업체 휴무 일정도 지사 연휴 일정과 동일)",
+"sc": "",
+"d": [
+{
+"l": "기타",
+"v": "2026-12-31",
+"oi": 999
+}
+],
+"info": []
+},
+{
+"t": "6ig6jc9d",
+"ti": "SS Classic Graphic Tee (R&R Replen Order 36%)",
+"sc": "2027 C2",
+"d": [
+{
+"l": "APEX Map/ Drill",
+"v": "2027-01-01",
+"oi": 0
+}
+],
+"info": []
+},
+{
+"t": "6ig6jc9d",
+"ti": "SS Oversized Graphic Tee (R&R Replen Order 36%)",
+"sc": "2027 C2",
+"d": [
+{
+"l": "APEX Map/ Drill",
+"v": "2027-01-01",
+"oi": 0
+}
+],
+"info": []
+},
+{
+"t": "ue2uoc3t",
+"ti": "과테말라 지사 연말연휴 기간. (업체 휴무 일정도 지사 연휴 일정과 동일)",
+"sc": "",
+"d": [
+{
+"l": "기타",
+"v": "2027-01-01",
 "oi": 999
 }
 ],
