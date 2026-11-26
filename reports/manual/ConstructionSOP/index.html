@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<title>D76 · Construction SOP</title>
+<link rel="icon" href="/Bigkids-Knit/favicon.svg">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+/* 토큰 정본: _shared/d76_design.css · 레이아웃은 Product Development Guide 매뉴얼과 같다 */
+:root{--man:#00695c;--man-tint:#eef6f5;--man-deep:#00544c;--tool:#0277bd;
+  --ink:#1d1c22;--body:#4a4954;--sub:#6a6a72;--muted:#6e6d77;
+  --bg:#f3f2f6;--card:#fff;--bar:#1b1b22;--line:#e7e5ee;--hl:#fff3b0;
+  --r-sm:8px;--r-md:10px;--r-lg:14px;--r-xl:16px;
+  --sh-1:0 1px 2px rgba(20,18,30,.06);--sh-2:0 8px 22px rgba(20,18,30,.11)}
+*{margin:0;padding:0;box-sizing:border-box}
+:focus-visible{outline:2px solid var(--tool);outline-offset:2px;border-radius:var(--r-sm)}
+body{font-family:-apple-system,"Segoe UI","Apple SD Gothic Neo","Noto Sans KR",sans-serif;
+  background:var(--bg);color:var(--ink);line-height:1.6;font-size:15px}
+.topbar{position:sticky;top:0;z-index:200;background:var(--bar);color:#fff;font-size:13px;padding:11px 20px;
+  display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.topbar a{text-decoration:none}
+.topbar a.brand{color:#fff;font-weight:700}
+.topbar a.mlink{color:#9fdcd2}   /* ⚠ class 를 .sec 로 두면 본문 절(.sec) 검색 숨김에 같이 걸려 사라진다 */
+.topbar .lbl{margin-left:auto;opacity:.6;font-size:12px}
+
+header.hero{background:var(--man-tint);padding:26px 28px}
+header.hero .in{max-width:1220px;margin:0 auto;display:flex;gap:18px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+.dl{display:inline-flex;align-items:center;gap:8px;background:var(--man);color:#fff;min-height:44px;text-decoration:none;
+  padding:11px 20px;border-radius:10px;font-size:13.5px;font-weight:600;white-space:nowrap}
+.dl:hover{background:var(--man-deep);color:#fff}
+.dl small{font-weight:500;opacity:.85;font-size:12px}
+header.hero .eyebrow{font-size:11px;letter-spacing:.16em;font-weight:700;color:var(--man-deep)}
+header.hero h1{font-size:26px;line-height:1.25;letter-spacing:-.01em;color:var(--ink);margin:4px 0}
+header.hero .meta{font-size:13px;color:var(--sub)}
+
+/* 검색 — 상단바 아래에 붙어 따라온다 */
+.searchbar{position:sticky;top:43px;z-index:150;background:var(--bg);border-bottom:1px solid var(--line)}
+.searchbar .in{max-width:1220px;margin:0 auto;padding:12px 20px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.searchbar .box{flex:1;min-width:240px;display:flex;align-items:center;gap:8px;background:var(--card);
+  border:1.5px solid var(--line);border-radius:12px;padding:0 12px;box-shadow:var(--sh-1)}
+.searchbar .box:focus-within{border-color:var(--man)}
+.searchbar input{flex:1;border:0;outline:0;font:inherit;font-size:15px;padding:11px 0;background:transparent;color:var(--ink);min-width:0}
+.searchbar .ico{color:var(--muted);font-size:15px}
+.searchbar button.clr{border:0;background:none;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 6px;display:none}
+.searchbar.has .clr{display:block}
+.searchbar .count{font-size:12.5px;color:var(--sub);white-space:nowrap}
+.searchbar .count b{color:var(--man-deep)}
+.chips{display:flex;gap:6px;flex-wrap:wrap;width:100%}
+.chips .lb{font-size:11.5px;color:var(--muted);align-self:center;margin-right:2px}
+.chips button{font:inherit;font-size:12px;border:1px solid var(--line);background:var(--card);color:var(--body);
+  border-radius:999px;padding:4px 10px;cursor:pointer}
+.chips button:hover{border-color:var(--man);color:var(--man-deep)}
+.searchbar.has .chips{display:none}
+
+.shell{max-width:1220px;margin:0 auto;padding:20px 20px 60px;display:grid;grid-template-columns:272px 1fr;gap:22px;align-items:start}
+nav.toc{position:sticky;top:120px;max-height:calc(100vh - 140px);overflow:auto;background:var(--card);
+  border-radius:var(--r-lg);padding:16px 14px;box-shadow:var(--sh-1)}
+nav.toc h2{font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--sub);margin-bottom:10px;padding-left:6px}
+nav.toc a{display:block;text-decoration:none;color:var(--sub);font-size:12.5px;line-height:1.45;
+  padding:5px 8px;border-radius:8px;border-left:2px solid transparent}
+nav.toc a:hover{background:var(--man-tint);color:var(--man-deep)}
+nav.toc a.l2{font-weight:700;color:var(--ink);margin-top:8px}
+nav.toc a.l2:first-of-type{margin-top:0}
+nav.toc a.l3{padding-left:18px}
+nav.toc a.on{background:var(--man-tint);color:var(--man-deep);border-left-color:var(--man);font-weight:600}
+nav.toc a.off{display:none}
+nav.toc .ko{font-weight:500;color:var(--muted);font-size:11.5px;margin-left:4px}
+.toctoggle{display:none}
+
+main{min-width:0}
+.results{display:none;background:var(--card);border-radius:var(--r-lg);box-shadow:var(--sh-1);padding:14px 16px;margin-bottom:16px}
+.searching .results{display:block}
+.results .t{font-size:12px;color:var(--sub);margin-bottom:8px}
+.results a{display:block;text-decoration:none;color:var(--ink);font-size:13.5px;padding:6px 8px;border-radius:8px}
+.results a:hover{background:var(--man-tint)}
+.results a .path{font-size:11.5px;color:var(--muted);display:block}
+.results .none{font-size:13.5px;color:var(--body);line-height:1.7}
+
+section.ch{background:var(--card);border-radius:var(--r-lg);padding:26px 30px;box-shadow:var(--sh-1);margin-bottom:18px}
+section.ch h2{font-size:21px;margin:0 0 14px;padding-bottom:9px;border-bottom:2px solid var(--man);color:var(--man-deep);scroll-margin-top:130px}
+section.ch h2 .ko{font-size:14px;font-weight:600;color:var(--sub);margin-left:6px}
+.sec{margin:22px 0 0;scroll-margin-top:130px}
+.sec:first-of-type{margin-top:6px}
+.sec h3{font-size:16.5px;color:var(--ink);margin-bottom:10px;display:flex;align-items:baseline;gap:8px}
+.sec h3 .pg{font-size:11px;font-weight:600;color:var(--muted);border:1px solid var(--line);border-radius:6px;padding:1px 6px}
+.note{font-size:12.5px;color:var(--sub);background:#fafafc;border-left:3px solid var(--man);border-radius:6px;padding:8px 12px;margin:0 0 12px}
+.lead p{font-size:13.5px;color:var(--body);margin-bottom:8px}
+.kicker{font-size:13px;font-weight:700;color:var(--man-deep);margin:0 0 8px}
+.meta2{font-size:12.5px;color:var(--muted)}
+.u{scroll-margin-top:130px}
+.u p{margin:0 0 6px;color:var(--body);font-size:14px}
+.u ul{margin:2px 0 6px 20px;color:var(--body);font-size:14px}
+.u li{margin-bottom:4px}
+.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.card{border:1px solid var(--line);border-radius:var(--r-md);padding:12px 14px;background:var(--card);margin-bottom:10px}
+.cards .card{margin:0}
+.ut{font-weight:700;font-size:14px;color:var(--ink);margin-bottom:6px}
+.ut .sub{font-weight:600;font-size:11.5px;color:var(--man-deep);background:var(--man-tint);border-radius:6px;padding:1px 7px;margin-left:6px}
+.tw{overflow-x:auto;margin:0 0 12px}
+table.grid{border-collapse:collapse;width:100%;font-size:13px}
+table.grid th{background:var(--man-tint);color:var(--man-deep);text-align:left;font-size:12px;padding:8px 10px;border:1px solid var(--line)}
+table.grid td{border:1px solid var(--line);padding:8px 10px;vertical-align:top;color:var(--body)}
+table.grid td:first-child{font-weight:600;color:var(--ink);min-width:150px}
+table.grid td.carry{color:var(--muted);font-weight:500}
+table.grid tr.shade td{background:#f7f6fa}
+.figs{display:flex;flex-wrap:wrap;gap:12px;margin:10px 0 4px}
+/* 그림은 원본 크기까지만 — 작은 그림(스티커 580px)을 본문 폭으로 늘리면 흐려지고 화면을 다 차지한다 */
+figure.fig{flex:0 1 auto;max-width:100%;border:1px solid var(--line);border-radius:var(--r-md);padding:10px;background:#fff}
+figure.fig img{display:block;max-width:100%;width:auto;height:auto;max-height:520px;border-radius:6px;margin:0 auto}
+figure.fig figcaption{max-width:680px}
+figure.fig figcaption{font-size:12px;color:var(--sub);margin-top:8px;line-height:1.55}
+figure.fig.sm{flex:0 0 auto;max-width:160px;padding:6px;margin-top:8px}
+.hang{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.hang .card{margin:0}
+.hang .hi{display:flex;gap:4px;justify-content:center;margin-bottom:8px;min-height:60px}
+.hang .hi img{height:112px;width:auto;max-width:100%;object-fit:contain}
+.hang .u p{font-size:13px}
+mark{background:var(--hl);color:inherit;border-radius:3px;padding:0 1px}
+.u.flash{animation:fl 1.6s ease-out}
+@keyframes fl{0%{box-shadow:0 0 0 3px var(--man)}100%{box-shadow:0 0 0 0 transparent}}
+.hide{display:none !important}
+footer{max-width:1220px;margin:0 auto;padding:0 20px 50px;font-size:12px;color:var(--muted);line-height:1.8}
+
+@media(max-width:1024px){
+  .shell{grid-template-columns:1fr;gap:14px}
+  nav.toc{position:static;max-height:none}
+  .toctoggle{display:block;width:100%;font:inherit;font-size:13.5px;font-weight:600;text-align:left;
+    background:none;border:0;color:var(--man-deep);cursor:pointer;padding:2px 6px}
+  nav.toc .list{display:none}
+  nav.toc.open .list{display:block}
+  .hang{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:640px){
+  .topbar{font-size:12px;padding:10px 14px}
+  header.hero{padding:20px 16px} header.hero h1{font-size:21px}
+  .searchbar{top:40px}
+  .searchbar .in{padding:10px 16px}
+  .shell{padding:14px 16px 50px}
+  section.ch{padding:18px 16px}
+  .cards{grid-template-columns:1fr}
+  .hang{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <a class="brand" href="/Bigkids-Knit/">📊 Big Kids Hub</a>
+  <span style="opacity:.35">|</span>
+  <a class="mlink" href="/Bigkids-Knit/">📘 Manual</a>
+  <span class="lbl">Construction SOP</span>
+</div>
+
+<header class="hero">
+  <div class="in">
+    <div>
+      <div class="eyebrow">MANUAL · CONSTRUCTION SOP</div>
+      <h1>NIT/Kids Apparel — Construction, Trim &amp; Quality Guide</h1>
+      <div class="meta">Target owned brands · Cat &amp; Jack · Cloud Island · Art Class · Last Update 6/9/2025 · 원문(영문) 그대로 옮긴 웹 버전</div>
+    </div>
+    <a class="dl" href="AA_Construction_Guide_Kids_NIT.pptx" download="AA_Construction Guide_Kids_NIT_CatJack_Cloud Island_Art Class.pptx" title="원본 PowerPoint 파일을 내려받습니다">⬇ 원문 내려받기 <small>PPTX · 6.6 MB</small></a>
+  </div>
+</header>
+
+<div class="searchbar" id="sb">
+  <div class="in">
+    <label class="box" for="q"><span class="ico" aria-hidden="true">🔍</span>
+      <input id="q" type="search" autocomplete="off" placeholder="키워드 검색 — 영어·한글 모두 (예: zipper, 지퍼, 무릎 심지, drawstring)" aria-label="키워드 검색">
+      <button class="clr" id="clr" type="button" aria-label="검색어 지우기">×</button>
+    </label>
+    <span class="count" id="count">항목 130개</span>
+    <div class="chips"><span class="lb">자주 찾는 말</span>
+      <button type="button">drawstring</button><button type="button">지퍼</button><button type="button">단추</button>
+      <button type="button">심지</button><button type="button">고무줄</button><button type="button">세탁</button>
+      <button type="button">스냅</button><button type="button">밑단</button><button type="button">무릎</button>
+      <button type="button">출하</button><button type="button">locker loop</button><button type="button">nap</button>
+    </div>
+  </div>
+</div>
+
+<div class="shell" id="shell">
+  <nav class="toc" id="toc" aria-label="목차">
+    <button class="toctoggle" id="toctoggle" aria-expanded="false">목차 열기 ▾</button>
+    <h2>목차</h2>
+    <div class="list" id="toclist">
+<a class="l2" href="#intro">About this Guide <span class="ko">가이드 소개</span></a>
+<a class="l3" href="#intro-about-this-guide">About this Guide</a>
+<a class="l2" href="#snapshot">Quality Snapshot <span class="ko">품질 요약</span></a>
+<a class="l3" href="#snapshot-target-quality-snapshot-nit-kids-appare">Target Quality Snapshot – NIT/Kids Apparel</a>
+<a class="l2" href="#care">Care Expectations <span class="ko">세탁 · 케어</span></a>
+<a class="l3" href="#care-general">General</a>
+<a class="l3" href="#care-specialty-fabric-testing-care">Specialty Fabric Testing &amp; Care</a>
+<a class="l3" href="#care-gauze">Gauze</a>
+<a class="l3" href="#care-fringe">Fringe</a>
+<a class="l3" href="#care-faux-fur">Faux Fur</a>
+<a class="l3" href="#care-faux-suede-leather">Faux Suede/Leather</a>
+<a class="l3" href="#care-embellishments">Embellishments</a>
+<a class="l2" href="#trim">Trim Standards <span class="ko">부자재</span></a>
+<a class="l3" href="#trim-thread">Thread</a>
+<a class="l3" href="#trim-interlining">Interlining</a>
+<a class="l3" href="#trim-elastics">Elastics</a>
+<a class="l3" href="#trim-buttons-zippers">Buttons &amp; Zippers</a>
+<a class="l2" href="#construction">Construction Standards <span class="ko">봉제 기준</span></a>
+<a class="l3" href="#construction-buttons">Buttons</a>
+<a class="l3" href="#construction-buttonholes">Buttonholes</a>
+<a class="l3" href="#construction-clean-finish">Clean Finish</a>
+<a class="l3" href="#construction-consistency-in-construction-for-kni">Consistency in Construction for Knits</a>
+<a class="l3" href="#construction-crotch-snap-placket">Crotch Snap Placket</a>
+<a class="l3" href="#construction-cutting-requirements">Cutting Requirements</a>
+<a class="l3" href="#construction-functional-drawstring">Functional Drawstring</a>
+<a class="l3" href="#construction-drawstring">Drawstring</a>
+<a class="l3" href="#construction-expression-of-fit">Expression of Fit</a>
+<a class="l3" href="#construction-hems">Hems</a>
+<a class="l3" href="#construction-hoodies">Hoodies</a>
+<a class="l3" href="#construction-interior-construction">Interior Construction</a>
+<a class="l3" href="#construction-linings">Linings</a>
+<a class="l3" href="#construction-locker-loop">Locker Loop</a>
+<a class="l3" href="#construction-matching-plaid-stripes-and-prints-t">Matching Plaid, Stripes and Prints that look like the should be matched</a>
+<a class="l3" href="#construction-plackets">Plackets</a>
+<a class="l3" href="#construction-pockets">Pockets</a>
+<a class="l3" href="#construction-reinforcement">Reinforcement</a>
+<a class="l3" href="#construction-shirring">Shirring</a>
+<a class="l3" href="#construction-trims-o-rings-sliders">Trims: O-Rings &amp; Sliders</a>
+<a class="l3" href="#construction-trims-snaps-vs-tacks">Trims: Snaps vs Tacks</a>
+<a class="l3" href="#construction-thread">Thread</a>
+<a class="l3" href="#construction-shipping-requirements">Shipping Requirements</a>
+<a class="l3" href="#construction-wash-for-softness">Wash for Softness</a>
+<a class="l3" href="#construction-knee-interlining-reinforcement">Knee Interlining Reinforcement</a>
+<a class="l3" href="#construction-packaging-stickers">Packaging Stickers</a>
+<a class="l3" href="#construction-length-of-interlining">Length of Interlining</a>
+<a class="l2" href="#shipping">Special Shipping Instructions <span class="ko">출하 · 포장</span></a>
+<a class="l3" href="#shipping-double-sleeve-roll-art-class">Double Sleeve Roll — Art Class</a>
+<a class="l3" href="#shipping-bb-in-store-hanging-program-art-class">BB In-Store Hanging Program — Art Class</a>
+<a class="l3" href="#shipping-woven-shirts-cat-jack">Woven Shirts — Cat &amp; Jack</a>
+<a class="l2" href="#updates">Update History <span class="ko">개정 이력</span></a>
+<a class="l3" href="#updates-summary-of-updates">Summary of Updates</a>
+    </div>
+  </nav>
+  <main>
+    <div class="results" id="results" aria-live="polite"></div>
+<section class="ch" id="intro"><h2>About this Guide <span class="ko">가이드 소개</span></h2>
+<div class="sec" id="intro-about-this-guide"><h3>About this Guide<span class="pg">p.2</span></h3>
+<div class="u " id="intro-about-this-guide-2" data-x=""><p>This guide provides all the necessary information to help you understand the expected fit, quality, and construction requirements. The intention of this guide is to communicate key standards. All vendors involved with the development &amp; manufacturing of garments must carefully review this manual and ensure all products are made according to these minimum standards. This list does not include all of our standards; however, it does highlight the most important details.</p><p class="meta2">Last Update: 6/9/2025 · Target owned brands — Cloud Island · Cat &amp; Jack · Art Class</p></div></div>
+</section>
+<section class="ch" id="snapshot"><h2>Quality Snapshot <span class="ko">품질 요약</span></h2>
+<div class="sec" id="snapshot-target-quality-snapshot-nit-kids-appare"><h3>Target Quality Snapshot – NIT/Kids Apparel<span class="pg">p.4</span></h3>
+<p class="note">Disclaimer: This page only calls out some of the quality attributes Target expects. Review entire manual or reach out to the Target team with any questions.</p>
+<div class="cards">
+<div class="u card" id="snapshot-safety-protocols" data-x=""><div class="ut">Safety Protocols</div><p>Product must comply with Target Children’s Apparel Product Development Guide found on POL.</p></div>
+<div class="u card" id="snapshot-live-fit-models" data-x=""><div class="ut">Live Fit Models</div><p>Must try garments on a live to ensure there are no movement, comfort or modesty issues.</p></div>
+<div class="u card" id="snapshot-care-instructions-machine-wash-tumble-d" data-x=""><div class="ut">Care Instructions<span class="sub">Machine Wash / Tumble Dry</span></div><p>The Target Guest expects our garments to be easy to care, wash before wear and prefer machine wash/ tumble dry. BP to advise at vendor meetings if this is not possible for certain designs.</p></div>
+<div class="u card" id="snapshot-gender-inclusive-product-sizing-and-gra" data-x=""><div class="ut">Gender Inclusive Product<span class="sub">Sizing and Grading</span></div><ul><li>Tops/Pants: Fit on Boy Mannequin and Use Boy Grading</li><li>Dresses/Skirts: Fit on Girl Mannequin and Use Girl Grading</li></ul></div>
+<div class="u card" id="snapshot-shrinkage-all-fabrics" data-x=""><div class="ut">Shrinkage<span class="sub">All Fabrics</span></div><p>BP to advise at vendor meetings if a fabric is testing with shrinkage higher than the standards on POL.</p></div>
+<div class="u card" id="snapshot-shrinkage-for-mixed-fabric" data-x=""><div class="ut">Shrinkage<span class="sub">For Mixed Fabric</span></div><p>Ensure that shrinkage between all fabrics used in one garment are appropriate and do not cause issues after the Guest washes the garment.</p></div>
+<div class="u card" id="snapshot-fabric-softness" data-x=""><div class="ut">Fabric<span class="sub">Softness</span></div><p>CHECK WITH TEAM</p></div>
+<div class="u card" id="snapshot-fabric-sheerness" data-x=""><div class="ut">Fabric<span class="sub">Sheerness</span></div><p>Check for sheerness at front and back of garment. Ensure print show through of panty is not visible or hardly visible when worn. Vendor to check development samples to ensure adequate coverage and that appropriate linings or fabrics have been selected for proper modesty.</p></div>
+<div class="u card" id="snapshot-thread-texturized-poly-thread-t-18" data-x=""><div class="ut">Thread<span class="sub">Texturized Poly Thread T-18</span></div><p>Use on interior seam loopers on all knit seams.</p></div>
+<div class="u card" id="snapshot-zippers-ykk" data-x=""><div class="ut">Zippers<span class="sub">YKK</span></div><p>Use on all Bottoms at CF Fly and Newborn products</p></div>
+<div class="u card" id="snapshot-clean-finishes" data-x=""><div class="ut">Clean Finishes</div><ul><li>Necklines – Binding, Back Neck Tape or Lining (no unfinished back necklines or 1” facings that can flip up)</li><li>Sleeveless Garments – must have binding, inside binding, inset with topstitch or lined-NO turn back finish</li></ul></div>
+<div class="u card" id="snapshot-waist-fixed" data-x=""><div class="ut">Waist, Fixed</div><ul><li>Adjustable waistband construction</li><li>Use interior adjustable elastic with clear button</li></ul></div>
+<div class="u card" id="snapshot-draw-cords" data-x=""><div class="ut">Draw cords</div><ul><li>Follow Target Children’s Apparel Product Development Guide on POL for all Protocols</li><li>Prefer no faux draw cords.</li></ul></div>
+<div class="u card" id="snapshot-hardware" data-x=""><div class="ut">Hardware</div><p>No Plastic Hardware – must be metal based.</p></div>
+<div class="u card" id="snapshot-group-sizing-art" data-x=""><div class="ut">Group Sizing<span class="sub">Art</span></div><p>Example: XS/S, M/L, XL/XXL</p></div>
+<div class="u card" id="snapshot-matching-standards-stripes-plaids" data-x=""><div class="ut">Matching Standards<span class="sub">Stripes &amp; Plaids</span></div><ul><li>Tops – Side Seams match, CF match, Sleeves balanced, Collars balanced, CB seam match (if applicable)</li><li>Dresses / Skirt – Side Seams match, Waist or Empire seams match (if applicable)</li><li>Bottoms – CF &amp; CB rises match, Legs balanced</li><li>Tolerance – 0.125&quot;</li></ul></div>
+<div class="u card" id="snapshot-matching-standards-prints" data-x=""><div class="ut">Matching Standards<span class="sub">Prints</span></div><p>Prints are not matched or placed. If print forms plaid or stripe pattern, follow requirements listed above.</p></div>
+<div class="u card" id="snapshot-matching-standards-sweaters" data-x=""><div class="ut">Matching Standards<span class="sub">Sweaters</span></div><p>BP to let TGT know where the controlled area will be either at the shoulder or the sweep. BP should work on group grading options for consistency.</p></div>
+<div class="u card" id="snapshot-cutting-standards-nap-direction" data-x=""><div class="ut">Cutting Standards<span class="sub">Nap Direction</span></div><ul><li>All pieces of one garment must be cut with the nap running in the same direction.</li><li>Use needle board or “self” fabric press cloth when pressing to avoid damage to nap.</li><li>Must ensure packing &amp; shipping method will not crush or damage nap in any way.</li></ul></div>
+<div class="u card" id="snapshot-cutting-standards-cross-grain-cutting" data-x=""><div class="ut">Cutting Standards<span class="sub">Cross-Grain Cutting</span></div><ul><li>IS NOT PERMITTED WITHOUT APPROVAL FROM TARGET</li><li>If the BP intends to cut on the cross, follow the following procedure. This must be on an exception basis.</li><li>This also must happen before proto is evaluated as not all requests of this type are approved.</li><li>Make 2 proto samples: 1 will remain unwashed and 1 will be tested.</li><li>Complete wash testing per testing protocol on 1 sample.</li><li>Complete torque testing per testing protocol on the washed sample.</li><li>Send 1 unwashed and 1 washed sample including testing results to Target for approval.</li></ul></div>
+</div></div>
+</section>
+<section class="ch" id="care"><h2>Care Expectations <span class="ko">세탁 · 케어</span></h2>
+<div class="sec" id="care-general"><h3>General<span class="pg">p.7</span></h3>
+<p class="kicker">All children’s care labels should begin with ‘wash before wear’.</p>
+<div class="u card" id="care-preferred-washing-instructions" data-x=""><div class="ut">Preferred Washing Instructions</div><p>Machine Wash / Tumble Dry</p><ul><li>All garments without embellishments.</li><li>All garments with self-fabric embellishments.</li><li>All mixed fabric garments- It is suggested that vendor to do development testing on all knit/woven mix styles to ensure garment shrinkage and torquing passes testing.</li><li>All garment with art.</li></ul><p>BP is responsible for knowing and complying with all federal, state and local regulations.</p><p>Contact Target’s approved 3rd party labs to obtain copies of Targets testing protocols.</p></div>
+<div class="u card" id="care-exceptions-at-development-timing" data-x=""><div class="ut">Exceptions at Development Timing</div><p>BP is expected to alert design if they believe a certain garment won’t be Machine Wash / Tumble Dry. Specifically if is dry clean or hand wash/lay flat to dry. Discuss with Merchant/TSS if fabric or trims need to be changed to meet machine wash/tumble dry standards.</p></div>
+<div class="u card" id="care-bp-to-advise-care-instructions-before-pre-p" data-x=""><div class="ut">BP to advise care instructions before pre-production packet routing for the following items</div><ul><li>Garments with embellishments.</li><li>Garments with specialty fabrics like fur or laces.</li><li>Garments with specialty art.</li><li>Garments not passing Machine Wash / Tumble Dry.</li></ul><p>Target’s Apparel &amp; Accessories Development Manual, Garment Standards and Exception Process are posted on POL.</p></div>
+</div>
+<div class="sec" id="care-specialty-fabric-testing-care"><h3>Specialty Fabric Testing &amp; Care<span class="pg">p.8</span></h3>
+<div class="lead"><p>Our expectation is for our vendors to flag fabric performance and care concerns to TGT PDD/Fabric Standards Team early in the development process to ensure proper testing measures are taken prior to pre-production/PCMS.</p><p>Vendor should always review test reports and ensure TGT PDD/Fabric Standards Team is informed of any issues occurring after 3, 5, or 10 launderings (dependent on item category).</p><p>All children’s care labels should begin with ‘wash before wear”.</p><p>The below requirements will be effective starting C4 2019/C1 2020 (in case of C4 carry forward items).</p><p>Contact Target’s approved 3rd party labs to obtain copies of Targets testing protocols.</p></div>
+<p class="note">** shaded items should be tested in garment form to confirm care</p><div class="tw"><table class="grid"><thead><tr><th>Fabric/Material/Technique</th><th>Suggested Care</th><th>Delicate Hangtag Callout</th><th>Recommendations</th></tr></thead><tbody>
+<tr class="u shade" id="care-all-over-foil" data-x=""><td>All-Over Foil**</td><td>Machine Wash Cold, Gentle Cycle, Turn Garment Inside Out, Lay Flat or Hang to Dry</td><td>Yes</td><td>Must be tested in garment form to ensure seams and edges do not wear off, vendor must also submit appearance of garment after going through production in a factory setting (foil breakdown due to handling); should be tested for 5 to 10 launderings for after-wash appearance.</td></tr>
+<tr class="u shade" id="care-foil-coatings" data-x=""><td>Foil Coatings**</td><td>Machine Wash Cold, Gentle Cycle, Turn Garment Inside Out, Lay Flat or Hang to Dry</td><td>TBD</td><td>Foil applications tend to dull and wash off very easily. Should be tested for 5 to 10 launderings for after-wash appearance.</td></tr>
+<tr class="u shade" id="care-full-sequin" data-x=""><td>Full Sequin**</td><td>Hand Wash, Lay Flat or Hang to Dry</td><td>Yes</td><td>Should be tested for 5 to 10 launderings for after-wash appearance, as well as longevity of sequins.</td></tr>
+<tr class="u shade" id="care-mesh-tule-tutus" data-x=""><td>Mesh/Tule (tutus)**</td><td>Machine Wash Cold, Gentle Cycle, Turn Garment Inside Out, Lay Flat or Hang to Dry</td><td>Yes</td><td>Assess case-by-case on additional embellishment techniques (i.e. foil, glitter, etc.)</td></tr>
+<tr class="u shade" id="care-hot-melt-glue-on-applique" data-x=""><td>Hot Melt (glue on applique)**</td><td>Machine Wash Cold, Gentle Cycle, Turn Garment Inside Out, Lay Flat or Hang to Dry</td><td>TBD</td><td>Hot Melt applications may achieve a satisfactory rating at 3 launderings in fabric development testing but may fail in garment form.</td></tr>
+<tr class="u shade" id="care-glitter-print-motif" data-x=""><td>Glitter Print/Motif**</td><td>Machine Wash Cold, Gentle Cycle, Turn Garment Inside Out, Lay Flat or Hang to Dry</td><td>TBD</td><td>Glitter applications may achieve a satisfactory rating at 3 launderings in fabric development testing but may fail in garment form.</td></tr>
+<tr class="u " id="care-faux-fur-sherpa" data-x=""><td>Faux Fur/Sherpa</td><td>Machine Wash Gentle Cycle, Hang to Dry, Do Not Iron</td><td>TBD</td><td></td></tr>
+<tr class="u " id="care-faux-leather-pu" data-x=""><td>Faux Leather/PU</td><td>Spot Clean</td><td>TBD</td><td></td></tr>
+<tr class="u " id="care-velvet" data-x=""><td>Velvet</td><td>Machine Wash Gentle/Delicate Cycle, Lay Flat to Dry</td><td>TBD</td><td></td></tr>
+<tr class="u " id="care-lace" data-x=""><td>Lace</td><td>Hand Wash, Lay Flat or Hang to Dry</td><td>TBD</td><td></td></tr>
+<tr class="u " id="care-crochet" data-x=""><td>Crochet</td><td>Hand Wash, Lay Flat or Hang to Dry</td><td>TBD</td><td></td></tr>
+<tr class="u " id="care-swimwear-with-all-over-foil" data-x=""><td>Swimwear with all-over Foil</td><td>Hand Wash, Line Dry</td><td>TBD</td><td></td></tr>
+</tbody></table></div></div>
+<div class="sec" id="care-gauze"><h3>Gauze<span class="pg">p.9</span></h3>
+<p class="kicker">Garments with Gauze</p>
+<div class="u card" id="care-fabric-requirements" data-x=""><div class="ut">Fabric requirements</div><p>BP to use designated fabric supplier for gauze products whenever possible. These fabrics meet the care requirement of Machine Wash / Tumble Dry.</p><p>If you are unable to use a designated fabric quality/supplier, please contact your design and TSS partner before submitting technical fit samples.</p></div>
+<div class="u card" id="care-care-instructions" data-x=""><div class="ut">Care Instructions</div><p>Gauze is designated to have a 5% X 5% garment shrinkage and should be machine wash / tumble dry. 3rd party testing is required by BP to verify the fabric is meeting the standard.</p><p>If a GVS fabric quality does not meet the 5% X 5% shrinkage requirement, Target must be notified.</p><p>In special situations the fabric may be accepted but a specialty care hangtag must be attached to the garment: “Target cares that our guests have the best experience with our products. Due to the unique nature of this fabric some shrinkage is unavoidable. For best results, please follow care instructions carefully.”</p><p>Work with the Target packaging team on approved hangtags.</p></div>
+</div>
+<div class="sec" id="care-fringe"><h3>Fringe<span class="pg">p.10</span></h3>
+<p class="kicker">Garments with Fringe</p>
+<div class="u card" id="care-care-instructions-2" data-x=""><div class="ut">Care Instructions</div><ul><li>BP to complete “After Wash Appearance” as early in the development process as possible. Avoid asking for exemptions. Work proactively to solve issues and deliver a high quality garment to the Target Guest.</li><li>BP to test multiple care instructions in order to achieve best after wash appearance. Let Target know immediately if wash instructions are not machine wash/tumble dry.</li></ul></div>
+<div class="u card" id="care-breakage-pull-test" data-x=""><div class="ut">Breakage (pull test)</div><ul><li>There is not a standard for fringe breakage.</li><li>Beads have a 4lb standard, Pom-poms have an 8lb standard.</li><li>There is not a standard for fringe breakage. Fringe should be tested to the pom-pom standard (8lbs), however if it fails for 8lbs, but meets at least 4lbs an exception should be requested by the BP.</li></ul></div>
+<div class="u card" id="care-shipping" data-x=""><div class="ut">Shipping</div><ul><li>BP should advise if normal Floor Ready requirements are not recommended for individual garments. Consider delicate packing for fringe not to arrive wrinkled.</li><li>Tangling during shipping: Since this cannot be tested as it would happen during shipping, BP should advise best packing instructions to prevent tangling.</li></ul></div>
+</div>
+<div class="sec" id="care-faux-fur"><h3>Faux Fur<span class="pg">p.11</span></h3>
+<p class="kicker">Garments with Faux Fur</p>
+<div class="u card" id="care-care-instructions-3" data-x=""><div class="ut">Care Instructions</div><ul><li>Should be machine wash/fluff in dryer as needed or machine wash/lay flat to dry or hang to dry.</li><li>BP to complete “After Wash Appearance” as early in the development process as possible. Avoid asking for exemptions. Work proactively to solve issues and deliver a high quality garment to the Target Guest.</li><li>BP to test multiple care instructions in order to achieve best after wash appearance. Let Target know immediately if wash instructions are not machine wash/tumble dry.</li><li>Check care instructions on inspiration samples (likely our care instructions should follow the same).</li></ul></div>
+<div class="u card" id="care-shipping-2" data-x=""><div class="ut">Shipping</div><ul><li>BP to advise if normal Floor Ready requirements are not recommended for individual garments.</li><li>Wrinkling during shipping: Tangling during shipping: Since this cannot be tested as it would happen during shipping, BP should advise best packing instructions to prevent wrinkling.</li></ul></div>
+<div class="u card" id="care-nap-direction" data-x=""><div class="ut">Nap direction</div><ul><li>Must be specified in construction and marked critical. PSQA will check during audits.</li><li>All Naps to be the same direction within 1 garment.</li><li>Long fur naps to be the same direction across all garment sizes.</li></ul></div>
+<div class="u card" id="care-label-requirements" data-x=""><div class="ut">Label Requirements</div><ul><li>Must be called out as “Faux Fur” on labels. Partner with Testing lab for all correct verbiage.</li></ul></div>
+</div>
+<div class="sec" id="care-faux-suede-leather"><h3>Faux Suede/Leather<span class="pg">p.12</span></h3>
+<p class="kicker">Garments with Faux Suede or Leather</p>
+<div class="u card" id="care-care-instructions-4" data-x=""><div class="ut">Care Instructions</div><ul><li>Should be machine wash/lay flat to dry or spot wash/lay flat to dry.</li><li>BP to complete “After Wash Appearance” as early in the development process as possible. Avoid asking for exemptions. Work proactively to solve issues and deliver a high quality garment to the Target Guest.</li><li>BP to test multiple care instructions in order to achieve best after wash appearance. Let Target know immediately if wash instructions are not machine wash/tumble dry.</li><li>Check care instructions on inspiration samples (likely our care instructions should follow the same).</li></ul></div>
+<div class="u card" id="care-shipping-3" data-x=""><div class="ut">Shipping</div><ul><li>BP to advise if normal Floor Ready requirements are not recommended for individual garments.</li><li>Wrinkling during shipping: Tangling during shipping: Since this cannot be tested as it would happen during shipping, BP should advise best packing instructions to prevent wrinkling.</li></ul></div>
+<div class="u card" id="care-fabric-nap" data-x=""><div class="ut">Fabric Nap</div><ul><li>Nap direction must be specified in construction section of tech pack and marked critical. PSQA will check during audits.</li><li>Nap direction must be the same for the entire garment.</li></ul></div>
+<div class="u card" id="care-color-shading" data-x=""><div class="ut">Color Shading</div><ul><li>BP to check that there are no color shading issues if material is a 2 way cut.</li></ul></div>
+<div class="u card" id="care-label-requirements-2" data-x=""><div class="ut">Label Requirements</div><ul><li>Testing lab will advise.</li></ul></div>
+<p class="kicker">FAUX SUEDE OR LEATHER</p>
+</div>
+<div class="sec" id="care-embellishments"><h3>Embellishments<span class="pg">p.13</span></h3>
+<p class="kicker">Garments with Embellishments (excluding self-fabric)</p>
+<div class="u card" id="care-care-instructions-5" data-x=""><div class="ut">Care Instructions</div><ul><li>If possible, Target prefers that garments with embellishments are machine wash/tumble dry.</li><li>BP to complete “After Wash Appearance” as early in the development process as possible. Avoid asking for exemptions. Work proactively to solve issues and deliver a high quality garment to the Target Guest.</li><li>BP to test multiple care instructions in order to achieve best after wash appearance. Let Target know immediately if wash instructions are not machine wash/tumble dry.</li><li>Check care instructions on inspiration samples (likely our care instructions should follow the same).</li></ul></div>
+<div class="u card" id="care-shipping-4" data-x=""><div class="ut">Shipping</div><ul><li>BP to advise if normal Floor Ready requirements are not recommended for individual garments.</li><li>Wrinkling during shipping: Tangling during shipping: Since this cannot be tested as it would happen during shipping, BP should advise best packing instructions to prevent wrinkling.</li></ul></div>
+<div class="u card" id="care-backing-for-embellishments" data-x=""><div class="ut">Backing for Embellishments</div><ul><li>For adult, add a soft interlining on the back of the embellished area whenever possible to prevent scratchiness.</li><li>Refer to Target Children’s Apparel Product Development Guide available on POL.</li></ul></div>
+<div class="u card" id="care-labeling" data-x=""><div class="ut">Labeling</div><ul><li>Testing lab will advise.</li></ul></div>
+</div>
+</section>
+<section class="ch" id="trim"><h2>Trim Standards <span class="ko">부자재</span></h2>
+<div class="sec" id="trim-thread"><h3>Thread<span class="pg">p.15</span></h3>
+<div class="tw"><table class="grid"><thead><tr><th>Fabric</th><th>Trim</th><th>Size</th></tr></thead><tbody>
+<tr class="u " id="trim-knits-jersey-fleece-french-terry-trm-0lw8-s" data-x=""><td>Knits: jersey, fleece, french terry</td><td>TRM-0LW8 Spun Polyester Thread</td><td>T30</td></tr>
+<tr class="u " id="trim-knits-jersey-fleece-french-terry-trm-kl21-t" data-x=""><td class="carry">Knits: jersey, fleece, french terry</td><td>TRM-KL21 Textured Polyester Thread</td><td>T30</td></tr>
+<tr class="u " id="trim-woven-tops-trm-0lw8-spun-polyester-thread" data-x=""><td>Woven Tops</td><td>TRM-0LW8 Spun Polyester Thread</td><td>T30</td></tr>
+<tr class="u " id="trim-woven-tops-trm-1k2e-polyester-wrapped-polye" data-x=""><td class="carry">Woven Tops</td><td>TRM-1K2E, Polyester Wrapped Polyester Core For Stretch and Wrinkle Resist Fabrics</td><td>T30</td></tr>
+<tr class="u " id="trim-woven-bottoms-trm-0lw8-spun-polyester-threa" data-x=""><td>Woven Bottoms</td><td>TRM-0LW8 Spun Polyester Thread</td><td>T40</td></tr>
+</tbody></table></div>
+</div>
+<div class="sec" id="trim-interlining"><h3>Interlining<span class="pg">p.16</span></h3>
+<div class="tw"><table class="grid"><thead><tr><th>Location</th><th>Trim</th></tr></thead><tbody>
+<tr class="u " id="trim-waistbands-fly-shirt-collars-cuff-bands-trm" data-x=""><td>Waistbands, Fly, Shirt Collars, Cuff Bands</td><td>TRM-XP0W- Thermal Bond NonWoven Fusible Medium (garment-treated TA000000617099, Fusible)</td></tr>
+<tr class="u " id="trim-waistbands-fly-shirt-collars-cuff-bands-trm-2" data-x=""><td class="carry">Waistbands, Fly, Shirt Collars, Cuff Bands</td><td>TRM-545M- Thermal Bond NonWoven Fusible Medium (non-garment treated TA000000617099, Fusible)</td></tr>
+<tr class="u " id="trim-waistbands-fly-shirt-collars-cuff-bands-trm-3" data-x=""><td class="carry">Waistbands, Fly, Shirt Collars, Cuff Bands</td><td>TRM-6634- Thermal Bond NonWoven Fusible Soft Medium (garment treated TA000000617099, Fusible)</td></tr>
+<tr class="u " id="trim-knee-reinforcements-trm-ykr4-knee-reinforce" data-x=""><td>Knee Reinforcements</td><td>TRM-YKR4- Knee Reinforcement Fusible (non denim) Designated supplier Freudenberg – ME8043</td></tr>
+<tr class="u " id="trim-woven-tops-dresses-trm-830w-thermal-bond-no" data-x=""><td>Woven Tops, Dresses</td><td>TRM-830W- Thermal Bond NonWoven Fusible Soft Light (garment-treated TA000000623198)</td></tr>
+<tr class="u " id="trim-woven-tops-dresses-trm-9xzl-thermal-bond-no" data-x=""><td class="carry">Woven Tops, Dresses</td><td>TRM-9XZL- Thermal Bond NonWoven Fusible Soft Light (non-garment treated TA000000623198)</td></tr>
+<tr class="u " id="trim-over-the-back-of-appliques-embroidery-and-r" data-x=""><td>Over the back of appliques, embroidery and rosettes</td><td>TRM-L202- Over The Back Embroidery Soft Medium TA000000617023 for non-garment-treated, Fusible</td></tr>
+<tr class="u " id="trim-over-the-back-of-appliques-embroidery-and-r-2" data-x=""><td class="carry">Over the back of appliques, embroidery and rosettes</td><td>TRM-87RL- Over The Back Embroidery Soft Medium TA000000617023 for garment-treated, Fusible</td></tr>
+<tr class="u " id="trim-embroidery-cut-away-trm-6604-cut-away-inter" data-x=""><td>Embroidery Cut Away</td><td>TRM-6604-Cut Away Interlining, Non-fusible, NonWoven Sew In Full Light for non-garment treated TA000000616993</td></tr>
+<tr class="u " id="trim-embroidery-tear-away-rm-kxll-tear-away-inte" data-x=""><td>Embroidery Tear Away</td><td>RM-KXLL-Tear Away Interlining, Non-fusible, NonWoven Sew In Full Light for garment-treated and non-garment treated TA000000616993</td></tr>
+</tbody></table></div>
+</div>
+<div class="sec" id="trim-elastics"><h3>Elastics<span class="pg">p.17</span></h3>
+<div class="tw"><table class="grid"><thead><tr><th>Garment Type or Location</th><th>Trim</th></tr></thead><tbody>
+<tr class="u " id="trim-knit-garments-trm-k117-standardized-td-inse" data-x=""><td>Knit Garments</td><td>TRM-K117 STANDARDIZED TD Insert Elastic 34g for medium weight knit</td></tr>
+<tr class="u " id="trim-knit-woven-garments-trm-jk8y-standardized-t" data-x=""><td>Knit &amp; Woven Garments</td><td>TRM-JK8Y STANDARDIZED TD Insert Elastic 37g light weight to medium weight knit</td></tr>
+<tr class="u " id="trim-woven-garments-trm-0pp9-standardized-td-ins" data-x=""><td>Woven Garments</td><td>TRM-0PP9 STANDARDIZED TD Insert Double Thread 37 Gauge Elastic Med Weight</td></tr>
+<tr class="u " id="trim-garments-with-adjustable-waistbands-trm-96l" data-x=""><td>Garments with Adjustable Waistbands</td><td>TRM-96LR STANDARDIZED TD Button Hole Elastic 26g, Knit</td></tr>
+<tr class="u " id="trim-flexible-drawstring-construction-trm-l88g-s" data-x=""><td>Flexible Drawstring Construction</td><td>TRM-L88G STANDARDIZED TD Braided Elastic 37G, Knit</td></tr>
+<tr class="u " id="trim-knit-garment-shoulder-seams-shirring-trm-n0" data-x=""><td>Knit Garment Shoulder Seams, Shirring</td><td>TRM-N0XN STANDARDIZED TD clear Polyurethane Tape Elastic, Clear</td></tr>
+<tr class="u " id="trim-smocking-details-trm-874l-elastic-thread-el" data-x=""><td>Smocking Details</td><td>TRM-874L Elastic Thread, Elastic</td></tr>
+<tr class="u " id="trim-keyhole-closures-trm-j99g-td-tubular-elasti" data-x=""><td>Keyhole Closures</td><td>TRM-J99G TD Tubular Elastic Loop for Button Closure</td></tr>
+</tbody></table></div>
+</div>
+<div class="sec" id="trim-buttons-zippers"><h3>Buttons &amp; Zippers<span class="pg">p.18</span></h3>
+<div class="tw"><table class="grid"><thead><tr><th>Button</th><th>Trim</th></tr></thead><tbody>
+<tr class="u " id="trim-non-denim-adjustable-waist-trm-p60l-clear-w" data-x=""><td>Non-Denim Adjustable Waist</td><td>TRM-P60L Clear waistband inner button 4 hole (TNB16_11A02) - for non-de</td></tr>
+<tr class="u " id="trim-denim-adjustable-waist-trm-1kry-standardize" data-x=""><td>Denim Adjustable Waist</td><td>TRM-1KRY Standardized Domed Chalk button 4 hole</td></tr>
+<tr class="u " id="trim-button-keyhole-closure-if-button-type-is-no" data-x=""><td>Button Keyhole Closure (if button type is not noted in packet)</td><td>TRM-G9RW Standardized Faux pearl no rim, 4 hole</td></tr>
+</tbody></table></div>
+<div class="tw"><table class="grid"><thead><tr><th>Zipper</th><th>Trim</th></tr></thead><tbody>
+<tr class="u " id="trim-molded-plastic-trm-l2lk-standardized-molded" data-x=""><td>Molded Plastic</td><td>TRM-L2LK STANDARDIZED Molded Plastic Closed End Auto Locking Zipper, Molded Plastic</td></tr>
+<tr class="u " id="trim-molded-plastic-rectangular-zipper-pull-trm-" data-x=""><td>Molded Plastic- rectangular zipper pull</td><td>TRM-YKGR STANDARDIZED Separating Auto Locking, Molded Plastic – rectangular zipper pull</td></tr>
+<tr class="u " id="trim-molded-plastic-rounded-zipper-pull-trm-xp55" data-x=""><td>Molded Plastic- rounded zipper pull</td><td>TRM-XP55 STANDARDIZED Separating Auto Locking, Molded Plastic – rounded zipper pull</td></tr>
+<tr class="u " id="trim-separating-auto-lock-coil-trm-ykxr-standard" data-x=""><td>Separating Auto Lock Coil</td><td>TRM-YKXR STANDARDIZED Separating Auto Locking Coil Zipper, Coil</td></tr>
+<tr class="u " id="trim-closed-end-auto-lock-coil-trm-kx64-standard" data-x=""><td>Closed End Auto Lock Coil</td><td>TRM-KX64 STANDARDIZED Closed End Auto Locking Coil Zipper, Coil</td></tr>
+<tr class="u " id="trim-antique-silver-metal-closed-end-auto-lock-c" data-x=""><td>Antique Silver, Metal Closed End Auto Lock Coil</td><td>TRM-WXZX TNB YKK #4.5 Metal Closed End Semi Auto Locking TA000000511477Metal0.00Antique Brass</td></tr>
+<tr class="u " id="trim-antique-brass-metal-closed-end-auto-lock-co" data-x=""><td>Antique Brass, Metal Closed End Auto Lock Coil</td><td>TRM-WXZX TNB YKK #4.5 Metal Closed End Semi Auto Locking Antique Silver TA000000511477Metal0.00</td></tr>
+</tbody></table></div>
+</div>
+</section>
+<section class="ch" id="construction"><h2>Construction Standards <span class="ko">봉제 기준</span></h2>
+<p class="note">All products must comply with Target Children’s Apparel Product Development Guide available on POL.</p>
+<div class="sec" id="construction-buttons"><h3>Buttons<span class="pg">p.20</span></h3>
+<div class="u " id="construction-buttons-2" data-x=""><ul><li>Button – 2 or 4-hole, with 304 LOCKSTITCH. If 4-hole, “X” stitched required.</li><li>Button – Thread shank must be appropriate for thickness of fabric.</li><li>Button – Must pass RSL (Restricted Substance List).</li><li>Buttons – Evenly spaced buttons.</li></ul></div></div>
+<div class="sec" id="construction-buttonholes"><h3>Buttonholes<span class="pg">p.20</span></h3>
+<div class="u " id="construction-buttonholes-2" data-x=""><ul><li>Stitching to be dense enough to cover base fabric and must not fray.</li><li>Gimp thread required on keyhole and fishtail buttonholes.</li></ul></div></div>
+<div class="sec" id="construction-clean-finish"><h3>Clean Finish<span class="pg">p.20</span></h3>
+<div class="u " id="construction-clean-finish-2" data-x=""><ul><li>Necklines – Binding, Back Neck Tape or Lining (no unfinished back necklines or 1” facings that can flip up).</li><li>Sleeveless Garments – must have binding, inside binding, inset with topstitch or lined-NO turn back finish.</li><li>Stitch down seam allowance (inset necklines, piecing at sleeves, sleeveless inset, raw edges).</li><li>Knit &amp; Woven Stretch Bottom (Skinny) Hem – 401 chain stitch.</li><li>Knit &amp; Woven Stretch Bottom Openings – Must have textured thread at bobbin/looper.</li><li>Vents/Slits – Must be clean finished.</li></ul></div></div>
+<div class="sec" id="construction-consistency-in-construction-for-kni"><h3>Consistency in Construction for Knits<span class="pg">p.20</span></h3>
+<div class="u " id="construction-consistency-in-construction-for-kni-2" data-x=""><ul><li>SPORTSWEAR – 0.625” hem with 1/8” stitch gauge, exceptions maybe granted based on styling.</li><li>SLEEPWEAR – 0.625” hem with 1/4” stitch gauge; exceptions maybe granted based on styling.</li><li>Thread – Spun polyester for needle and textured polyester for bobbin/looper.</li><li>Knit hems and necklines should have chain or cover stitch for best stretch.</li><li>Vents/Slits – Must be clean finished.</li></ul></div></div>
+<div class="sec" id="construction-crotch-snap-placket"><h3>Crotch Snap Placket<span class="pg">p.20</span></h3>
+<div class="u " id="construction-crotch-snap-placket-2" data-x=""><p>T21258, TNB19_18A01, TNB Metal Prong Ring Snap, Snap, YKK Prong Snap for Rompers</p></div></div>
+<div class="sec" id="construction-cutting-requirements"><h3>Cutting Requirements<span class="pg">p.20</span></h3>
+<div class="u " id="construction-cutting-requirements-2" data-x=""><p>Naps – Cut ALL ONE DIRECTION within individual garment.</p></div></div>
+<div class="sec" id="construction-functional-drawstring"><h3>Functional Drawstring<span class="pg">p.21</span></h3>
+<div class="u " id="construction-functional-drawstring-2" data-x="Flexible Drawstring (previously known as Stretchy Drawstring, patent pending) Total elastic length incl. seam allowances &amp; overlap = 1/4 waist relaxed measurement (Infant/Toddler/Big Kids). Drawstring (front waist) + Elastic (back waist), bartack join seams SPI 30-40. Elastic code TRM-NYRG (T15376) 37gg braided elastic; 0.25&quot; seam allowance each side. Exit options (reinforce with fusible interlining): Grommet center 0.25&quot; wide — TRM-P6WE (T15431), min size 20L, use 0.375&quot;W elastic (bigger grommet 0.5&quot;W or wider); Buttonhole cut −0.125&quot; than cord, min T40 thread, 30-40 SPI, 0.5&quot;W elastic or wider; Thread eyelet cut −0.125&quot; than cord, min T40 thread, 30-40 SPI. Drawstring may be wider &amp; folded through exit opening. Quality requirements: 1) submit mock-up of flexible drawstring for TD approval; 2) at product development BP sends TD a passing Attachment Strength 16 CFR testing report; 3) finished length per extended waist measurement &amp; Children&#x27;s Apparel Design Safety Guide — tacked at center back, not exceed 3&quot; exposed when waist fully extended. Packaging sticker (from C318, hanging &amp; folded): placed 5&quot; below top of waistband, centered at wearer&#x27;s left front panel — Cat &amp; Jack CJ18_10A02_KIDS_TODDLER_EasyOn_EasyOff_LAB · Art Class AC18_10A03_Toddler_Flex_Drawstring_LAB. If pant has both flexible drawstring and reinforced knee, do not use &quot;Easy On Easy Off&quot; sticker — use Reinforced Knee sticker."><ul><li>All drawstrings in NIT &amp; Kids to be Flexible Drawstring construction – unless otherwise indicated by TD.</li><li>Drawstring – must be securely tacked to waistband at center back. Tacking must be centered over the entire width of drawstring with either a Vertical Bar tack or Vertical Lockstitch tacked minimum of 2-3 times and securely back stitched at each end.</li></ul><div class="figs"><figure class="fig"><img src="img/s21_1.png" alt="Flexible Drawstring (previously known as Stretchy Drawstring, patent pending)" loading="lazy"><figcaption><b>Flexible Drawstring (previously known as Stretchy Drawstring, patent pending)</b> — Total elastic length incl. seam allowances &amp; overlap = 1/4 waist relaxed measurement (Infant/Toddler/Big Kids). Drawstring (front waist) + Elastic (back waist), bartack join seams SPI 30-40. Elastic code TRM-NYRG (T15376) 37gg braided elastic; 0.25&quot; seam allowance each side. Exit options (reinforce with fusible interlining): Grommet center 0.25&quot; wide — TRM-P6WE (T15431), min size 20L, use 0.375&quot;W elastic (bigger grommet 0.5&quot;W or wider); Buttonhole cut −0.125&quot; than cord, min T40 thread, 30-40 SPI, 0.5&quot;W elastic or wider; Thread eyelet cut −0.125&quot; than cord, min T40 thread, 30-40 SPI. Drawstring may be wider &amp; folded through exit opening. Quality requirements: 1) submit mock-up of flexible drawstring for TD approval; 2) at product development BP sends TD a passing Attachment Strength 16 CFR testing report; 3) finished length per extended waist measurement &amp; Children&#x27;s Apparel Design Safety Guide — tacked at center back, not exceed 3&quot; exposed when waist fully extended. Packaging sticker (from C318, hanging &amp; folded): placed 5&quot; below top of waistband, centered at wearer&#x27;s left front panel — Cat &amp; Jack CJ18_10A02_KIDS_TODDLER_EasyOn_EasyOff_LAB · Art Class AC18_10A03_Toddler_Flex_Drawstring_LAB. If pant has both flexible drawstring and reinforced knee, do not use &quot;Easy On Easy Off&quot; sticker — use Reinforced Knee sticker.</figcaption></figure></div></div></div>
+<div class="sec" id="construction-drawstring"><h3>Drawstring<span class="pg">p.22</span></h3>
+<div class="u " id="construction-drawstring-2" data-x=""><ul><li>Drawstring – Waist, sewn to garment at mid-point.</li><li>Drawstring – Waist, fully extended, not to extend 3” beyond garment.</li><li>Bottoms – All drawstrings must be functional unless otherwise noted or garment styling indicates otherwise.</li></ul></div></div>
+<div class="sec" id="construction-expression-of-fit"><h3>Expression of Fit<span class="pg">p.22</span></h3>
+<div class="u " id="construction-expression-of-fit-2" data-x=""><p>Vendor must fit garments over appropriate layering pieces.</p></div></div>
+<div class="sec" id="construction-hems"><h3>Hems<span class="pg">p.22</span></h3>
+<div class="u " id="construction-hems-2" data-x=""><p>Whenever styling allows, sleeves and sweep/hems should be set circular.</p></div></div>
+<div class="sec" id="construction-hoodies"><h3>Hoodies<span class="pg">p.22</span></h3>
+<div class="u " id="construction-hoodies-2" data-x="Garment with hood Back neck taping finished under zipper binding. Garment without hood Back neck tape / clean finish at zipper tape edge."><ul><li>Lined hood or add back neck tape for clean finish.</li><li>Back neck taping finished under zipper binding.</li><li>Lining or 0.25” binding to clean finish zipper tape edges.</li></ul><div class="figs"><figure class="fig"><img src="img/s22_1.png" alt="Garment with hood" loading="lazy"><figcaption><b>Garment with hood</b> — Back neck taping finished under zipper binding.</figcaption></figure><figure class="fig"><img src="img/s22_2.png" alt="Garment without hood" loading="lazy"><figcaption><b>Garment without hood</b> — Back neck tape / clean finish at zipper tape edge.</figcaption></figure></div></div></div>
+<div class="sec" id="construction-interior-construction"><h3>Interior Construction<span class="pg">p.22</span></h3>
+<div class="u " id="construction-interior-construction-2" data-x=""><ul><li>All jackets with linings – 1.5” total ease pleat at center back neck.</li><li>Facing – Self-facing from shoulder to bottom hem.</li><li>Facing – Requires under-stitching (at 1/16”) to prevent rolling.</li><li>Interlining – If requested interlining fails testing or is unacceptable, vendor should submit a passing report with 2 options for TD to choose.</li><li>Interlining – Required as a backing for any scratchy embroidered item.</li><li>Interlining – Over the back, cut inside fusible interlining size no more than 0.375” larger than finished artwork size. When not attached at seams, cut with rounded corners.</li></ul></div></div>
+<div class="sec" id="construction-linings"><h3>Linings<span class="pg">p.23</span></h3>
+<div class="u " id="construction-linings-2" data-x=""><ul><li>Lining – Sleeve and Bottom Hem: 1.5” turn back, 0.5” bagged lining, tack hems at seam allowances.</li><li>Lining – Swing tacked to side seams with thread chains.</li><li>Lining – 1” shorter than shell fabric.</li></ul></div></div>
+<div class="sec" id="construction-locker-loop"><h3>Locker Loop<span class="pg">p.23</span></h3>
+<div class="u " id="construction-locker-loop-2" data-x="Kids locker loop — generic size, placement &amp; construction CB neck; folded edge; 0.375&quot; ends sewn into neck seam; clean finish with 301 SN topstitch. ⚠ The slide overlays &quot;2.5”&quot; on the drawing&#x27;s &quot;2.0” total length&quot; label — max total length is 2.5&quot; (see text). Generic image — follow style specific details."><p>All jackets must have locker loop at center back neck. Must not exceed 2.5” total length.</p><div class="figs"><figure class="fig"><img src="img/s23_1.png" alt="Kids locker loop — generic size, placement &amp; construction" loading="lazy"><figcaption><b>Kids locker loop — generic size, placement &amp; construction</b> — CB neck; folded edge; 0.375&quot; ends sewn into neck seam; clean finish with 301 SN topstitch. ⚠ The slide overlays &quot;2.5”&quot; on the drawing&#x27;s &quot;2.0” total length&quot; label — max total length is 2.5&quot; (see text). Generic image — follow style specific details.</figcaption></figure></div></div></div>
+<div class="sec" id="construction-matching-plaid-stripes-and-prints-t"><h3>Matching Plaid, Stripes and Prints that look like the should be matched<span class="pg">p.23</span></h3>
+<div class="u " id="construction-matching-plaid-stripes-and-prints-t-2" data-x=""><ul><li>Tops – Side Seams match, CF match, Sleeves balanced, Collars balanced, CB seam match (if applicable).</li><li>Dresses / Skirt – Side Seams match, Waist or Empire seams match (if applicable).</li><li>Bottoms – CF &amp; CB rises match, Legs balanced.</li><li>Tolerance – 0.125&quot;</li></ul></div></div>
+<div class="sec" id="construction-plackets"><h3>Plackets<span class="pg">p.23</span></h3>
+<div class="u " id="construction-plackets-2" data-x=""><p>Wovens – Separate sewn-on placket is preferred.</p></div></div>
+<div class="sec" id="construction-pockets"><h3>Pockets<span class="pg">p.23</span></h3>
+<div class="u " id="construction-pockets-2" data-x=""><p>Lined pocket facings must extend 1” or more beyond opening.</p></div></div>
+<div class="sec" id="construction-reinforcement"><h3>Reinforcement<span class="pg">p.23</span></h3>
+<div class="u " id="construction-reinforcement-2" data-x=""><ul><li>Clear Elastic Tape – Use in all Knit tops with set-in sleeves (short and long) at shoulder seams.</li><li>Clear Elastic Tape – Use inside bindings of strappy tops/dresses.</li><li>If there are concerns of patch pocket not meeting pull test, use 1” self-fabric circle for reinforcement inside garment behind pocket corners.</li></ul></div></div>
+<div class="sec" id="construction-shirring"><h3>Shirring<span class="pg">p.24</span></h3>
+<div class="u " id="construction-shirring-2" data-x=""><p>Fullness to be evenly distributed.</p></div></div>
+<div class="sec" id="construction-trims-o-rings-sliders"><h3>Trims: O-Rings &amp; Sliders<span class="pg">p.24</span></h3>
+<div class="u " id="construction-trims-o-rings-sliders-2" data-x=""><ul><li>Must always be enamel coated metal. Plastic is prohibited.</li><li>Must pass RSL (Restricted Substance List).</li></ul></div></div>
+<div class="sec" id="construction-trims-snaps-vs-tacks"><h3>Trims: Snaps vs Tacks<span class="pg">p.24</span></h3>
+<div class="u " id="construction-trims-snaps-vs-tacks-2" data-x=""><ul><li>BB: 27L Snaps (sizes XS-S or 4-7); 27L Tacks (sizes M-XXL or 8-18 and Husky sizes M-XXL or 10-18).</li><li>BG CJ: 27L Snaps (sizes XS 4- 18 XXL);</li><li>BG AC: 27L Snaps (sizes XS 4- 7S); 27L Tacks (sizes M-XXL or 8-18).</li><li>BB &amp; BG: Snaps must have a faux buttonhole underneath to create the look of a tack.</li></ul></div></div>
+<div class="sec" id="construction-thread"><h3>Thread<span class="pg">p.24</span></h3>
+<div class="u " id="construction-thread-2" data-x=""><ul><li>Polyester Thread – Most garments, vendor to choose appropriate Tex size and SPI.</li><li>Cotton Wrapped Polyester Core – Washed garments which require DTM color. 100% cotton is strongly discouraged.</li><li>Polyester Textured Thread – Bobbin/loopers for all knits.</li><li>Basting stitched for welt pockets – see Shipping Requirements.</li><li>Bar tack – Minimum of 5 of 6 stitches.</li><li>Overlap of Circular Stitching – Minimum of 5 to 6 stitches.</li></ul></div></div>
+<div class="sec" id="construction-shipping-requirements"><h3>Shipping Requirements<span class="pg">p.24</span></h3>
+<div class="u " id="construction-shipping-requirements-2" data-x=""><ul><li>Welt Pockets – Add 1” baste stitch to center of pockets. Thread size should be T-18. SPI should be 4-6. Color should be red or contrast. Thread cannot show on topside of garment.</li><li>Vents – Discuss with TD whether they should be shipped with tack or no tack.</li><li>Pressing – Depends on styling; discuss with TDs when hard pressing will be utilized for approval. Generally, all rolls should not be hard pressed.</li></ul></div></div>
+<div class="sec" id="construction-wash-for-softness"><h3>Wash for Softness<span class="pg">p.24</span></h3>
+<div class="u " id="construction-wash-for-softness-2" data-x=""><ul><li>Softness is an important Target attribute. Please reach out to Target with questions.</li><li>BB: All boys tops and bottoms must have a wash for softness. Discuss with team about any costing concerns.</li><li>BG: All fabrics must be soft. Add softener or wash when needed to and when style permits.</li></ul></div></div>
+<div class="sec" id="construction-knee-interlining-reinforcement"><h3>Knee Interlining Reinforcement<span class="pg">p.26</span></h3>
+<div class="u " id="construction-knee-interlining-reinforcement-2" data-x="Knee interlining placement (blue shading) Approximate measurement up from &quot;At Knee&quot; point where top of interlining starts: I/T 18M = 1.5&quot;, 3T = 1.5&quot;; BBBG 5 = 1.5&quot;, BBBG 8 = 2&quot;. For fit evaluation: turn pant inside out, place on mannequin to verify top of interlining meets location. Waist placement / above knee / at knee / below knee / at calf / mid calf."><ul><li>Interlining Trim Code: TRM-YKR4 (T21318) Knee Reinforcement</li><li>Fusible: Freudenberg #ME8043E</li><li>Use white interlining for light garment colors, black for dark garment colors.</li><li>Attach interlining before wash.</li></ul><div class="figs"><figure class="fig"><img src="img/s26_3.jpg" alt="Knee interlining placement (blue shading)" loading="lazy"><figcaption><b>Knee interlining placement (blue shading)</b> — Approximate measurement up from &quot;At Knee&quot; point where top of interlining starts: I/T 18M = 1.5&quot;, 3T = 1.5&quot;; BBBG 5 = 1.5&quot;, BBBG 8 = 2&quot;. For fit evaluation: turn pant inside out, place on mannequin to verify top of interlining meets location. Waist placement / above knee / at knee / below knee / at calf / mid calf.</figcaption></figure></div></div></div>
+<div class="sec" id="construction-packaging-stickers"><h3>Packaging Stickers<span class="pg">p.26</span></h3>
+<div class="u " id="construction-packaging-stickers-2" data-x="Reinforced knee packaging stickers Cat &amp; Jack CJ16_10A03 · Art Class AC16_10A01. If pant has both flexible drawstring and reinforced knee, do not use &quot;Easy On Easy Off&quot; sticker — use Reinforced Knee sticker."><ul><li>Applies to Hanging &amp; Folded.</li><li>* Placed 5” below top of waistband &amp; centered at wearer’s left front panel.</li><li>Placement is for regular and extended sizes.</li><li>This sketch is for dimensions only. Refer to garment sketch for styling.</li><li>Vendor to ensure all required testing for reinforced knee is completed according to Target standards.</li><li>*Vendor to grade.</li></ul><div class="figs"><figure class="fig"><img src="img/s26_1.jpg" alt="Reinforced knee packaging stickers" loading="lazy"><figcaption><b>Reinforced knee packaging stickers</b> — Cat &amp; Jack CJ16_10A03 · Art Class AC16_10A01. If pant has both flexible drawstring and reinforced knee, do not use &quot;Easy On Easy Off&quot; sticker — use Reinforced Knee sticker.</figcaption></figure></div></div></div>
+<div class="sec" id="construction-length-of-interlining"><h3>Length of Interlining<span class="pg">p.26</span></h3>
+<div class="u " id="construction-length-of-interlining-2" data-x="Length of knee interlining I/T core size: 18M = 6&quot;, 3T = 7&quot;. BBBG core size: BBBG 5 = 8&quot;, BBBG 8 = 9&quot;. Vendor to grade."><div class="figs"><figure class="fig"><img src="img/s26_2.jpg" alt="Length of knee interlining" loading="lazy"><figcaption><b>Length of knee interlining</b> — I/T core size: 18M = 6&quot;, 3T = 7&quot;. BBBG core size: BBBG 5 = 8&quot;, BBBG 8 = 9&quot;. Vendor to grade.</figcaption></figure></div></div></div>
+</section>
+<section class="ch" id="shipping"><h2>Special Shipping Instructions <span class="ko">출하 · 포장</span></h2>
+<div class="sec" id="shipping-double-sleeve-roll-art-class"><h3>Double Sleeve Roll — Art Class<span class="pg">p.28</span></h3>
+<div class="u " id="shipping-double-sleeve-roll-preferred-method-bb-" data-x="Double sleeve roll Roll the cuff up once (1), then roll again (2)."><p>Shipping: Double Sleeve Roll-Preferred Method BB &amp; BG</p><p>Preferred sleeve roll method for long sleeve tops, when double sleeve roll is requested (check with TD for each style, if unsure).</p><div class="figs"><figure class="fig"><img src="img/s28_1.png" alt="Double sleeve roll" loading="lazy"><figcaption><b>Double sleeve roll</b> — Roll the cuff up once (1), then roll again (2).</figcaption></figure></div></div></div>
+<div class="sec" id="shipping-bb-in-store-hanging-program-art-class"><h3>BB In-Store Hanging Program — Art Class<span class="pg">p.29</span></h3>
+<p class="note">BB In-Store Hanging Program Presentation Cheat Sheet — 스타일별 출하 상태</p><div class="hang">
+<div class="u card" id="shipping-ss-ls-woven-shirt-regular-neck-drop" data-x=""><div class="ut">SS &amp; LS Woven Shirt – Regular Neck Drop</div><div class="hi"><img src="img/s29_1.jpg" alt="SS &amp; LS Woven Shirt – Regular Neck Drop" loading="lazy"></div><p><b>Short &amp; Long Sleeve:</b></p><p><b>Neck:</b></p><p>Ship w/ 1st button open</p><p><b>Long Sleeves:</b></p><p>Rolled 2x</p><p>2.25” roll height for Size M</p><p>Attach hangtag at seam allowance of sleeve inseam</p><p>OK not to fold sleeves for Target.com orders</p></div>
+<div class="u card" id="shipping-ss-woven-shirt-low-neck-drop" data-x=""><div class="ut">SS Woven Shirt – Low Neck Drop</div><div class="hi"><img src="img/s29_9.jpg" alt="SS Woven Shirt – Low Neck Drop" loading="lazy"></div><p>Ship w/ all buttons closed</p></div>
+<div class="u card" id="shipping-ls-woven-shirt-w-hood" data-x="Hangtag at sleeve Attach hangtag at seam allowance of sleeve inseam (rolled long sleeve)."><div class="ut">LS Woven Shirt w/ Hood</div><div class="hi"><img src="img/s29_2.png" alt="LS Woven Shirt w/ Hood" loading="lazy"></div><p><b>Neck:</b></p><p>Ship w/ all buttons closed</p><p><b>Sleeves:</b></p><p>Rolled 2x</p><p>2.25” roll height for Size M</p><p>Attach hangtag at seam allowance of sleeve inseam</p><p>OK not to fold sleeves for Target.com orders</p><figure class="fig sm"><img src="img/s29_7.png" alt="Hangtag at sleeve" loading="lazy"><figcaption><b>Hangtag at sleeve</b> — Attach hangtag at seam allowance of sleeve inseam (rolled long sleeve).</figcaption></figure></div>
+<div class="u card" id="shipping-ls-woven-layering-jacket" data-x=""><div class="ut">LS Woven Layering Jacket</div><div class="hi"><img src="img/s29_8.jpg" alt="LS Woven Layering Jacket" loading="lazy"></div><p><b>Neck:</b></p><p>Ship w/ 1st button/snap opened</p><p><b>Sleeves:</b></p><p>Ship with sleeves not rolled and cuffs fully clasped</p></div>
+<div class="u card" id="shipping-ls-knit-hoodie" data-x=""><div class="ut">LS Knit Hoodie</div><div class="hi"><img src="img/s29_3.png" alt="LS Knit Hoodie" loading="lazy"></div><p>Ship with zipper fully closed</p></div>
+<div class="u card" id="shipping-ls-knit-quarter-zip-hoodie" data-x=""><div class="ut">LS Knit Quarter Zip Hoodie</div><div class="hi"><img src="img/s29_5.png" alt="LS Knit Quarter Zip Hoodie" loading="lazy"></div><p>Ship with zipper fully closed</p></div>
+<div class="u card" id="shipping-polo-collars-ls-and-ss-knit-and-woven" data-x=""><div class="ut">Polo Collars – LS and SS, Knit and Woven</div><div class="hi"><img src="img/s29_6.png" alt="Polo Collars – LS and SS, Knit and Woven" loading="lazy"></div><p><b>Neck:</b></p><p>Ship w/ 1st button/snap opened</p><p><b>Sleeves:</b></p><p>Ship with sleeves not rolled</p></div>
+<div class="u card" id="shipping-bottoms-woven-or-knit-with-drawstring" data-x=""><div class="ut">Bottoms, Woven or Knit with Drawstring</div><div class="hi"><img src="img/s29_4.png" alt="Bottoms, Woven or Knit with Drawstring" loading="lazy"></div><p>Ship w/ drawstring untied</p></div>
+</div></div>
+<div class="sec" id="shipping-woven-shirts-cat-jack"><h3>Woven Shirts — Cat &amp; Jack<span class="pg">p.30</span></h3>
+<div class="u " id="shipping-collar-shipping-cat-jack-woven-shirts" data-x="Collar shipping instructions — Cat &amp; Jack woven shirts Ship with top button open, do not press."><div class="figs"><figure class="fig"><img src="img/s30_1.jpg" alt="Collar shipping instructions — Cat &amp; Jack woven shirts" loading="lazy"><figcaption><b>Collar shipping instructions — Cat &amp; Jack woven shirts</b> — Ship with top button open, do not press.</figcaption></figure></div></div></div>
+</section>
+<section class="ch" id="updates"><h2>Update History <span class="ko">개정 이력</span></h2>
+<div class="sec" id="updates-summary-of-updates"><h3>Summary of Updates<span class="pg">p.31</span></h3>
+<div class="tw"><table class="grid"><thead><tr><th>Date of update</th><th>Brand/Dept/Category/Pages</th><th>Update to Guide and/or Reason of Change</th></tr></thead><tbody>
+<tr class="u " id="updates-2-16-24-added-adjustable-wb-construction" data-x=""><td>2.16.24</td><td>Kids Quality Snapshot Grid (page 4)</td><td>Added adjustable WB construction for fixed waist</td></tr>
+<tr class="u " id="updates-10-30-24-added-embroidery-tear-away-and-" data-x=""><td>10/30/24</td><td>All Kids Interlining page 16</td><td>Added Embroidery Tear Away and Embroidery Cut Away options</td></tr>
+<tr class="u " id="updates-6-9-25-updated-cj-bg-to-snaps-only-and-a" data-x=""><td>6/9/25</td><td>Trims: Tacks vs Snaps (pg 24)</td><td>Updated CJ BG to snaps only and AC BG to snaps &amp; tacks</td></tr>
+<tr class="u " id="updates-6-9-25-updated-to-specify-nit-kids-appar" data-x=""><td>6/9/25</td><td>All</td><td>Updated to specify NIT/Kids Apparel</td></tr>
+<tr class="u " id="updates-6-9-25-added-newborn-to-ykk-zippers" data-x=""><td>6/9/25</td><td>Qualityy Snapshot (page 4)</td><td>Added Newborn to YKK Zippers</td></tr>
+<tr class="u " id="updates-6-9-25-updated-elastic-trim-codes" data-x=""><td>6/9/25</td><td>Trims: Elastic (page 17)</td><td>Updated elastic trim codes</td></tr>
+</tbody></table></div></div>
+</section>
+  </main>
+</div>
+<footer>출처: AA_Construction Guide_Kids_NIT_CatJack_Cloud Island_Art Class.pptx (Target · Last Update 6/9/2025) · 그림 속 글자(규격·코드)는 검색이 되도록 캡션에 옮겨 적었습니다 ·
+원문과 다르면 원문이 우선합니다. 검색은 여러 단어를 넣으면 모두 들어간 항목만 보여 줍니다.</footer>
+
+<script>
+(function () {
+  var KO = {"지퍼": "zipper", "단추": "button", "버튼": "button", "단춧구멍": "buttonhole", "고무줄": "elastic", "밴드": "elastic|waistband", "실": "thread", "봉사": "thread", "심지": "interlining|fusible", "접착심지": "fusible", "세탁": "wash|care|laundering", "케어": "care", "건조": "dry", "원단": "fabric", "수축": "shrinkage", "비침": "sheer", "드로스트링": "drawstring", "스트링": "drawstring", "끈": "drawstring|cord", "후드": "hood", "안감": "lining", "주머니": "pocket", "포켓": "pocket", "스냅": "snap", "택": "tack", "무릎": "knee", "출하": "ship", "포장": "packag|shipping", "스티커": "sticker", "접기": "roll|fold", "소매": "sleeve", "롤": "roll", "행거": "hang", "줄무늬": "stripe", "스트라이프": "stripe", "체크": "plaid", "매칭": "match", "결": "nap|grain", "바택": "bar tack|bartack", "셔링": "shirring", "스모킹": "smocking", "밑단": "hem", "헴": "hem", "넥": "neck", "목둘레": "neckline", "바인딩": "binding", "프린트": "print", "포일": "foil", "스팽글": "sequin", "퍼": "fur", "레이스": "lace", "벨벳": "velvet", "거즈": "gauze", "프린지": "fringe", "술": "fringe", "장식": "embellish", "아플리케": "applique", "자수": "embroider", "부드러움": "soft", "소프트": "soft", "워싱": "wash", "사이즈": "size", "그레이딩": "grading", "플래킷": "placket", "루프": "loop", "라커루프": "locker loop", "로커루프": "locker loop", "안전": "safety", "핏": "fit", "마네킹": "mannequin", "모델": "model", "라벨": "label", "케어라벨": "care label", "행택": "hangtag", "스웨터": "sweater", "재단": "cut", "바이어스": "cross-grain|cross", "프레스": "press", "다림질": "press|iron", "테이프": "tape", "어깨": "shoulder", "허리": "waist", "조절": "adjustable", "링": "ring", "슬라이더": "slider", "금속": "metal", "플라스틱": "plastic", "오링": "o-ring", "커버스티치": "cover stitch", "체인스티치": "chain stitch", "본봉": "lockstitch", "오버록": "overlock", "셔츠": "shirt", "하의": "bottom", "상의": "top", "원피스": "dress", "치마": "skirt", "스커트": "skirt", "자켓": "jacket", "재킷": "jacket", "아우터": "jacket", "보강": "reinforc", "페이싱": "facing", "절개": "vent|slit", "트임": "vent|slit", "보풀": "nap", "인조가죽": "faux leather|faux suede", "스웨이드": "suede", "가죽": "leather", "글리터": "glitter", "핫멜트": "hot melt", "크로셰": "crochet", "수영복": "swim", "신생아": "newborn", "롬퍼": "romper", "크로치": "crotch", "개정": "update", "변경": "update"};
+  var q = document.getElementById('q'), sb = document.getElementById('sb'), cnt = document.getElementById('count');
+  var res = document.getElementById('results'), shell = document.getElementById('shell');
+  var units = [].slice.call(document.querySelectorAll('.u'));
+  var orig = units.map(function (u) { return u.innerHTML; });
+  var total = units.length, lit = [];
+  var LBL = [], PATH = [];   // 강조(<mark>)로 글자 노드가 쪼개지기 전에 미리 뽑아 둔다
+
+  function esc(s) { return s.replace(/[&<>"]/g, function (c) { return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]; }); }
+  function terms(s) {
+    return s.toLowerCase().split(/[\s,]+/).filter(Boolean).map(function (t) {
+      var alts = [t];
+      Object.keys(KO).forEach(function (k) {
+        if (k === t || (t.length >= 2 && k.indexOf(t) === 0)) KO[k].split('|').forEach(function (a) { alts.push(a.toLowerCase()); });
+      });
+      return alts;
+    });
+  }
+  function unlight() { lit.forEach(function (i) { units[i].innerHTML = orig[i]; }); lit = []; }
+  function light(i, words) {
+    var u = units[i], re = new RegExp('(' + words.map(function (w) { return w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }).join('|') + ')', 'gi');
+    var walker = document.createTreeWalker(u, NodeFilter.SHOW_TEXT, null), nodes = [], n;
+    while ((n = walker.nextNode())) if (n.nodeValue.trim()) nodes.push(n);
+    nodes.forEach(function (t) {
+      if (!re.test(t.nodeValue)) return;
+      re.lastIndex = 0;
+      var span = document.createElement('span');
+      span.innerHTML = esc(t.nodeValue).replace(re, '<mark>$1</mark>');
+      t.parentNode.replaceChild(span, t);
+    });
+    lit.push(i);
+  }
+  function path(u) {
+    var ch = u.closest('section.ch'), sec = u.closest('.sec');
+    var a = ch ? ch.querySelector('h2').childNodes[0].nodeValue.trim() : '';
+    var b = sec ? sec.querySelector('h3').childNodes[0].nodeValue.trim() : '';
+    return a + (b && b !== a ? ' › ' + b : '');
+  }
+  function label(u) {
+    var t = u.querySelector('.ut');
+    if (t) { var sb2 = t.querySelector('.sub'); return t.childNodes[0].nodeValue + (sb2 ? ' · ' + sb2.textContent : ''); }
+    var td = u.querySelector('td');
+    if (td) return td.textContent + (u.querySelectorAll('td')[1] ? ' — ' + u.querySelectorAll('td')[1].textContent.slice(0, 60) : '');
+    var s = u.closest('.sec');
+    return s ? s.querySelector('h3').childNodes[0].nodeValue : '';
+  }
+  units.forEach(function (u, i) { LBL[i] = (label(u) || '').trim(); PATH[i] = path(u); });
+
+  function run() {
+    var s = q.value.trim();
+    unlight();
+    try { history.replaceState(null, '', s ? '?q=' + encodeURIComponent(s) : location.pathname); } catch (e) {}
+    sb.classList.toggle('has', !!s);
+    shell.classList.toggle('searching', !!s);
+    if (!s) {
+      units.forEach(function (u) { u.classList.remove('hide'); });
+      [].forEach.call(document.querySelectorAll('.sec,.ch,.tw,.note,.lead,.kicker,.cards,.hang'), function (e) { e.classList.remove('hide'); });
+      [].forEach.call(document.querySelectorAll('#toclist a'), function (a) { a.classList.remove('off'); });
+      cnt.innerHTML = '항목 ' + total + '개';
+      res.innerHTML = '';
+      return;
+    }
+    var T = terms(s), hits = [];
+    units.forEach(function (u, i) {
+      var txt = (u.textContent + ' ' + (u.getAttribute('data-x') || '')).toLowerCase();
+      var ok = T.every(function (alts) { return alts.some(function (a) { return txt.indexOf(a) >= 0; }); });
+      u.classList.toggle('hide', !ok);
+      if (ok) hits.push(i);
+    });
+    [].forEach.call(document.querySelectorAll('.note,.lead,.kicker'), function (e) { e.classList.add('hide'); });
+    [].forEach.call(document.querySelectorAll('.tw,.cards,.hang,.sec,section.ch'), function (e) {
+      e.classList.toggle('hide', !e.querySelector('.u:not(.hide)'));
+    });
+    [].forEach.call(document.querySelectorAll('#toclist a'), function (a) {
+      var el = document.getElementById(a.getAttribute('href').slice(1));
+      a.classList.toggle('off', !el || el.classList.contains('hide'));
+    });
+    var words = [].concat.apply([], T).filter(function (w) { return /[a-z0-9]/.test(w); });
+    hits.forEach(function (i) { if (words.length) light(i, words); });
+    cnt.innerHTML = '<b>' + hits.length + '</b>개 항목';
+    if (!hits.length) {
+      res.innerHTML = '<div class="none">「' + esc(s) + '」 이(가) 들어간 항목이 없습니다. 영어 원문 단어로도 찾아 보세요 ' +
+        '(예: 밑단 → hem, 심지 → interlining). 여러 단어를 넣으면 <b>모두</b> 들어간 항목만 나옵니다.</div>';
+      return;
+    }
+    res.innerHTML = '<div class="t">검색 결과 ' + hits.length + '개 — 누르면 그 항목으로 이동합니다</div>' +
+      hits.slice(0, 80).map(function (i) {
+        var u = units[i];
+        return '<a href="#' + u.id + '"><span class="path">' + esc(PATH[i]) + '</span>' + esc(LBL[i]) + '</a>';
+      }).join('');
+  }
+  var tmr;
+  q.addEventListener('input', function () { clearTimeout(tmr); tmr = setTimeout(run, 140); });
+  document.getElementById('clr').addEventListener('click', function () { q.value = ''; run(); q.focus(); });
+  [].forEach.call(document.querySelectorAll('.chips button'), function (b) {
+    b.addEventListener('click', function () { q.value = b.textContent; run(); });
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === '/' && document.activeElement !== q) { e.preventDefault(); q.focus(); }
+    if (e.key === 'Escape' && document.activeElement === q) { q.value = ''; run(); }
+  });
+  res.addEventListener('click', function (e) {
+    var a = e.target.closest('a'); if (!a) return;
+    var u = document.getElementById(a.getAttribute('href').slice(1));
+    if (u) { u.classList.remove('flash'); void u.offsetWidth; u.classList.add('flash'); }
+  });
+  var init = new URLSearchParams(location.search).get('q');
+  if (init) { q.value = init; run(); }
+
+  // 목차: 좁은 화면 접기 · 지금 읽는 장 강조
+  var tg = document.getElementById('toctoggle'), toc = document.getElementById('toc');
+  tg.addEventListener('click', function () {
+    var open = toc.classList.toggle('open');
+    tg.setAttribute('aria-expanded', String(open));
+    tg.textContent = open ? '목차 닫기 ▴' : '목차 열기 ▾';
+  });
+  document.getElementById('toclist').addEventListener('click', function (e) {
+    if (e.target.closest('a') && window.matchMedia('(max-width:1024px)').matches) {
+      toc.classList.remove('open'); tg.setAttribute('aria-expanded', 'false'); tg.textContent = '목차 열기 ▾';
+    }
+  });
+  var links = {}, targets = [];
+  [].forEach.call(document.querySelectorAll('#toclist a'), function (a) {
+    var id = a.getAttribute('href').slice(1), el = document.getElementById(id);
+    links[id] = a; if (el) targets.push(el);
+  });
+  if ('IntersectionObserver' in window && targets.length) {
+    var cur = null;
+    var io = new IntersectionObserver(function (en) {
+      en.forEach(function (x) {
+        if (!x.isIntersecting) return;
+        var a = links[x.target.id];
+        if (!a || a === cur) return;
+        if (cur) cur.classList.remove('on');
+        a.classList.add('on'); cur = a;
+      });
+    }, { rootMargin: '-140px 0px -70% 0px' });
+    targets.forEach(function (t) { io.observe(t); });
+  }
+})();
+</script>
+</body>
+</html>
