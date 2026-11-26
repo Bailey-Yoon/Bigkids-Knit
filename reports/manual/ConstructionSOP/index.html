@@ -516,6 +516,14 @@ footer{max-width:1220px;margin:0 auto;padding:0 20px 50px;font-size:12px;color:v
     var s = u.closest('.sec');
     return s ? s.querySelector('h3').childNodes[0].nodeValue : '';
   }
+  // 검색용 글자는 글자 노드마다 띄어 붙인다 — textContent 는 "Standards"+"Nap" 을 "StandardsNap" 으로 붙여
+  // "snap" 검색에 엉뚱하게 걸린다 (2026-11-26 실제로 걸렸다)
+  var TXT = units.map(function (u) {
+    var w = document.createTreeWalker(u, NodeFilter.SHOW_TEXT, null), a = [], n;
+    while ((n = w.nextNode())) a.push(n.nodeValue);
+    a.push(u.getAttribute('data-x') || '');
+    return a.join(' ').replace(/\s+/g, ' ').toLowerCase();
+  });
   units.forEach(function (u, i) { LBL[i] = (label(u) || '').trim(); PATH[i] = path(u); });
 
   function run() {
@@ -534,7 +542,7 @@ footer{max-width:1220px;margin:0 auto;padding:0 20px 50px;font-size:12px;color:v
     }
     var T = terms(s), hits = [];
     units.forEach(function (u, i) {
-      var txt = (u.textContent + ' ' + (u.getAttribute('data-x') || '')).toLowerCase();
+      var txt = TXT[i];
       var ok = T.every(function (alts) { return alts.some(function (a) { return txt.indexOf(a) >= 0; }); });
       u.classList.toggle('hide', !ok);
       if (ok) hits.push(i);
